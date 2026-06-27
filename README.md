@@ -1,2 +1,2 @@
 # WetKittyCoastal
-all we kitty stuff
+all wet kitty stuff
