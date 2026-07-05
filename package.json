@@ -92,7 +92,7 @@
   },
   "license": "MIT",
   "name": "wetkitty-ecommerce",
-  "packageManager": "pnpm@11.10.0"
+  "packageManager": "pnpm@11.10.0",
   "pnpm": {
     "overrides": {
       "tailwindcss\u003enanoid": "3.3.7"
