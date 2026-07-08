@@ -45,43 +45,7 @@ const collectionCards = [
   },
 ];
 
-const collectionCards = [
-  {
-    title: "High Tide",
-    subtitle: "Swimwear & Beach Gear",
-    href: "/collections/beach",
-    image:
-      "https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    title: "Sunset Riders",
-    subtitle: "Tees, Tanks & Hoodies",
-    href: "/collections/men",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    title: "Pier 7",
-    subtitle: "Caps & Accessories",
-    href: "/collections/hats",
-    image:
-      "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    title: "Salt Run",
-    subtitle: "Long Sleeves & Lightweight",
-    href: "/collections/hoodies",
-    image:
-      "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",
-  },
-  {
-    title: "Low Tide",
-    subtitle: "Women’s Collection",
-    href: "/collections/women",
-    image:
-      "https://images.unsplash.com/photo-1506863530036-1efeddceb993?auto=format&fit=crop&w=900&q=80",
-  },
-];
+
 
 const fallbackProducts = [
   { title: "Ride the Tide Tee", price: "$34.00", href: "/products/ride-the-tide-tee" },
