@@ -5,7 +5,46 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 const heroImage =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2200&q=85";
+const heroImage =
+  "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=2400&q=90";
+
+const collectionCards = [
+  {
+    title: "High Tide",
+    subtitle: "Swimwear & Beach Gear",
+    href: "/collections/beach",
+    image:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Sunset Riders",
+    subtitle: "Tees, Tanks & Hoodies",
+    href: "/collections/men",
+    image:
+      "https://images.unsplash.com/photo-1558981285-6f0c94958bb6?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Pier 7",
+    subtitle: "Caps & Accessories",
+    href: "/collections/hats",
+    image:
+      "https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Salt Run",
+    subtitle: "Long Sleeves & Lightweight",
+    href: "/collections/hoodies",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Low Tide",
+    subtitle: "Women’s Collection",
+    href: "/collections/women",
+    image:
+      "https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=1000&q=85",
+  },
+];
 
 const collectionCards = [
   {
