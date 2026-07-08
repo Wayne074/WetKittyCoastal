@@ -5,7 +5,6 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 const heroImage =
-const heroImage =
   "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=2400&q=90";
 
 const collectionCards = [
