@@ -34,13 +34,13 @@ function Router() {
       <Route path={"/admin/orders"} component={AdminOrders} />
       <Route path={"/admin/customers"} component={AdminCustomers} />
       <Route path={"/admin/settings"} component={AdminSettings} />
+      <Route path={"/"} component={Home} />
       <Route>
         {() => (
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1">
               <Switch>
-                <Route path={"/"} component={Home} />
                 <Route path={"/collections/men"} component={MenCollection} />
                 <Route path={"/collections/women"} component={WomenCollection} />
                 <Route path={"/collections/hats"} component={HatsCollection} />
