@@ -28,13 +28,14 @@ export default function Home() {
         <span>COASTAL&nbsp; • &nbsp;BIKER LIFESTYLE</span>
       </div>
 
-      {/* Functional header overlay. It covers the baked-in labels/icons so the
-          visible text and the clickable targets always match. */}
+      {/* Opaque mask covers the navigation and icons baked into the artwork. */}
+      <div className="wk-header-mask" aria-hidden="true" />
+
+      {/* Functional header overlay. */}
       <nav className="wk-top-nav" aria-label="Main navigation">
         <Link href="/">Home</Link>
         <Link href="/collections/men">Men</Link>
         <Link href="/collections/women">Women</Link>
-        <Link href="/collections/men">Collections</Link>
         <Link href="/collections/beach">Beach</Link>
         <Link href="/founding-crew">Founding Crew</Link>
         <Link href="/collections/hats">Accessories</Link>
@@ -153,13 +154,14 @@ export default function Home() {
           .wk-header-actions button:hover { color: #49d3cf; background: rgba(73,211,207,.12); }
         }
 
-        .wk-top-nav { position: absolute; z-index: 12; left: 27.6%; top: .95%; width: 53.5%; height: 2.6%; display: flex; align-items: center; justify-content: space-between; gap: .15%; padding: 0 .35%; border-radius: 3px; background: rgba(5,15,17,.82); backdrop-filter: blur(4px); line-height: 1; }
+        .wk-header-mask { position: absolute; z-index: 10; left: 23.8%; top: .55%; width: 74.2%; height: 3.35%; background: #071417; border-radius: 3px; }
+        .wk-top-nav { position: absolute; z-index: 12; left: 27.0%; top: .86%; width: 56.0%; height: 2.75%; display: flex; align-items: center; justify-content: space-between; gap: .15%; padding: 0 .45%; border-radius: 3px; background: #071417; line-height: 1; }
         .wk-top-nav a { display: flex; align-items: center; justify-content: center; height: 72%; padding: 0 .5vw; border: 1px solid transparent; border-radius: 3px; color: #f6efe4; text-decoration: none; white-space: nowrap; font: 700 clamp(5px, .64vw, 11px)/1 Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
-        .wk-header-actions { position: absolute; z-index: 13; left: 83.1%; top: .9%; width: 13.3%; height: 2.7%; display: flex; align-items: center; justify-content: space-around; padding: 0 .25%; border-radius: 3px; background: rgba(5,15,17,.82); backdrop-filter: blur(4px); line-height: 1; }
+        .wk-header-actions { position: absolute; z-index: 13; left: 83.3%; top: .86%; width: 13.7%; height: 2.75%; display: flex; align-items: center; justify-content: space-around; padding: 0 .25%; border-radius: 3px; background: #071417; line-height: 1; }
         .wk-header-actions button { position: relative; display: grid; place-items: center; width: 29%; height: 80%; padding: 0; border: 0; border-radius: 4px; color: #f6efe4; background: transparent; cursor: pointer; }
         .wk-header-actions svg { width: 62%; height: 62%; stroke-width: 1.8; }
         .wk-cart-count { position: absolute; top: -8%; right: 3%; min-width: 13px; height: 13px; display: grid; place-items: center; padding: 0 3px; border-radius: 999px; color: #071417; background: #49d3cf; font: 800 8px/1 Arial, sans-serif; }
-        .wk-eyebrow-fix { position: absolute; z-index: 3; left: 30.2%; top: 8.15%; width: 40%; height: 2.2%; display: flex; gap: .55em; align-items: center; justify-content: center; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(12,22,22,.36); backdrop-filter: blur(2px); }
+        .wk-eyebrow-fix { position: absolute; z-index: 3; left: 28.7%; top: 8.02%; width: 43.8%; height: 2.45%; display: flex; gap: .72em; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 .8%; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(8,18,19,.92); }
         .wk-eyebrow-premium { color: #33c3c1; }
         .wk-hero-button-cover { position: absolute; z-index: 5; left: 28.7%; top: 23.25%; width: 42.6%; height: 4.55%; border-radius: 7px; background: rgba(7,18,20,.88); backdrop-filter: blur(8px); }
         .wk-limited-drop-button { position: absolute; z-index: 6; left: 37.0%; top: 23.82%; width: 26.0%; height: 3.25%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1.5px solid rgba(255,255,255,.92); border-radius: 4px; background: rgba(6,18,20,.64); color: #fffaf0; text-decoration: none; white-space: nowrap; font: 800 clamp(6px, .82vw, 14px)/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.24); }
