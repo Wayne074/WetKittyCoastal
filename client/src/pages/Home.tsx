@@ -10,6 +10,7 @@ import { useCart } from "@/contexts/CartContext";
  */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
   const { cart, itemCount, loading, proceedToCheckout } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -23,7 +24,8 @@ export default function Home() {
 
       {/* Correct the misspelled wording baked into the approved artwork. */}
       <div className="wk-eyebrow-fix" aria-label="Premium Coastal Biker Lifestyle">
-        <span>PREMIUM</span> COASTAL&nbsp; • &nbsp;BIKER LIFESTYLE
+        <span className="wk-eyebrow-premium">PREMIUM</span>
+        <span>COASTAL&nbsp; • &nbsp;BIKER LIFESTYLE</span>
       </div>
 
       {/* Main navigation. Tight hitboxes keep hover/focus aligned with labels. */}
@@ -32,12 +34,18 @@ export default function Home() {
       <Hotspot area="nav" href="/collections/women" label="Women" x={38.45} y={1.55} w={4.15} h={1.75} />
       <Hotspot area="nav" href="/collections/men" label="Collections" x={44.55} y={1.55} w={6.7} h={1.75} />
       <Hotspot area="nav" href="/collections/beach" label="Beach" x={54.25} y={1.55} w={4.0} h={1.75} />
-      <Hotspot area="nav" href="/events" label="Rallies" x={60.15} y={1.55} w={4.15} h={1.75} />
+      <Hotspot area="nav" href="/founding-crew" label="Founding Crew" x={59.35} y={1.55} w={6.0} h={1.75} />
       <Hotspot area="nav" href="/collections/hats" label="Accessories" x={66.35} y={1.55} w={6.85} h={1.75} />
       <Hotspot area="nav" href="/community" label="About" x={76.2} y={1.55} w={3.9} h={1.75} />
 
       {/* Header action icons */}
-      <Hotspot href="/wishlist" label="Wishlist" x={84.55} y={1.15} w={2.75} h={2.45} />
+      <button
+        type="button"
+        className="wk-action-hotspot"
+        aria-label="Open wishlist"
+        style={{ left: "84.55%", top: "1.15%", width: "2.75%", height: "2.45%" }}
+        onClick={() => setWishlistOpen(true)}
+      />
       <button
         type="button"
         className="wk-action-hotspot"
@@ -54,9 +62,9 @@ export default function Home() {
         onClick={() => setMenuOpen(true)}
       />
 
-      {/* Hero buttons */}
-      <Hotspot href="/collections/men" label="Shop now" x={32.05} y={24.15} w={15.0} h={3.15} />
-      <Hotspot href="/collections/limited-drop" label="View new drops" x={49.65} y={24.15} w={15.0} h={3.15} />
+      {/* Replace the two baked-in hero buttons with one clear launch action. */}
+      <div className="wk-hero-button-cover" aria-hidden="true" />
+      <Link href="/collections/limited-drop" className="wk-limited-drop-button">View Limited Drops</Link>
 
       {/* Collection cards */}
       <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
@@ -86,9 +94,23 @@ export default function Home() {
             <PanelLink href="/collections/beach" onClick={() => setMenuOpen(false)}>Beach</PanelLink>
             <PanelLink href="/collections/hats" onClick={() => setMenuOpen(false)}>Accessories</PanelLink>
             <PanelLink href="/collections/limited-drop" onClick={() => setMenuOpen(false)}>Limited Drops</PanelLink>
-            <PanelLink href="/events" onClick={() => setMenuOpen(false)}>Rallies</PanelLink>
+            <PanelLink href="/founding-crew" onClick={() => setMenuOpen(false)}>Founding Crew</PanelLink>
             <PanelLink href="/community" onClick={() => setMenuOpen(false)}>About / Join the Crew</PanelLink>
             <PanelLink href="/wishlist" onClick={() => setMenuOpen(false)}>Wishlist</PanelLink>
+          </aside>
+        </div>
+      )}
+
+
+      {wishlistOpen && (
+        <div className="wk-panel-backdrop" role="presentation" onClick={() => setWishlistOpen(false)}>
+          <aside className="wk-side-panel" aria-label="Wishlist" onClick={event => event.stopPropagation()}>
+            <button className="wk-close" onClick={() => setWishlistOpen(false)} aria-label="Close wishlist"><X /></button>
+            <h2>Your Wishlist</h2>
+            <p>Your saved Wet Kitty gear will appear here. Wishlist accounts are coming with the full store launch.</p>
+            <PanelLink href="/collections/limited-drop" onClick={() => setWishlistOpen(false)}>View Limited Drops</PanelLink>
+            <PanelLink href="/collections/men" onClick={() => setWishlistOpen(false)}>Shop Sunset Riders</PanelLink>
+            <PanelLink href="/collections/women" onClick={() => setWishlistOpen(false)}>Shop Low Tide</PanelLink>
           </aside>
         </div>
       )}
@@ -133,8 +155,11 @@ export default function Home() {
           .wk-hotspot:not([data-area="nav"]):hover, .wk-action-hotspot:hover { background: rgba(73, 211, 207, 0.10); box-shadow: inset 0 0 0 1px rgba(73, 211, 207, 0.35); }
           .wk-hotspot[data-area="nav"]:hover { background: linear-gradient(to top, rgba(73,211,207,.9) 0 2px, transparent 2px); }
         }
-        .wk-eyebrow-fix { position: absolute; z-index: 3; left: 31.2%; top: 8.15%; width: 38%; height: 2.2%; display: flex; align-items: center; justify-content: center; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(12,22,22,.36); backdrop-filter: blur(2px); }
-        .wk-eyebrow-fix span { color: #33c3c1; }
+        .wk-eyebrow-fix { position: absolute; z-index: 3; left: 30.2%; top: 8.15%; width: 40%; height: 2.2%; display: flex; gap: .55em; align-items: center; justify-content: center; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(12,22,22,.36); backdrop-filter: blur(2px); }
+        .wk-eyebrow-premium { color: #33c3c1; }
+        .wk-hero-button-cover { position: absolute; z-index: 5; left: 30.6%; top: 23.55%; width: 35.6%; height: 4.25%; border-radius: 8px; background: rgba(7,18,20,.84); backdrop-filter: blur(8px); }
+        .wk-limited-drop-button { position: absolute; z-index: 6; left: 40.4%; top: 24.0%; width: 19.2%; height: 3.15%; display: flex; align-items: center; justify-content: center; border-radius: 4px; background: #3ec9c5; color: #071417; text-decoration: none; font: 800 clamp(7px, .95vw, 15px)/1 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+        .wk-limited-drop-button:hover { background: #65d9d4; }
         .wk-panel-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.58); line-height: 1.45; }
         .wk-side-panel { position: absolute; top: 0; right: 0; width: min(390px, 88vw); height: 100%; overflow-y: auto; padding: 76px 28px 32px; color: #f7f0e5; background: #071417; box-shadow: -12px 0 34px rgba(0,0,0,.4); }
         .wk-side-panel h2 { margin: 0 0 24px; font: 700 30px/1.15 Georgia, serif; }

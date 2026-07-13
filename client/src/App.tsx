@@ -19,7 +19,7 @@ import {
 import ProductDetail from "./pages/ProductDetail";
 import Wishlist from "./pages/Wishlist";
 import Community from "./pages/Community";
-import Events from "./pages/Events";
+import FoundingCrew from "./pages/FoundingCrew";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
@@ -50,7 +50,7 @@ function Router() {
                 <Route path={"/products/:handle"} component={ProductDetail} />
                 <Route path={"/wishlist"} component={Wishlist} />
                 <Route path={"/community"} component={Community} />
-                <Route path={"/events"} component={Events} />
+                <Route path={"/founding-crew"} component={FoundingCrew} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />
               </Switch>
