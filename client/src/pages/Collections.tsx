@@ -4,14 +4,29 @@ export function MenCollection() {
   return (
     <CollectionPage
       handle="men"
-      title="Sunset Riders"
-      subtitle="Men's Collection"
+      title="Men's Collection"
+      subtitle="Tees, Tanks & Hoodies"
       tagline="For the ones who chase the horizon on two wheels."
       description="Back-print tees, trucker hats, hoodies, patches, and rally gear. Built for saltwater, horsepower, and the people who refuse to grow up."
       gradient="linear-gradient(160deg, #060e12 0%, #0d3040 40%, #1a4a5a 70%, #0d3040 100%)"
       accent="var(--teal)"
       seoTitle="Men's Apparel — Sunset Riders | Wet Kitty"
       seoDescription="Shop the Wet Kitty men's collection. Premium coastal biker tees, hoodies, trucker hats, and rally gear designed for saltwater and horsepower."
+    />
+  );
+}
+
+export function AllApparelCollection() {
+  return (
+    <CollectionPage
+      title="Tees, Tanks & Hoodies"
+      subtitle="Shop All Apparel"
+      tagline="Beach days, bike nights, and everything between."
+      description="Browse Wet Kitty tees, tanks, hoodies, and everyday coastal biker apparel for men and women."
+      gradient="linear-gradient(160deg, #060e12 0%, #0d3040 44%, #17605f 100%)"
+      accent="var(--teal)"
+      seoTitle="Tees, Tanks & Hoodies | Wet Kitty"
+      seoDescription="Shop Wet Kitty tees, tanks, hoodies, and premium coastal biker apparel for men and women."
     />
   );
 }

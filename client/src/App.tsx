@@ -15,11 +15,13 @@ import {
   HoodiesCollection,
   BeachCollection,
   LimitedDropCollection,
+  AllApparelCollection,
 } from "./pages/Collections";
 import ProductDetail from "./pages/ProductDetail";
 import Wishlist from "./pages/Wishlist";
 import Community from "./pages/Community";
 import FoundingCrew from "./pages/FoundingCrew";
+import Events from "./pages/Events";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
@@ -47,10 +49,12 @@ function Router() {
                 <Route path={"/collections/hoodies"} component={HoodiesCollection} />
                 <Route path={"/collections/beach"} component={BeachCollection} />
                 <Route path={"/collections/limited-drop"} component={LimitedDropCollection} />
+                <Route path={"/collections/apparel"} component={AllApparelCollection} />
                 <Route path={"/products/:handle"} component={ProductDetail} />
                 <Route path={"/wishlist"} component={Wishlist} />
                 <Route path={"/community"} component={Community} />
                 <Route path={"/founding-crew"} component={FoundingCrew} />
+                <Route path={"/events"} component={Events} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />
               </Switch>

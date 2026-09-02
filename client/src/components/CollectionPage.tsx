@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { WaveSeparator, PawLoader, PostcardProductCard } from "@/components/brand";
 
 interface CollectionPageProps {
-  handle: string;
+  handle?: string;
   title: string;
   subtitle: string;
   description: string;

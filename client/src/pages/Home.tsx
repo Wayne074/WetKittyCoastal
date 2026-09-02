@@ -61,11 +61,12 @@ export default function Home() {
 
       {/* Replace the two baked-in hero buttons with one clear launch action. */}
       <div className="wk-hero-button-cover" aria-hidden="true" />
-      <Link href="/collections/limited-drop" className="wk-limited-drop-button">View Limited Drops</Link>
+      <Link href="/collections/apparel" className="wk-limited-drop-button">Shop Tees, Tanks &amp; Hoodies</Link>
 
       {/* Collection cards */}
       <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
-      <Hotspot href="/collections/men" label="Sunset Riders collection" x={20.7} y={33.8} w={18.7} h={13.8} />
+      <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={33.8} w={18.7} h={13.8} />
+      <div className="wk-men-collection-label" aria-hidden="true">Men&apos;s Collection</div>
       <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={33.8} w={18.7} h={13.8} />
       <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={33.8} w={18.7} h={13.8} />
       <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={33.8} w={19.0} h={13.8} />
@@ -106,7 +107,7 @@ export default function Home() {
             <h2>Your Wishlist</h2>
             <p>Your saved Wet Kitty gear will appear here. Wishlist accounts are coming with the full store launch.</p>
             <PanelLink href="/collections/limited-drop" onClick={() => setWishlistOpen(false)}>View Limited Drops</PanelLink>
-            <PanelLink href="/collections/men" onClick={() => setWishlistOpen(false)}>Shop Sunset Riders</PanelLink>
+            <PanelLink href="/collections/men" onClick={() => setWishlistOpen(false)}>Shop Men&apos;s Collection</PanelLink>
             <PanelLink href="/collections/women" onClick={() => setWishlistOpen(false)}>Shop Low Tide</PanelLink>
           </aside>
         </div>
@@ -154,8 +155,8 @@ export default function Home() {
           .wk-header-actions button:hover { color: #49d3cf; background: rgba(73,211,207,.12); }
         }
 
-        .wk-header-mask { position: absolute; z-index: 10; left: 23.8%; top: .55%; width: 74.2%; height: 3.35%; background: #071417; border-radius: 3px; }
-        .wk-top-nav { position: absolute; z-index: 12; left: 27.0%; top: .86%; width: 56.0%; height: 2.75%; display: flex; align-items: center; justify-content: space-between; gap: .15%; padding: 0 .45%; border-radius: 3px; background: #071417; line-height: 1; }
+        .wk-header-mask { position: absolute; z-index: 10; left: 28.2%; top: .55%; width: 69.8%; height: 3.35%; background: #071417; border-radius: 3px; }
+        .wk-top-nav { position: absolute; z-index: 12; left: 28.2%; top: .86%; width: 54.3%; height: 2.75%; display: flex; align-items: center; justify-content: space-between; gap: .15%; padding: 0 .45%; border-radius: 3px; background: #071417; line-height: 1; }
         .wk-top-nav a { display: flex; align-items: center; justify-content: center; height: 72%; padding: 0 .5vw; border: 1px solid transparent; border-radius: 3px; color: #f6efe4; text-decoration: none; white-space: nowrap; font: 700 clamp(5px, .64vw, 11px)/1 Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
         .wk-header-actions { position: absolute; z-index: 13; left: 83.3%; top: .86%; width: 13.7%; height: 2.75%; display: flex; align-items: center; justify-content: space-around; padding: 0 .25%; border-radius: 3px; background: #071417; line-height: 1; }
         .wk-header-actions button { position: relative; display: grid; place-items: center; width: 29%; height: 80%; padding: 0; border: 0; border-radius: 4px; color: #f6efe4; background: transparent; cursor: pointer; }
@@ -163,9 +164,10 @@ export default function Home() {
         .wk-cart-count { position: absolute; top: -8%; right: 3%; min-width: 13px; height: 13px; display: grid; place-items: center; padding: 0 3px; border-radius: 999px; color: #071417; background: #49d3cf; font: 800 8px/1 Arial, sans-serif; }
         .wk-eyebrow-fix { position: absolute; z-index: 3; left: 28.7%; top: 8.02%; width: 43.8%; height: 2.45%; display: flex; gap: .72em; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 .8%; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(8,18,19,.92); }
         .wk-eyebrow-premium { color: #33c3c1; }
-        .wk-hero-button-cover { position: absolute; z-index: 5; left: 28.7%; top: 23.25%; width: 42.6%; height: 4.55%; border-radius: 7px; background: rgba(7,18,20,.88); backdrop-filter: blur(8px); }
-        .wk-limited-drop-button { position: absolute; z-index: 6; left: 37.0%; top: 23.82%; width: 26.0%; height: 3.25%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1.5px solid rgba(255,255,255,.92); border-radius: 4px; background: rgba(6,18,20,.64); color: #fffaf0; text-decoration: none; white-space: nowrap; font: 800 clamp(6px, .82vw, 14px)/1 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.24); }
+        .wk-hero-button-cover { position: absolute; z-index: 5; left: 29.0%; top: 24.45%; width: 42.0%; height: 3.35%; border-radius: 7px; background: rgba(7,18,20,.88); backdrop-filter: blur(8px); }
+        .wk-limited-drop-button { position: absolute; z-index: 6; left: 35.2%; top: 24.82%; width: 29.6%; height: 2.55%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1.5px solid rgba(255,255,255,.92); border-radius: 4px; background: rgba(6,18,20,.64); color: #fffaf0; text-decoration: none; white-space: nowrap; font: 800 clamp(6px, .82vw, 14px)/1 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.24); }
         .wk-limited-drop-button:hover { color: #071417; background: #49d3cf; border-color: #49d3cf; }
+        .wk-men-collection-label { position: absolute; z-index: 5; left: 21.8%; top: 42.45%; width: 16.5%; height: 2.45%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fffaf0; background: linear-gradient(90deg, transparent 0%, rgba(7,18,20,.92) 13%, rgba(7,18,20,.92) 87%, transparent 100%); text-shadow: 0 2px 4px rgba(0,0,0,.9); font: italic 700 clamp(8px, 1.45vw, 24px)/1 Georgia, serif; letter-spacing: .01em; }
         .wk-panel-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.58); line-height: 1.45; }
         .wk-side-panel { position: absolute; top: 0; right: 0; width: min(390px, 88vw); height: 100%; overflow-y: auto; padding: 76px 28px 32px; color: #f7f0e5; background: #071417; box-shadow: -12px 0 34px rgba(0,0,0,.4); }
         .wk-side-panel h2 { margin: 0 0 24px; font: 700 30px/1.15 Georgia, serif; }

@@ -152,7 +152,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Wet Kitty Apparel. All rights reserved.
           </p>
           <p className="text-xs" style={{ color: "rgba(255, 250, 240, 0.4)" }}>
-            Powered by Shopify &amp; Printful
+            Inspired by and born in Panama City Beach
           </p>
         </div>
       </div>
