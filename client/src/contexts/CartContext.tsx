@@ -1,5 +1,6 @@
 import { trpc } from "@/lib/trpc";
 import type { Cart } from "@shared/commerce/types";
+import { toast } from "sonner";
 import {
   createContext,
   ReactNode,
@@ -14,10 +15,10 @@ import {
  * Storefront cart context.
  *
  * - Talks ONLY to backend-agnostic `commerce.*` tRPC procedures.
- * - Persists the cart id in localStorage and rehydrates on mount.
+ * - Persists the signed cart token in localStorage and rehydrates on mount.
  * - Exposes a tiny imperative surface to UI: addItem, updateQuantity,
  *   removeItem, openCart, proceedToCheckout. Everything is typed against
- *   `shared/commerce/types` — the Shopify backend is invisible.
+ *   `shared/commerce/types` — Printful and Stripe stay server-side.
  */
 
 const CART_STORAGE_KEY = "commerce:cart-id";
@@ -44,7 +45,7 @@ type CartContextValue = {
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
   clearCart: () => void;
-  proceedToCheckout: () => void;
+  proceedToCheckout: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -111,6 +112,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             lines: [{ variantId, quantity }],
           });
           setCart(updated);
+          setCartId(updated.id);
+          writeStoredCartId(updated.id);
         }
         setIsOpen(true);
       } finally {
@@ -129,7 +132,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
           cartId,
           lines: [{ lineId, quantity }],
         });
-        if (updated) setCart(updated);
+        if (updated) {
+          setCart(updated);
+          setCartId(updated.id);
+          writeStoredCartId(updated.id);
+        }
       } finally {
         setLoading(false);
       }
@@ -147,6 +154,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
           lineIds: [lineId],
         });
         setCart(updated);
+        setCartId(updated.id);
+        writeStoredCartId(updated.id);
       } finally {
         setLoading(false);
       }
@@ -160,11 +169,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(null);
   }, []);
 
-  const proceedToCheckout = useCallback(() => {
-    if (!cart?.checkoutUrl) return;
-    // checkoutUrl already has channel=online_store appended server-side.
-    window.open(cart.checkoutUrl, "_blank", "noopener,noreferrer");
-  }, [cart]);
+  const proceedToCheckout = useCallback(async () => {
+    if (!cart?.id || !cart.items.length) return;
+    setLoading(true);
+    try {
+      const checkout = await utils.client.commerce.cart.checkout.mutate({
+        cartId: cart.id,
+        origin: window.location.origin,
+      });
+      window.location.assign(checkout.url);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Checkout could not be started."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [cart, utils.client]);
 
   const value = useMemo<CartContextValue>(
     () => ({

@@ -2,10 +2,8 @@
  * Backend-agnostic commerce types.
  *
  * These shapes are the ONLY thing the frontend imports for commerce data.
- * They intentionally don't expose any Shopify-specific concepts (GraphQL
- * edges/nodes, GIDs, userErrors). The Shopify adapter in
- * `server/_core/shopify.ts` + `server/_core/shopifyNormalize.ts` are
- * responsible for normalizing into these shapes.
+ * They intentionally don't expose provider-specific response shapes. The
+ * Printful catalog adapter is responsible for normalizing into these shapes.
  *
  * Keep `Money.amount` as a `string` — it mirrors what every commerce backend
  * returns and avoids float-precision risk on totals. The UI converts to a
@@ -87,7 +85,7 @@ export type CartItem = {
 
 export type Cart = {
   id: string;
-  /** Already includes `channel=online_store` — open directly. */
+  /** Stripe Checkout is created only when the customer presses checkout. */
   checkoutUrl: string;
   items: CartItem[];
   itemCount: number;

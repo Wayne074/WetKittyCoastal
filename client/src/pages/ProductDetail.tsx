@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Heart, Share2, ShoppingBag, ChevronRight, Truck, Shield, RotateCcw } from "lucide-react";
+import {
+  Heart,
+  Share2,
+  ShoppingBag,
+  ChevronRight,
+  Truck,
+  Shield,
+  RotateCcw,
+} from "lucide-react";
 import { useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
@@ -12,8 +20,6 @@ export default function ProductDetail() {
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [embroideryEnabled, setEmbroideryEnabled] = useState(false);
-  const [embroideryText, setEmbroideryText] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
 
   const { data: product, isLoading } = trpc.commerce.products.byHandle.useQuery(
@@ -38,13 +44,28 @@ export default function ProductDetail() {
             className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center"
             style={{ background: "rgba(21, 154, 153, 0.06)" }}
           >
-            <span className="text-2xl font-bold" style={{ color: "var(--teal)", fontFamily: "var(--font-display)" }}>WK</span>
+            <span
+              className="text-2xl font-bold"
+              style={{
+                color: "var(--teal)",
+                fontFamily: "var(--font-display)",
+              }}
+            >
+              WK
+            </span>
           </div>
-          <h2 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-display)" }}>
+          <h2
+            className="text-lg font-bold text-foreground mb-2"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
             Product Not Found
           </h2>
-          <p className="text-sm text-muted-foreground mb-6">This product may have been removed or the link is incorrect.</p>
-          <a href="/collections/men" className="btn btn-primary inline-flex">Browse Collections</a>
+          <p className="text-sm text-muted-foreground mb-6">
+            This product may have been removed or the link is incorrect.
+          </p>
+          <a href="/collections/men" className="btn btn-primary inline-flex">
+            Browse Collections
+          </a>
         </div>
       </div>
     );
@@ -54,10 +75,18 @@ export default function ProductDetail() {
   const images = product.images || [];
   const currentImage = images[imageIndex];
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (variant) {
-      addItem(variant.id, quantity);
-      toast.success(`Added ${quantity} to cart!`);
+      try {
+        await addItem(variant.id, quantity);
+        toast.success(`Added ${quantity} to cart!`);
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "That item could not be added."
+        );
+      }
     }
   };
 
@@ -72,11 +101,20 @@ export default function ProductDetail() {
       <div className="border-b border-border/50">
         <div className="container py-3">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <a href="/" className="hover:text-foreground transition-colors">Home</a>
+            <a href="/" className="hover:text-foreground transition-colors">
+              Home
+            </a>
             <ChevronRight className="w-3 h-3" />
-            <a href="/collections/men" className="hover:text-foreground transition-colors">Collections</a>
+            <a
+              href="/collections/men"
+              className="hover:text-foreground transition-colors"
+            >
+              Collections
+            </a>
             <ChevronRight className="w-3 h-3" />
-            <span className="text-foreground font-medium truncate">{product.title}</span>
+            <span className="text-foreground font-medium truncate">
+              {product.title}
+            </span>
           </div>
         </div>
       </div>
@@ -88,14 +126,29 @@ export default function ProductDetail() {
             <div
               className="aspect-square rounded-2xl overflow-hidden flex items-center justify-center"
               style={{
-                background: "linear-gradient(135deg, rgba(21, 154, 153, 0.04) 0%, rgba(121, 212, 205, 0.06) 50%, rgba(216, 195, 155, 0.04) 100%)",
+                background:
+                  "linear-gradient(135deg, rgba(21, 154, 153, 0.04) 0%, rgba(121, 212, 205, 0.06) 50%, rgba(216, 195, 155, 0.04) 100%)",
                 border: "1px solid rgba(21, 154, 153, 0.08)",
               }}
             >
               {currentImage ? (
-                <img src={currentImage.url} alt={product.title} className="w-full h-full object-cover" loading="lazy" />
+                <img
+                  src={currentImage.url}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
               ) : (
-                <span className="text-6xl font-bold" style={{ color: "var(--teal)", fontFamily: "var(--font-display)", opacity: 0.3 }}>WK</span>
+                <span
+                  className="text-6xl font-bold"
+                  style={{
+                    color: "var(--teal)",
+                    fontFamily: "var(--font-display)",
+                    opacity: 0.3,
+                  }}
+                >
+                  WK
+                </span>
               )}
             </div>
 
@@ -108,11 +161,18 @@ export default function ProductDetail() {
                     onClick={() => setImageIndex(idx)}
                     className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all duration-200"
                     style={{
-                      border: idx === imageIndex ? "2px solid var(--teal)" : "1px solid var(--border)",
+                      border:
+                        idx === imageIndex
+                          ? "2px solid var(--teal)"
+                          : "1px solid var(--border)",
                       opacity: idx === imageIndex ? 1 : 0.6,
                     }}
                   >
-                    <img src={img.url} alt={`${product.title} ${idx}`} className="w-full h-full object-cover" />
+                    <img
+                      src={img.url}
+                      alt={`${product.title} ${idx}`}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -136,7 +196,10 @@ export default function ProductDetail() {
 
             {/* Price */}
             <div className="flex items-baseline gap-3 mb-5">
-              <span className="text-2xl font-bold" style={{ color: "var(--teal)" }}>
+              <span
+                className="text-2xl font-bold"
+                style={{ color: "var(--teal)" }}
+              >
                 ${variant?.price.amount}
               </span>
               <span className="text-xs text-muted-foreground uppercase">
@@ -146,7 +209,8 @@ export default function ProductDetail() {
 
             {/* Description */}
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-              {product.description || "Premium quality apparel designed for the coastal lifestyle and biker culture. Made with care, built to last."}
+              {product.description ||
+                "Premium quality apparel designed for the coastal lifestyle and biker culture. Made with care, built to last."}
             </p>
 
             {/* Variants */}
@@ -162,9 +226,18 @@ export default function ProductDetail() {
                       onClick={() => setSelectedVariant(idx)}
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                       style={{
-                        border: idx === selectedVariant ? "2px solid var(--teal)" : "1px solid var(--border)",
-                        background: idx === selectedVariant ? "rgba(21, 154, 153, 0.06)" : "transparent",
-                        color: idx === selectedVariant ? "var(--teal)" : "var(--foreground)",
+                        border:
+                          idx === selectedVariant
+                            ? "2px solid var(--teal)"
+                            : "1px solid var(--border)",
+                        background:
+                          idx === selectedVariant
+                            ? "rgba(21, 154, 153, 0.06)"
+                            : "transparent",
+                        color:
+                          idx === selectedVariant
+                            ? "var(--teal)"
+                            : "var(--foreground)",
                       }}
                     >
                       {v.title || `Size ${idx + 1}`}
@@ -173,57 +246,6 @@ export default function ProductDetail() {
                 </div>
               </div>
             )}
-
-            {/* ─── EMBROIDERY ─── */}
-            <div
-              className="mb-6 p-5 rounded-xl transition-all duration-200"
-              style={{
-                border: embroideryEnabled ? "1px solid var(--teal)" : "1px solid var(--border)",
-                background: embroideryEnabled ? "rgba(21, 154, 153, 0.03)" : "transparent",
-              }}
-            >
-              <label className="flex items-center gap-3 cursor-pointer">
-                <div
-                  className="w-5 h-5 rounded flex items-center justify-center transition-colors"
-                  style={{
-                    background: embroideryEnabled ? "var(--teal)" : "transparent",
-                    border: embroideryEnabled ? "none" : "2px solid var(--border)",
-                  }}
-                >
-                  {embroideryEnabled && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-                <div>
-                  <span className="text-sm font-bold text-foreground">Add Custom Embroidery</span>
-                  <span className="text-xs text-muted-foreground ml-2">+$15.00</span>
-                </div>
-              </label>
-              <input
-                type="checkbox"
-                checked={embroideryEnabled}
-                onChange={(e) => setEmbroideryEnabled(e.target.checked)}
-                className="sr-only"
-              />
-              {embroideryEnabled && (
-                <div className="mt-4 pl-8">
-                  <input
-                    type="text"
-                    placeholder="Enter text (max 20 characters)"
-                    value={embroideryText}
-                    onChange={(e) => setEmbroideryText(e.target.value.slice(0, 20))}
-                    maxLength={20}
-                    className="w-full px-4 py-2.5 text-sm border rounded-lg bg-background text-foreground focus:outline-none transition-colors"
-                    style={{ borderColor: "var(--border)" }}
-                  />
-                  <p className="text-[11px] text-muted-foreground mt-2">
-                    Premium thread colors. Fulfilled by Printful embroidery.
-                  </p>
-                </div>
-              )}
-            </div>
 
             {/* Quantity & Actions */}
             <div className="mb-6">
@@ -237,7 +259,9 @@ export default function ProductDetail() {
                 >
                   −
                 </button>
-                <span className="w-12 h-10 flex items-center justify-center font-bold text-foreground">{quantity}</span>
+                <span className="w-12 h-10 flex items-center justify-center font-bold text-foreground">
+                  {quantity}
+                </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="w-10 h-10 rounded-lg border border-border flex items-center justify-center hover:bg-muted transition-colors text-foreground"
@@ -258,19 +282,25 @@ export default function ProductDetail() {
                   onClick={handleToggleWishlist}
                   className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200"
                   style={{
-                    border: isWishlisted ? "2px solid var(--teal)" : "1px solid var(--border)",
-                    background: isWishlisted ? "rgba(21, 154, 153, 0.06)" : "transparent",
+                    border: isWishlisted
+                      ? "2px solid var(--teal)"
+                      : "1px solid var(--border)",
+                    background: isWishlisted
+                      ? "rgba(21, 154, 153, 0.06)"
+                      : "transparent",
                   }}
                 >
                   <Heart
                     className="w-5 h-5 transition-colors"
-                    style={{ color: isWishlisted ? "var(--teal)" : "var(--muted-foreground)" }}
+                    style={{
+                      color: isWishlisted
+                        ? "var(--teal)"
+                        : "var(--muted-foreground)",
+                    }}
                     fill={isWishlisted ? "var(--teal)" : "none"}
                   />
                 </button>
-                <button
-                  className="w-12 h-12 rounded-xl flex items-center justify-center border border-border hover:bg-muted transition-colors"
-                >
+                <button className="w-12 h-12 rounded-xl flex items-center justify-center border border-border hover:bg-muted transition-colors">
                   <Share2 className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
@@ -281,10 +311,19 @@ export default function ProductDetail() {
               {[
                 { icon: Truck, text: "Free shipping on orders over $100" },
                 { icon: Shield, text: "Premium quality guaranteed" },
-                { icon: RotateCcw, text: "30-day claims for damaged or misprinted items" },
+                {
+                  icon: RotateCcw,
+                  text: "30-day claims for damaged or misprinted items",
+                },
               ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <Icon className="w-4 h-4 flex-shrink-0" style={{ color: "var(--teal)" }} />
+                <div
+                  key={text}
+                  className="flex items-center gap-3 text-xs text-muted-foreground"
+                >
+                  <Icon
+                    className="w-4 h-4 flex-shrink-0"
+                    style={{ color: "var(--teal)" }}
+                  />
                   {text}
                 </div>
               ))}

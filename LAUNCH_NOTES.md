@@ -1,17 +1,24 @@
 # Wet Kitty launch notes
 
-## Completed in this package
-- Approved homepage artwork is now the homepage visual source of truth.
-- Existing site header and footer are hidden only on the homepage, because both are already included in the approved artwork.
-- Navigation, hero buttons, collection cards, wishlist, rallies, product cards, and Join the Crew area have clickable overlays.
-- Product-card overlays currently route to live collection pages so visitors do not hit missing product URLs before the Printful catalog is connected.
-- Removed unresolved analytics placeholders that caused production-build warnings.
+## Completed
 
-## Still required before accepting real orders
-1. Connect the live Printful/commerce catalog and confirm product handles, variants, prices, and images.
-2. Configure the payment provider/checkout credentials.
-3. Configure shipping, tax, return policy, privacy policy, and terms pages.
-4. Test one complete order in sandbox/test mode, then one low-value live order.
-5. Replace collection-level product links with exact product-detail links after the real catalog is available.
+- Homepage navigation and overlapping-button corrections.
+- Men's Collection and Shop Tees, Tanks & Hoodies links.
+- Working collection, product-detail, cart, return-policy, and checkout-success routes.
+- Rewards removed for launch.
+- Shopify storefront code removed.
+- Printful live catalog adapter added.
+- Tamper-resistant server-validated cart added.
+- Stripe-hosted Checkout added with payment and shipping collection.
+- Verified Stripe webhook added to send paid orders to Printful automatically.
+- Free shipping at $100 and $5.99 standard shipping below $100 are the current defaults.
 
-Do not run automatic dependency upgrades or `npm audit fix --force` immediately before launch. Test dependency changes separately.
+## Account connection still required
+
+1. Add the Printful token and store ID to the live host.
+2. Add the Stripe secret key to the live host.
+3. Create the Stripe webhook and add its signing secret to the live host.
+4. Confirm Printful products have mockups, variants, retail prices, and are fully synced.
+5. Complete one Stripe test order and one low-value live order.
+
+Do not accept live orders until the end-to-end test reaches Printful successfully.

@@ -1,187 +1,70 @@
-# Wet Kitty E-Commerce Platform
+# Wet Kitty Coastal Storefront
 
-Premium coastal + biker lifestyle apparel e-commerce storefront powered by Shopify and Printful.
+Premium coastal and biker lifestyle apparel storefront. Printful supplies the live catalog and fulfills paid orders; Stripe Checkout securely collects payment and shipping information.
 
-## Quick Start
+## Local setup
 
-### 1. Prerequisites
-- Node.js 22.13.0+
-- MySQL/TiDB database
-- Shopify store with Storefront API access
-- Printful account
+Requirements: Node.js 22+, pnpm, a Printful store, and a Stripe account.
 
-### 2. Installation
+1. Copy `.env.example` to `.env.local` and add the private server credentials.
+2. Install dependencies with `pnpm install`.
+3. Run `pnpm dev` and open `http://localhost:3000`.
 
-```bash
-# Install dependencies
-pnpm install
+## Commerce flow
 
-# Create .env.local with your credentials
-# Copy environment variables from references below
+1. The server reads synced products, variants, retail prices, and mockup images from Printful.
+2. Cart contents are stored in a signed token. Prices are always reloaded from Printful on the server.
+3. Checkout creates a Stripe-hosted payment page with the verified prices and shipping charge.
+4. Stripe sends `checkout.session.completed` to `/api/webhooks/stripe`.
+5. The server verifies Stripe's signature and payment status, then submits the order to Printful with `confirm=true`.
 
-# Set up database
-pnpm drizzle-kit generate
-pnpm drizzle-kit migrate
+The browser never receives the Printful token, Stripe secret key, webhook secret, or cart-signing secret.
 
-# Start development server
-pnpm dev
+## Required server settings
+
+```text
+PUBLIC_SITE_URL=https://wetkittycoastal.com
+PRINTFUL_API_TOKEN=...
+PRINTFUL_STORE_ID=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+CART_SIGNING_SECRET=...
 ```
 
-Server runs on http://localhost:3000
+Optional launch settings:
 
-### 3. Build & Deploy
-
-```bash
-# Build for production
-pnpm build
-
-# Start production server
-pnpm start
+```text
+STRIPE_FLAT_SHIPPING_CENTS=599
+STRIPE_FREE_SHIPPING_THRESHOLD_CENTS=10000
+STRIPE_AUTOMATIC_TAX=false
 ```
 
-## Project Structure
+Turn on `STRIPE_AUTOMATIC_TAX` only after Stripe Tax is activated and the required registrations have been configured.
 
-```
-├── client/              # React 19 frontend
-│   ├── src/
-│   │   ├── pages/      # Page components
-│   │   ├── components/ # Reusable UI components
-│   │   ├── contexts/   # React contexts
-│   │   ├── hooks/      # Custom hooks
-│   │   └── index.css   # Global styles
-│   └── index.html
-├── server/              # Express 4 + tRPC backend
-│   ├── _core/          # Framework plumbing
-│   ├── routers/        # tRPC routers
-│   └── db.ts           # Database helpers
-├── drizzle/            # Database schema & migrations
-├── shared/             # Shared types
-├── references/         # Integration guides
-├── package.json
-├── pnpm-lock.yaml      # Dependency lock file
-├── tsconfig.json
-├── vite.config.ts
-└── vitest.config.ts
+## Printful token
+
+Create a private token in Printful's Developer Portal. It needs store-product read access and order read/write access. A store-level token is simplest. If using an account-level token, also set `PRINTFUL_STORE_ID`.
+
+The products must be fully synced in the selected Printful store and must have retail prices and mockup images.
+
+## Stripe webhook
+
+Create a webhook endpoint for:
+
+```text
+https://wetkittycoastal.com/api/webhooks/stripe
 ```
 
-## Features
+Subscribe to `checkout.session.completed` and `checkout.session.async_payment_succeeded`, then save its signing secret as `STRIPE_WEBHOOK_SECRET`.
 
-- **Shopify Integration** - Live product catalog, pricing, inventory
-- **Printful Support** - Print-on-demand with embroidery
-- **User Authentication** - Manus OAuth 2.0
-- **Wishlist & Reviews** - Database-backed user features
-- **Loyalty System** - Points and rewards
-- **Community** - Join the Crew, Beach Rally calendar
-- **Dark/Light Theme** - Full theme support
-- **SEO Optimized** - JSON-LD schema, Open Graph tags
-- **Mobile First** - Responsive design
+## Commands
 
-## Environment Variables
+- `pnpm dev` — development server
+- `pnpm build` — production build
+- `pnpm start` — production server
+- `pnpm check` — TypeScript check
+- `pnpm test` — tests
 
-Create `.env.local` in project root with:
+## Important launch test
 
-```
-DATABASE_URL=mysql://user:password@host:3306/wetkitty
-SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
-SHOPIFY_STOREFRONT_API_ACCESS_TOKEN=your_storefront_token
-VITE_APP_ID=your_manus_app_id
-OAUTH_SERVER_URL=https://api.manus.im
-VITE_OAUTH_PORTAL_URL=https://app.manus.im
-JWT_SECRET=your_random_secret_key_here_min_32_chars
-OWNER_OPEN_ID=your_open_id
-OWNER_NAME=Your Name
-BUILT_IN_FORGE_API_URL=https://api.manus.im
-BUILT_IN_FORGE_API_KEY=your_api_key
-VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
-VITE_FRONTEND_FORGE_API_KEY=your_frontend_api_key
-VITE_ANALYTICS_ENDPOINT=https://analytics.example.com
-VITE_ANALYTICS_WEBSITE_ID=your_website_id
-```
-
-## Database
-
-### Schema
-See `drizzle/schema.ts` for full database schema.
-
-### Migrations
-Migrations are in `drizzle/migrations/`
-
-### Running Migrations
-```bash
-pnpm drizzle-kit generate  # Generate from schema
-pnpm drizzle-kit migrate   # Apply to database
-```
-
-## Testing
-
-```bash
-pnpm test              # Run all tests
-pnpm vitest --watch    # Watch mode
-pnpm check             # TypeScript check
-```
-
-## Scripts
-
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm test` - Run tests
-- `pnpm check` - TypeScript type check
-- `pnpm format` - Format code with Prettier
-
-## Shopify Integration
-
-### Setup
-1. Create Shopify store
-2. Go to Settings → Apps and integrations → Develop apps
-3. Create app with Storefront API access
-4. Generate access token
-5. Add to `.env.local`:
-   - `SHOPIFY_STORE_DOMAIN`
-   - `SHOPIFY_STOREFRONT_API_ACCESS_TOKEN`
-
-### API Routes
-- `commerce.products.list` - Get products with filters
-- `commerce.products.byHandle` - Get single product
-- `commerce.cart.*` - Cart operations
-
-See `references/shopify.md` for details.
-
-## Printful Integration
-
-1. Connect Shopify store in Printful dashboard
-2. Configure embroidery settings
-3. Products marked as "embroidery" support customization
-4. Printful handles fulfillment automatically
-
-## Deployment
-
-### Manus (Recommended)
-1. Create checkpoint in Manus UI
-2. Click Publish button
-3. Configure custom domain
-4. Site goes live automatically
-
-### External Hosting
-Deploy to any Node.js host (Vercel, Railway, Render, etc.):
-
-```bash
-pnpm build
-# Deploy dist/ folder and run: pnpm start
-```
-
-## Support & References
-
-- `references/shopify.md` - Shopify integration guide
-- `references/file-storage.md` - File upload guide
-- `references/llm-integration.md` - AI features
-- `references/manus-oauth.md` - Authentication
-- `references/periodic-updates.md` - Scheduled tasks
-
-## License
-
-MIT
-
----
-
-Built for Wet Kitty - Premium Coastal + Biker Lifestyle Apparel
+Use Stripe test mode first. Complete one full test checkout and confirm that a draft/confirmed order appears in Printful with the correct item, size, address, and retail total. After switching to live Stripe keys and the live webhook secret, place one low-value live order before advertising the store.

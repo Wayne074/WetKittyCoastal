@@ -95,19 +95,18 @@
   "packageManager": "pnpm@11.10.0",
   "pnpm": {
     "overrides": {
-      "tailwindcss\u003enanoid": "3.3.7"
+      "tailwindcss>nanoid": "3.3.7"
     },
     "patchedDependencies": {
       "wouter@3.7.1": "patches/wouter@3.7.1.patch"
     }
   },
   "scripts": {
-    "build": "vite build \u0026\u0026 esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "check": "tsc --noEmit",
-    "db:push": "drizzle-kit generate \u0026\u0026 drizzle-kit migrate",
+    "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
     "format": "prettier --write .",
-    "shopify:probe": "tsx scripts/shopify-probe.runner.ts",
     "start": "NODE_ENV=production node dist/index.js",
     "test": "vitest run"
   },

@@ -2,12 +2,12 @@
  * Commerce router — backend-agnostic tRPC surface for the storefront.
  *
  * The router is intentionally thin: zod validates input, then delegates to the
- * named functions exported from `server/_core/shopify`. If we ever swap
- * commerce backends, only `_core/shopify.ts` + `_core/shopifyNormalize.ts`
- * change — this router stays put.
+ * named functions exported from `server/_core/printful`. Stripe is used only
+ * to create the hosted payment session after the server revalidates the cart.
  */
 
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import {
   addCartLines,
   createCart,
@@ -18,7 +18,8 @@ import {
   listProducts,
   removeCartLines,
   updateCartLines,
-} from "../_core/shopify";
+} from "../_core/printful";
+import { createCheckoutSession } from "../_core/stripe";
 import { publicProcedure, router } from "../_core/trpc";
 
 const cartLineInputSchema = z.object({
@@ -54,7 +55,11 @@ export const commerceRouter = router({
   }),
   collections: router({
     list: publicProcedure
-      .input(z.object({ first: z.number().int().min(1).max(50).optional() }).optional())
+      .input(
+        z
+          .object({ first: z.number().int().min(1).max(50).optional() })
+          .optional()
+      )
       .query(async ({ input }) => {
         return listCollections(input?.first);
       }),
@@ -95,7 +100,9 @@ export const commerceRouter = router({
       .mutation(async ({ input }) => {
         // qty 0 means "remove this line" — split the request so the client
         // never has to call two procedures for a single user gesture.
-        const toRemove = input.lines.filter(l => l.quantity === 0).map(l => l.lineId);
+        const toRemove = input.lines
+          .filter(l => l.quantity === 0)
+          .map(l => l.lineId);
         const toUpdate = input.lines.filter(l => l.quantity > 0);
 
         let cart = null;
@@ -117,6 +124,23 @@ export const commerceRouter = router({
       )
       .mutation(async ({ input }) => {
         return removeCartLines(input.cartId, input.lineIds);
+      }),
+    checkout: publicProcedure
+      .input(
+        z.object({
+          cartId: z.string().min(1),
+          origin: z.string().url(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const cart = await getCart(input.cartId);
+        if (!cart) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Your cart has expired. Please add the items again.",
+          });
+        }
+        return createCheckoutSession(cart, input.origin);
       }),
   }),
 });

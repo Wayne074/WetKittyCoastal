@@ -24,6 +24,7 @@ import FoundingCrew from "./pages/FoundingCrew";
 import Events from "./pages/Events";
 import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
@@ -46,12 +47,27 @@ function Router() {
             <main className="flex-1">
               <Switch>
                 <Route path={"/collections/men"} component={MenCollection} />
-                <Route path={"/collections/women"} component={WomenCollection} />
+                <Route
+                  path={"/collections/women"}
+                  component={WomenCollection}
+                />
                 <Route path={"/collections/hats"} component={HatsCollection} />
-                <Route path={"/collections/hoodies"} component={HoodiesCollection} />
-                <Route path={"/collections/beach"} component={BeachCollection} />
-                <Route path={"/collections/limited-drop"} component={LimitedDropCollection} />
-                <Route path={"/collections/apparel"} component={AllApparelCollection} />
+                <Route
+                  path={"/collections/hoodies"}
+                  component={HoodiesCollection}
+                />
+                <Route
+                  path={"/collections/beach"}
+                  component={BeachCollection}
+                />
+                <Route
+                  path={"/collections/limited-drop"}
+                  component={LimitedDropCollection}
+                />
+                <Route
+                  path={"/collections/apparel"}
+                  component={AllApparelCollection}
+                />
                 <Route path={"/products/:handle"} component={ProductDetail} />
                 <Route path={"/wishlist"} component={Wishlist} />
                 <Route path={"/community"} component={Community} />
@@ -59,6 +75,7 @@ function Router() {
                 <Route path={"/events"} component={Events} />
                 <Route path={"/cart"} component={CartPage} />
                 <Route path={"/returns"} component={ReturnsPage} />
+                <Route path={"/checkout/success"} component={CheckoutSuccess} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />
               </Switch>
@@ -74,10 +91,7 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        switchable
-      >
+      <ThemeProvider defaultTheme="light" switchable>
         <CartProvider>
           <TooltipProvider>
             <Toaster />

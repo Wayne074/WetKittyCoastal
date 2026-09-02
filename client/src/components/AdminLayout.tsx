@@ -1,23 +1,50 @@
-import { useState } from 'react';
-import { Menu, X, LogOut, BarChart3, Package, Users, Settings, Zap } from 'lucide-react';
-import { useAuth } from '@/_core/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import {
+  Menu,
+  X,
+  LogOut,
+  BarChart3,
+  Package,
+  Users,
+  Settings,
+  Zap,
+} from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
   currentPage: string;
 }
 
-export default function AdminLayout({ children, currentPage }: AdminLayoutProps) {
+export default function AdminLayout({
+  children,
+  currentPage,
+}: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { logout } = useAuth();
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, href: '/admin' },
-    { id: 'orders', label: 'Orders', icon: Package, href: '/admin/orders' },
-    { id: 'products', label: 'Products', icon: Package, href: '/admin/products' },
-    { id: 'customers', label: 'Customers', icon: Users, href: '/admin/customers' },
-    { id: 'settings', label: 'Settings', icon: Settings, href: '/admin/settings' },
+    { id: "dashboard", label: "Dashboard", icon: BarChart3, href: "/admin" },
+    { id: "orders", label: "Orders", icon: Package, href: "/admin/orders" },
+    {
+      id: "products",
+      label: "Products",
+      icon: Package,
+      href: "/admin/products",
+    },
+    {
+      id: "customers",
+      label: "Customers",
+      icon: Users,
+      href: "/admin/customers",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      href: "/admin/settings",
+    },
   ];
 
   return (
@@ -53,11 +80,11 @@ export default function AdminLayout({ children, currentPage }: AdminLayoutProps)
         {/* Sidebar */}
         <aside
           className={`${
-            sidebarOpen ? 'w-64' : 'w-0'
+            sidebarOpen ? "w-64" : "w-0"
           } border-r border-border bg-background transition-all duration-300 overflow-hidden lg:w-64`}
         >
           <nav className="space-y-2 p-4">
-            {navItems.map((item) => {
+            {navItems.map(item => {
               const Icon = item.icon;
               const isActive = currentPage === item.id;
               return (
@@ -66,8 +93,8 @@ export default function AdminLayout({ children, currentPage }: AdminLayoutProps)
                   href={item.href}
                   className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors ${
                     isActive
-                      ? 'bg-teal text-cream'
-                      : 'text-foreground hover:bg-accent'
+                      ? "bg-teal text-cream"
+                      : "text-foreground hover:bg-accent"
                   }`}
                 >
                   <Icon size={18} />
@@ -85,11 +112,11 @@ export default function AdminLayout({ children, currentPage }: AdminLayoutProps)
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">
                 <div className="h-2 w-2 rounded-full bg-green-500" />
-                <span>Shopify Connected</span>
+                <span>Stripe Payments</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <div className="h-2 w-2 rounded-full bg-green-500" />
-                <span>Printful Connected</span>
+                <span>Printful Fulfillment</span>
               </div>
             </div>
           </div>
@@ -97,9 +124,7 @@ export default function AdminLayout({ children, currentPage }: AdminLayoutProps)
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-4 sm:p-6 lg:p-8">
-            {children}
-          </div>
+          <div className="p-4 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
     </div>
