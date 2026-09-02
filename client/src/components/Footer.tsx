@@ -102,7 +102,6 @@ export default function Footer() {
               {[
                 { label: "Join the Crew", href: "/community" },
                 { label: "Beach Rally Events", href: "/events" },
-                { label: "Loyalty Rewards", href: "/rewards" },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -127,17 +126,11 @@ export default function Footer() {
               Support
             </h4>
             <nav className="flex flex-col gap-3">
-              {["Shipping & Returns", "FAQ", "Privacy Policy", "Terms of Service", "Contact"].map((label) => (
-                <a
-                  key={label}
-                  href="#"
-                  className="text-sm transition-colors duration-200"
-                  style={{ color: "rgba(255, 250, 240, 0.6)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "var(--sea)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255, 250, 240, 0.6)")}
-                >
-                  {label}
-                </a>
+              <Link href="/returns" className="text-sm transition-colors duration-200" style={{ color: "rgba(255, 250, 240, 0.6)" }}>
+                Shipping &amp; Returns
+              </Link>
+              {["FAQ", "Privacy Policy", "Terms of Service", "Contact"].map((label) => (
+                <span key={label} className="text-sm" style={{ color: "rgba(255, 250, 240, 0.4)" }}>{label}</span>
               ))}
             </nav>
           </div>

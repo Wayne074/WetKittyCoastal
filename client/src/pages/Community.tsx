@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Camera, Star, Gift, Zap, Crown } from "lucide-react";
+import { Users, Camera, Gift } from "lucide-react";
 import { toast } from "sonner";
 import { WaveSeparator } from "@/components/brand";
 import { trpc } from "@/lib/trpc";
@@ -100,7 +100,6 @@ export default function Community() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: Gift, title: "Exclusive Drops", desc: "Early access to limited edition releases before anyone else." },
-              { icon: Star, title: "Loyalty Rewards", desc: "Earn points on every purchase and unlock tier-based perks." },
               { icon: Camera, title: "Community Gallery", desc: "Share your lifestyle photos and get featured on our site." },
               { icon: Users, title: "Rally Invites", desc: "VIP access to Beach Rally events and meetups." },
             ].map(({ icon: Icon, title, desc }) => (
@@ -159,72 +158,6 @@ export default function Community() {
         </div>
       </section>
 
-      <WaveSeparator />
-
-      {/* ─── LOYALTY TIERS ─── */}
-      <section className="section">
-        <div className="container">
-          <div className="text-center mb-14">
-            <span className="eyebrow mb-3 block">Rewards</span>
-            <h2 className="display-md text-foreground">Loyalty Tiers</h2>
-            <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto">
-              Earn points on every purchase and level up for better perks.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
-            {[
-              {
-                name: "Bronze",
-                icon: Zap,
-                points: "0–499 pts",
-                color: "#cd7f32",
-                perks: ["5% off next order", "Early access to sales", "Birthday reward"],
-              },
-              {
-                name: "Silver",
-                icon: Star,
-                points: "500–1,499 pts",
-                color: "#a0a0a0",
-                perks: ["10% off next order", "Free shipping", "Exclusive drops access", "Double points days"],
-              },
-              {
-                name: "Gold",
-                icon: Crown,
-                points: "1,500+ pts",
-                color: "var(--sand)",
-                perks: ["15% off next order", "Free shipping always", "VIP event access", "Custom embroidery credit", "Personal stylist"],
-              },
-            ].map((tier) => (
-              <div
-                key={tier.name}
-                className="rounded-2xl p-7 border border-border/50 bg-card text-center"
-              >
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
-                  style={{ background: `${tier.color}15` }}
-                >
-                  <tier.icon className="w-5 h-5" style={{ color: tier.color }} />
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-1" style={{ fontFamily: "var(--font-display)" }}>
-                  {tier.name}
-                </h3>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-5">
-                  {tier.points}
-                </p>
-                <ul className="space-y-2.5 text-left">
-                  {tier.perks.map((perk) => (
-                    <li key={perk} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                      <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: tier.color }} />
-                      {perk}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

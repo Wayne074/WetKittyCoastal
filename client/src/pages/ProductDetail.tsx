@@ -281,7 +281,7 @@ export default function ProductDetail() {
               {[
                 { icon: Truck, text: "Free shipping on orders over $100" },
                 { icon: Shield, text: "Premium quality guaranteed" },
-                { icon: RotateCcw, text: "30-day hassle-free returns" },
+                { icon: RotateCcw, text: "30-day claims for damaged or misprinted items" },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3 text-xs text-muted-foreground">
                   <Icon className="w-4 h-4 flex-shrink-0" style={{ color: "var(--teal)" }} />

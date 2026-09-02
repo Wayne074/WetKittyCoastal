@@ -22,6 +22,8 @@ import Wishlist from "./pages/Wishlist";
 import Community from "./pages/Community";
 import FoundingCrew from "./pages/FoundingCrew";
 import Events from "./pages/Events";
+import CartPage from "./pages/Cart";
+import ReturnsPage from "./pages/Returns";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
@@ -55,6 +57,8 @@ function Router() {
                 <Route path={"/community"} component={Community} />
                 <Route path={"/founding-crew"} component={FoundingCrew} />
                 <Route path={"/events"} component={Events} />
+                <Route path={"/cart"} component={CartPage} />
+                <Route path={"/returns"} component={ReturnsPage} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />
               </Switch>
