@@ -18,7 +18,7 @@ export default function Home() {
     <main className="wk-approved-home" aria-label="Wet Kitty Coastal homepage">
       <img
         className="wk-approved-art"
-        src="/home-assets/wet-kitty-homepage-final.png"
+        src="/home-assets/wet-kitty-homepage-final.webp"
         alt="Wet Kitty Coastal — premium beach and biker lifestyle apparel"
       />
 
