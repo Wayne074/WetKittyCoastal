@@ -18,7 +18,7 @@ export default function Home() {
     <main className="wk-approved-home" aria-label="Wet Kitty Coastal homepage">
       <img
         className="wk-approved-art"
-        src="/home-assets/wet-kitty-homepage-mens-collection.png"
+        src="/home-assets/wet-kitty-homepage-final.png"
         alt="Wet Kitty Coastal — premium beach and biker lifestyle apparel"
       />
 
@@ -59,9 +59,9 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Replace the two baked-in hero buttons with one clear launch action. */}
-      <div className="wk-hero-button-cover" aria-hidden="true" />
-      <Link href="/collections/apparel" className="wk-limited-drop-button">Shop Tees, Tanks &amp; Hoodies</Link>
+      {/* Make the two hero buttons in the approved artwork functional. */}
+      <Hotspot href="/collections/men" label="Shop men's collection" x={32.8} y={25.1} w={16.0} h={2.75} />
+      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={50.9} y={25.1} w={16.7} h={2.75} />
 
       {/* Collection cards */}
       <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
@@ -163,9 +163,6 @@ export default function Home() {
         .wk-cart-count { position: absolute; top: -8%; right: 3%; min-width: 13px; height: 13px; display: grid; place-items: center; padding: 0 3px; border-radius: 999px; color: #071417; background: #49d3cf; font: 800 8px/1 Arial, sans-serif; }
         .wk-eyebrow-fix { position: absolute; z-index: 3; left: 28.7%; top: 8.02%; width: 43.8%; height: 2.45%; display: flex; gap: .72em; align-items: center; justify-content: center; box-sizing: border-box; padding: 0 .8%; line-height: 1; color: #f2eadf; font: 600 clamp(7px, 1.05vw, 17px)/1 Arial, sans-serif; letter-spacing: .19em; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,.8); background: rgba(8,18,19,.92); }
         .wk-eyebrow-premium { color: #33c3c1; }
-        .wk-hero-button-cover { position: absolute; z-index: 5; left: 29.0%; top: 24.45%; width: 42.0%; height: 3.35%; border-radius: 7px; background: rgba(7,18,20,.88); backdrop-filter: blur(8px); }
-        .wk-limited-drop-button { position: absolute; z-index: 6; left: 35.2%; top: 24.82%; width: 29.6%; height: 2.55%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1.5px solid rgba(255,255,255,.92); border-radius: 4px; background: rgba(6,18,20,.64); color: #fffaf0; text-decoration: none; white-space: nowrap; font: 800 clamp(6px, .82vw, 14px)/1 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.24); }
-        .wk-limited-drop-button:hover { color: #071417; background: #49d3cf; border-color: #49d3cf; }
         .wk-panel-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.58); line-height: 1.45; }
         .wk-side-panel { position: absolute; top: 0; right: 0; width: min(390px, 88vw); height: 100%; overflow-y: auto; padding: 76px 28px 32px; color: #f7f0e5; background: #071417; box-shadow: -12px 0 34px rgba(0,0,0,.4); }
         .wk-side-panel h2 { margin: 0 0 24px; font: 700 30px/1.15 Georgia, serif; }
@@ -176,7 +173,7 @@ export default function Home() {
         .wk-cart-lines { margin: 18px 0; border-top: 1px solid rgba(255,255,255,.12); }
         .wk-cart-line { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.12); color: #f7f0e5; font-size: 14px; }
         .wk-checkout { width: 100%; margin-top: 18px; padding: 15px 18px; border: 0; border-radius: 8px; background: #37bbb9; color: #061416; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
-        @media (max-width: 700px) { .wk-eyebrow-fix { font-size: 6px; letter-spacing: .12em; } .wk-top-nav a { font-size: 4.2px; padding: 0 .15vw; } .wk-limited-drop-button { font-size: 5.2px; letter-spacing: .1em; } }
+        @media (max-width: 700px) { .wk-eyebrow-fix { font-size: 6px; letter-spacing: .12em; } .wk-top-nav a { font-size: 4.2px; padding: 0 .15vw; } }
       `}</style>
     </main>
   );
