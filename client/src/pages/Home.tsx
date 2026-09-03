@@ -60,7 +60,7 @@ export default function Home() {
       </div>
 
       {/* Make the two hero buttons in the approved artwork functional. */}
-      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={50.9} y={25.1} w={16.7} h={2.75} />
+      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.6} w={20.5} h={2.75} />
 
       {/* Collection cards */}
       <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
