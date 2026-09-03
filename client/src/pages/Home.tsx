@@ -59,26 +59,41 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Make the two hero buttons in the approved artwork functional. */}
-      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.6} w={20.5} h={2.75} />
+      {/* Make the single hero button in the approved artwork functional. */}
+      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.2} w={20.5} h={2.75} />
 
       {/* Collection cards */}
-      <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
-      <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={33.8} w={18.7} h={13.8} />
-      <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={33.8} w={18.7} h={13.8} />
-      <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={33.8} w={18.7} h={13.8} />
-      <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={33.8} w={19.0} h={13.8} />
+      <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={34.8} w={18.7} h={14.1} />
+      <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={34.8} w={18.7} h={14.1} />
+      <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={34.8} w={18.7} h={14.1} />
+      <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={34.8} w={18.7} h={14.1} />
+      <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={34.8} w={19.0} h={14.1} />
 
       {/* Best sellers */}
-      <Hotspot href="/collections/men" label="Ride the Tide Tee" x={1.2} y={54.7} w={15.7} h={15.5} />
-      <Hotspot href="/collections/women" label="Wave Rider Tank" x={17.5} y={54.7} w={15.7} h={15.5} />
-      <Hotspot href="/collections/men" label="Salty Soul Tee" x={33.8} y={54.7} w={15.7} h={15.5} />
-      <Hotspot href="/collections/women" label="Good Times Crop" x={50.2} y={54.7} w={15.7} h={15.5} />
-      <Hotspot href="/collections/hoodies" label="Tide Breaker Hoodie" x={66.5} y={54.7} w={15.7} h={15.5} />
-      <Hotspot href="/collections/women" label="Yacht Club Tank" x={82.8} y={54.7} w={16.0} h={15.5} />
+      <Hotspot href="/collections/men" label="Ride the Tide Tee" x={1.2} y={56.4} w={15.7} h={16.7} />
+      <Hotspot href="/collections/women" label="Wave Rider Tank" x={17.5} y={56.4} w={15.7} h={16.7} />
+      <Hotspot href="/collections/men" label="Salty Soul Tee" x={33.8} y={56.4} w={15.7} h={16.7} />
+      <Hotspot href="/collections/women" label="Good Times Crop" x={50.2} y={56.4} w={15.7} h={16.7} />
+      <Hotspot href="/collections/hoodies" label="Tide Breaker Hoodie" x={66.5} y={56.4} w={15.7} h={16.7} />
+      <Hotspot href="/collections/women" label="Yacht Club Tank" x={82.8} y={56.4} w={16.0} h={16.7} />
 
       {/* Newsletter remains routed to the working community signup for now. */}
       <Hotspot href="/community" label="Join the Crew" x={45.0} y={84.4} w={31.0} h={3.4} />
+
+      {/* Working footer links from the approved artwork. */}
+      <Hotspot href="/collections/men" label="Footer: Men" x={29.8} y={93.4} w={7.2} h={1.15} />
+      <Hotspot href="/collections/women" label="Footer: Women" x={29.8} y={94.45} w={7.2} h={1.15} />
+      <Hotspot href="/collections/apparel" label="Footer: Collections" x={29.8} y={95.5} w={9.5} h={1.15} />
+      <Hotspot href="/collections/beach" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
+      <Hotspot href="/events" label="Footer: Rallies" x={29.8} y={97.6} w={7.2} h={1.15} />
+      <Hotspot href="/collections/hats" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
+      <Hotspot href="/community" label="Footer: About Us" x={44.2} y={93.4} w={9.2} h={1.15} />
+      <Hotspot href="/community" label="Footer: Our Story" x={44.2} y={94.45} w={9.2} h={1.15} />
+      <Hotspot href="/events" label="Footer: Events" x={44.2} y={95.5} w={7.2} h={1.15} />
+      <Hotspot href="/community" label="Footer: Community" x={44.2} y={96.55} w={10.2} h={1.15} />
+      <Hotspot href="/community" label="Footer: Contact" x={44.2} y={98.65} w={8.0} h={1.15} />
+      <Hotspot href="/returns" label="Footer: Shipping" x={58.8} y={94.45} w={8.2} h={1.15} />
+      <Hotspot href="/returns" label="Footer: Returns" x={58.8} y={95.5} w={8.2} h={1.15} />
 
       {menuOpen && (
         <div className="wk-panel-backdrop" role="presentation" onClick={() => setMenuOpen(false)}>
