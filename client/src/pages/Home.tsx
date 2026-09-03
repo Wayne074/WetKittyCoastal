@@ -18,7 +18,7 @@ export default function Home() {
     <main className="wk-approved-home" aria-label="Wet Kitty Coastal homepage">
       <img
         className="wk-approved-art"
-        src="/home-assets/wet-kitty-homepage.png"
+        src="/home-assets/wet-kitty-homepage-mens-collection.png"
         alt="Wet Kitty Coastal — premium beach and biker lifestyle apparel"
       />
 
@@ -66,7 +66,6 @@ export default function Home() {
       {/* Collection cards */}
       <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={33.8} w={18.7} h={13.8} />
       <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={33.8} w={18.7} h={13.8} />
-      <div className="wk-men-collection-label" aria-hidden="true">Men&apos;s Collection</div>
       <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={33.8} w={18.7} h={13.8} />
       <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={33.8} w={18.7} h={13.8} />
       <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={33.8} w={19.0} h={13.8} />
@@ -167,7 +166,6 @@ export default function Home() {
         .wk-hero-button-cover { position: absolute; z-index: 5; left: 29.0%; top: 24.45%; width: 42.0%; height: 3.35%; border-radius: 7px; background: rgba(7,18,20,.88); backdrop-filter: blur(8px); }
         .wk-limited-drop-button { position: absolute; z-index: 6; left: 35.2%; top: 24.82%; width: 29.6%; height: 2.55%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; border: 1.5px solid rgba(255,255,255,.92); border-radius: 4px; background: rgba(6,18,20,.64); color: #fffaf0; text-decoration: none; white-space: nowrap; font: 800 clamp(6px, .82vw, 14px)/1 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; line-height: 1; box-shadow: 0 8px 22px rgba(0,0,0,.24); }
         .wk-limited-drop-button:hover { color: #071417; background: #49d3cf; border-color: #49d3cf; }
-        .wk-men-collection-label { position: absolute; z-index: 5; left: 21.8%; top: 42.45%; width: 16.5%; height: 2.45%; display: flex; align-items: center; justify-content: center; pointer-events: none; color: #fffaf0; background: linear-gradient(90deg, transparent 0%, rgba(7,18,20,.92) 13%, rgba(7,18,20,.92) 87%, transparent 100%); text-shadow: 0 2px 4px rgba(0,0,0,.9); font: italic 700 clamp(8px, 1.45vw, 24px)/1 Georgia, serif; letter-spacing: .01em; }
         .wk-panel-backdrop { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.58); line-height: 1.45; }
         .wk-side-panel { position: absolute; top: 0; right: 0; width: min(390px, 88vw); height: 100%; overflow-y: auto; padding: 76px 28px 32px; color: #f7f0e5; background: #071417; box-shadow: -12px 0 34px rgba(0,0,0,.4); }
         .wk-side-panel h2 { margin: 0 0 24px; font: 700 30px/1.15 Georgia, serif; }

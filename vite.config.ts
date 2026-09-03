@@ -178,6 +178,7 @@ export default defineConfig({
       ".manusvm.computer",
       "localhost",
       "127.0.0.1",
+      "terminal.local",
     ],
     fs: {
       strict: true,

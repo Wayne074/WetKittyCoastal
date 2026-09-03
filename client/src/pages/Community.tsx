@@ -131,7 +131,7 @@ export default function Community() {
             <span className="eyebrow mb-3 block">Gallery</span>
             <h2 className="display-md text-foreground">The Crew in Action</h2>
             <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto">
-              Share your Wet Kitty lifestyle photos and get featured. Tag us @wetkittyapparel.
+              Share your Wet Kitty lifestyle photos and get featured. Tag us @wetkittycoastal.
             </p>
           </div>
 
