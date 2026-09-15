@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Moon, Sun, Heart, ShoppingBag } from "lucide-react";
+import { Menu, X, Moon, Sun, ShoppingBag } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
 
@@ -53,8 +53,7 @@ export default function Header() {
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
                 style={{
-                  background: "linear-gradient(135deg, var(--teal) 0%, var(--sea) 100%)",
-                }}
+                  background: "linear-gradient(135deg, var(--teal) 0%, var(--sea) 100%)"}}
               >
                 <span className="text-white font-bold text-sm tracking-wide" style={{ fontFamily: "var(--font-display)" }}>
                   WK
@@ -115,11 +114,6 @@ export default function Header() {
                   <Moon className="w-[18px] h-[18px] text-foreground/60" />
                 )}
               </button>
-
-              {/* Wishlist */}
-              <Link href="/wishlist" className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative">
-                <Heart className="w-[18px] h-[18px] text-foreground/60" />
-              </Link>
 
               {/* Cart */}
               <Link href="/cart" className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative">

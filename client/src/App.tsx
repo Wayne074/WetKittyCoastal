@@ -18,10 +18,8 @@ import {
   AllApparelCollection,
 } from "./pages/Collections";
 import ProductDetail from "./pages/ProductDetail";
-import Wishlist from "./pages/Wishlist";
 import Community from "./pages/Community";
 import FoundingCrew from "./pages/FoundingCrew";
-import Events from "./pages/Events";
 import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -30,6 +28,13 @@ import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSettings from "./pages/admin/Settings";
+
+function RedirectHome() {
+  if (typeof window !== "undefined") {
+    window.location.replace("/");
+  }
+  return null;
+}
 
 function Router() {
   return (
@@ -69,10 +74,10 @@ function Router() {
                   component={AllApparelCollection}
                 />
                 <Route path={"/products/:handle"} component={ProductDetail} />
-                <Route path={"/wishlist"} component={Wishlist} />
+                <Route path={"/wishlist"} component={RedirectHome} />
                 <Route path={"/community"} component={Community} />
                 <Route path={"/founding-crew"} component={FoundingCrew} />
-                <Route path={"/events"} component={Events} />
+                <Route path={"/events"} component={RedirectHome} />
                 <Route path={"/cart"} component={CartPage} />
                 <Route path={"/returns"} component={ReturnsPage} />
                 <Route path={"/checkout/success"} component={CheckoutSuccess} />

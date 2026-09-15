@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Heart, Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 /**
@@ -10,7 +10,6 @@ import { useCart } from "@/contexts/CartContext";
  */
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [wishlistOpen, setWishlistOpen] = useState(false);
   const { cart, itemCount, loading, proceedToCheckout } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -43,9 +42,6 @@ export default function Home() {
       </nav>
 
       <div className="wk-header-actions" aria-label="Store actions">
-        <button type="button" aria-label="Open wishlist" onClick={() => setWishlistOpen(true)}>
-          <Heart aria-hidden="true" />
-        </button>
         <button
           type="button"
           aria-label={`Open shopping cart${itemCount ? `, ${itemCount} items` : ""}`}
@@ -85,11 +81,11 @@ export default function Home() {
       <Hotspot href="/collections/women" label="Footer: Women" x={29.8} y={94.45} w={7.2} h={1.15} />
       <Hotspot href="/collections/apparel" label="Footer: Collections" x={29.8} y={95.5} w={9.5} h={1.15} />
       <Hotspot href="/collections/beach" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
-      <Hotspot href="/events" label="Footer: Rallies" x={29.8} y={97.6} w={7.2} h={1.15} />
+      <Hotspot href="/founding-crew" label="Footer: Founding Crew" x={29.8} y={97.6} w={7.2} h={1.15} />
       <Hotspot href="/collections/hats" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
       <Hotspot href="/community" label="Footer: About Us" x={44.2} y={93.4} w={9.2} h={1.15} />
       <Hotspot href="/community" label="Footer: Our Story" x={44.2} y={94.45} w={9.2} h={1.15} />
-      <Hotspot href="/events" label="Footer: Events" x={44.2} y={95.5} w={7.2} h={1.15} />
+      <Hotspot href="/founding-crew" label="Footer: Founding Crew" x={44.2} y={95.5} w={7.2} h={1.15} />
       <Hotspot href="/community" label="Footer: Community" x={44.2} y={96.55} w={10.2} h={1.15} />
       <Hotspot href="/community" label="Footer: Contact" x={44.2} y={98.65} w={8.0} h={1.15} />
       <Hotspot href="/returns" label="Footer: Shipping" x={58.8} y={94.45} w={8.2} h={1.15} />
@@ -107,24 +103,10 @@ export default function Home() {
             <PanelLink href="/collections/limited-drop" onClick={() => setMenuOpen(false)}>Limited Drops</PanelLink>
             <PanelLink href="/founding-crew" onClick={() => setMenuOpen(false)}>Founding Crew</PanelLink>
             <PanelLink href="/community" onClick={() => setMenuOpen(false)}>About / Join the Crew</PanelLink>
-            <PanelLink href="/wishlist" onClick={() => setMenuOpen(false)}>Wishlist</PanelLink>
           </aside>
         </div>
       )}
 
-
-      {wishlistOpen && (
-        <div className="wk-panel-backdrop" role="presentation" onClick={() => setWishlistOpen(false)}>
-          <aside className="wk-side-panel" aria-label="Wishlist" onClick={event => event.stopPropagation()}>
-            <button className="wk-close" onClick={() => setWishlistOpen(false)} aria-label="Close wishlist"><X /></button>
-            <h2>Your Wishlist</h2>
-            <p>Your saved Wet Kitty gear will appear here. Wishlist accounts are coming with the full store launch.</p>
-            <PanelLink href="/collections/limited-drop" onClick={() => setWishlistOpen(false)}>View Limited Drops</PanelLink>
-            <PanelLink href="/collections/men" onClick={() => setWishlistOpen(false)}>Shop Men&apos;s Collection</PanelLink>
-            <PanelLink href="/collections/women" onClick={() => setWishlistOpen(false)}>Shop Low Tide</PanelLink>
-          </aside>
-        </div>
-      )}
 
       {cartOpen && (
         <div className="wk-panel-backdrop" role="presentation" onClick={() => setCartOpen(false)}>

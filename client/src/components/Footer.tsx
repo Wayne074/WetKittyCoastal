@@ -101,7 +101,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3">
               {[
                 { label: "Join the Crew", href: "/community" },
-                { label: "Beach Rally Events", href: "/events" },
+                { label: "Founding Crew", href: "/founding-crew" },
               ].map((item) => (
                 <Link
                   key={item.href}
