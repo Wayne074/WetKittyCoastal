@@ -1,13 +1,18 @@
-import { Link } from "wouter";
-import { BadgeCheck, Crown, Shirt, Vote, Ticket, ArrowRight } from "lucide-react";
+import { ArrowRight, BadgeCheck, Crown, Megaphone, Shirt, Tag, UserRound } from "lucide-react";
+
+const foundingCrewPaymentUrl =
+  import.meta.env.VITE_FOUNDING_CREW_PAYMENT_URL ||
+  // Swap this test link for the live Founding Crew Payment Link at launch.
+  "https://buy.stripe.com/test_8x24gBgNJg478cl4cBbjW00";
 
 export default function FoundingCrew() {
   const benefits = [
-    { icon: BadgeCheck, title: "Permanent Member Number", text: "One of only 1,500 numbers, permanently tied to your Founding Crew membership." },
-    { icon: Vote, title: "The Right to Vote", text: "Vote on selected future limited-edition designs when Founding Crew ballots are opened." },
+    { icon: BadgeCheck, title: "Numbered Founding Crew Status", text: "Claim one of only 1,500 numbered spots, permanently tied to your Founding Crew membership." },
     { icon: Crown, title: "Early Access", text: "Get first access to selected new drops and Founding Crew announcements." },
-    { icon: Shirt, title: "Exclusive Work Shirt", text: "The opportunity to purchase one premium Founding Crew button-up with patches or embroidery." },
-    { icon: Ticket, title: "Future Event Perks", text: "Founding Crew benefits at participating Wet Kitty events as the brand grows." },
+    { icon: Tag, title: "Founding Crew Discount", text: "Enjoy a special discount on selected Wet Kitty drops as the brand grows." },
+    { icon: Megaphone, title: "Show Merch First Dibs", text: "Be first in line for limited show merch and other small-batch releases." },
+    { icon: UserRound, title: "Name on the Wall", text: "Put your name or nickname on the Founding Crew Wall as part of the original 1,500." },
+    { icon: Shirt, title: "Work Shirt Opportunity", text: "Get the opportunity to purchase a premium Founding Crew button-up with patches or embroidery." },
   ];
 
   return (
@@ -35,13 +40,18 @@ export default function FoundingCrew() {
         </div>
 
         <div className="mt-14 rounded-3xl bg-[#0b1e22] p-8 text-white md:p-12">
-          <h2 className="font-serif text-3xl font-bold uppercase md:text-5xl">Membership applications are coming soon.</h2>
+          <h2 className="font-serif text-3xl font-bold uppercase md:text-5xl">Join the first 1,500.</h2>
           <p className="mt-5 max-w-3xl leading-8 text-white/70">
-            Applications will ask for the name or nickname you want displayed on the Founding Crew Wall, your email, shirt size, city and state, and optionally why you want to join. Membership will be limited to 1,500 total members.
+            Join the Wet Kitty Founding Crew for $147 and claim your numbered status, early access, Founding Crew discount, show merch first dibs, and a place on the Founding Crew Wall. Membership is capped at 1,500 total members.
           </p>
-          <Link href="/community" className="mt-8 inline-flex items-center gap-2 rounded bg-[#3ec9c5] px-6 py-4 font-extrabold uppercase tracking-wider text-[#071417]">
-            Join the email list <ArrowRight className="h-5 w-5" />
-          </Link>
+          <a
+            href={foundingCrewPaymentUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 inline-flex items-center gap-2 rounded bg-[#3ec9c5] px-6 py-4 font-extrabold uppercase tracking-wider text-[#071417]"
+          >
+            Join Founding Crew for $147 <ArrowRight className="h-5 w-5" />
+          </a>
         </div>
       </section>
     </div>
