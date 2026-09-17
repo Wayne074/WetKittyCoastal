@@ -10,7 +10,7 @@
 - Printful live catalog adapter added.
 - Tamper-resistant server-validated cart added.
 - Stripe-hosted Checkout added with payment and shipping collection.
-- Founding Crew $147 Payment Link is wired in test mode; swap to the live link at launch.
+- Founding Crew $147 Payment Link is active in live mode.
 - Verified Stripe webhook added to send paid orders to Printful automatically.
 - Free shipping at $100 and $5.99 standard shipping below $100 are the current defaults.
 

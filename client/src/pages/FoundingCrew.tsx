@@ -2,8 +2,7 @@ import { ArrowRight, BadgeCheck, Crown, Megaphone, Shirt, Tag, UserRound } from 
 
 const foundingCrewPaymentUrl =
   import.meta.env.VITE_FOUNDING_CREW_PAYMENT_URL ||
-  // Swap this test link for the live Founding Crew Payment Link at launch.
-  "https://buy.stripe.com/test_8x24gBgNJg478cl4cBbjW00";
+  "https://buy.stripe.com/14AbJ17FYatPh2718OfAc00";
 
 export default function FoundingCrew() {
   const benefits = [
