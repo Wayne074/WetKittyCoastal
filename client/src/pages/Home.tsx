@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { SHOP_OPEN } from "@/const";
 
 /**
  * Approved Wet Kitty homepage artwork with functional navigation overlays.
@@ -15,6 +16,16 @@ export default function Home() {
 
   return (
     <main className="wk-approved-home" aria-label="Wet Kitty Coastal homepage">
+
+      {!SHOP_OPEN && (
+        <div className="wk-open-soon-banner" role="status">
+          <strong>Opening Soon</strong>
+          <span>
+            We&apos;re dialing in the products &amp; graphics — salt, chrome, and good times incoming.
+          </span>
+          <Link href="/founding-crew" className="wk-open-soon-cta">Join Founding Crew</Link>
+        </div>
+      )}
       <img
         className="wk-approved-art"
         src="/home-assets/wet-kitty-homepage-final.webp"
@@ -33,56 +44,75 @@ export default function Home() {
       {/* Functional header overlay. */}
       <nav className="wk-top-nav" aria-label="Main navigation">
         <Link href="/">Home</Link>
-        <Link href="/collections/men">Men</Link>
-        <Link href="/collections/women">Women</Link>
-        <Link href="/collections/beach">Beach</Link>
-        <Link href="/founding-crew">Founding Crew</Link>
-        <Link href="/collections/hats">Accessories</Link>
-        <Link href="/community">About</Link>
+        {SHOP_OPEN ? (
+          <>
+            <Link href="/collections/men">Men</Link>
+            <Link href="/collections/women">Women</Link>
+            <Link href="/collections/beach">Beach</Link>
+            <Link href="/founding-crew">Founding Crew</Link>
+            <Link href="/collections/hats">Accessories</Link>
+            <Link href="/community">About</Link>
+          </>
+        ) : (
+          <>
+            <Link href="/founding-crew">Founding Crew</Link>
+            <Link href="/community">About</Link>
+          </>
+        )}
       </nav>
 
       <div className="wk-header-actions" aria-label="Store actions">
-        <button
-          type="button"
-          aria-label={`Open shopping cart${itemCount ? `, ${itemCount} items` : ""}`}
-          onClick={() => setCartOpen(true)}
-        >
-          <ShoppingBag aria-hidden="true" />
-          {itemCount > 0 && <span className="wk-cart-count">{itemCount}</span>}
-        </button>
+        {SHOP_OPEN && (
+          <button
+            type="button"
+            aria-label={`Open shopping cart${itemCount ? `, ${itemCount} items` : ""}`}
+            onClick={() => setCartOpen(true)}
+          >
+            <ShoppingBag aria-hidden="true" />
+            {itemCount > 0 && <span className="wk-cart-count">{itemCount}</span>}
+          </button>
+        )}
         <button type="button" aria-label="Open navigation menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}>
           <Menu aria-hidden="true" />
         </button>
       </div>
 
-      {/* Make the single hero button in the approved artwork functional. */}
-      <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.2} w={20.5} h={2.75} />
+      {SHOP_OPEN && (
+        <>
+          {/* Make the single hero button in the approved artwork functional. */}
+          <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.2} w={20.5} h={2.75} />
 
-      {/* Collection cards */}
-      <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={34.8} w={18.7} h={14.1} />
-      <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={34.8} w={18.7} h={14.1} />
-      <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={34.8} w={18.7} h={14.1} />
-      <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={34.8} w={18.7} h={14.1} />
-      <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={34.8} w={19.0} h={14.1} />
+          {/* Collection cards */}
+          <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={34.8} w={19.0} h={14.1} />
 
-      {/* Best sellers */}
-      <Hotspot href="/collections/men" label="Ride the Tide Tee" x={1.2} y={56.4} w={15.7} h={16.7} />
-      <Hotspot href="/collections/women" label="Wave Rider Tank" x={17.5} y={56.4} w={15.7} h={16.7} />
-      <Hotspot href="/collections/men" label="Salty Soul Tee" x={33.8} y={56.4} w={15.7} h={16.7} />
-      <Hotspot href="/collections/women" label="Good Times Crop" x={50.2} y={56.4} w={15.7} h={16.7} />
-      <Hotspot href="/collections/hoodies" label="Tide Breaker Hoodie" x={66.5} y={56.4} w={15.7} h={16.7} />
-      <Hotspot href="/collections/women" label="Yacht Club Tank" x={82.8} y={56.4} w={16.0} h={16.7} />
+          {/* Best sellers */}
+          <Hotspot href="/collections/men" label="Ride the Tide Tee" x={1.2} y={56.4} w={15.7} h={16.7} />
+          <Hotspot href="/collections/women" label="Wave Rider Tank" x={17.5} y={56.4} w={15.7} h={16.7} />
+          <Hotspot href="/collections/men" label="Salty Soul Tee" x={33.8} y={56.4} w={15.7} h={16.7} />
+          <Hotspot href="/collections/women" label="Good Times Crop" x={50.2} y={56.4} w={15.7} h={16.7} />
+          <Hotspot href="/collections/hoodies" label="Tide Breaker Hoodie" x={66.5} y={56.4} w={15.7} h={16.7} />
+          <Hotspot href="/collections/women" label="Yacht Club Tank" x={82.8} y={56.4} w={16.0} h={16.7} />
+        </>
+      )}
 
       {/* Newsletter remains routed to the working community signup for now. */}
       <Hotspot href="/community" label="Join the Crew" x={45.0} y={84.4} w={31.0} h={3.4} />
 
       {/* Working footer links from the approved artwork. */}
-      <Hotspot href="/collections/men" label="Footer: Men" x={29.8} y={93.4} w={7.2} h={1.15} />
-      <Hotspot href="/collections/women" label="Footer: Women" x={29.8} y={94.45} w={7.2} h={1.15} />
-      <Hotspot href="/collections/apparel" label="Footer: Collections" x={29.8} y={95.5} w={9.5} h={1.15} />
-      <Hotspot href="/collections/beach" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
+      {SHOP_OPEN && (
+        <>
+          <Hotspot href="/collections/men" label="Footer: Men" x={29.8} y={93.4} w={7.2} h={1.15} />
+          <Hotspot href="/collections/women" label="Footer: Women" x={29.8} y={94.45} w={7.2} h={1.15} />
+          <Hotspot href="/collections/apparel" label="Footer: Collections" x={29.8} y={95.5} w={9.5} h={1.15} />
+          <Hotspot href="/collections/beach" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
+          <Hotspot href="/collections/hats" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
+        </>
+      )}
       <Hotspot href="/founding-crew" label="Footer: Founding Crew" x={29.8} y={97.6} w={7.2} h={1.15} />
-      <Hotspot href="/collections/hats" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
       <Hotspot href="/community" label="Footer: About Us" x={44.2} y={93.4} w={9.2} h={1.15} />
       <Hotspot href="/community" label="Footer: Our Story" x={44.2} y={94.45} w={9.2} h={1.15} />
       <Hotspot href="/founding-crew" label="Footer: Founding Crew" x={44.2} y={95.5} w={7.2} h={1.15} />
@@ -96,19 +126,26 @@ export default function Home() {
           <aside className="wk-side-panel" aria-label="Navigation menu" onClick={event => event.stopPropagation()}>
             <button className="wk-close" onClick={() => setMenuOpen(false)} aria-label="Close menu"><X /></button>
             <h2>Explore Wet Kitty</h2>
-            <PanelLink href="/collections/men" onClick={() => setMenuOpen(false)}>Men</PanelLink>
-            <PanelLink href="/collections/women" onClick={() => setMenuOpen(false)}>Women</PanelLink>
-            <PanelLink href="/collections/beach" onClick={() => setMenuOpen(false)}>Beach</PanelLink>
-            <PanelLink href="/collections/hats" onClick={() => setMenuOpen(false)}>Accessories</PanelLink>
-            <PanelLink href="/collections/limited-drop" onClick={() => setMenuOpen(false)}>Limited Drops</PanelLink>
+            {SHOP_OPEN ? (
+              <>
+                <PanelLink href="/collections/men" onClick={() => setMenuOpen(false)}>Men</PanelLink>
+                <PanelLink href="/collections/women" onClick={() => setMenuOpen(false)}>Women</PanelLink>
+                <PanelLink href="/collections/beach" onClick={() => setMenuOpen(false)}>Beach</PanelLink>
+                <PanelLink href="/collections/hats" onClick={() => setMenuOpen(false)}>Accessories</PanelLink>
+                <PanelLink href="/collections/limited-drop" onClick={() => setMenuOpen(false)}>Limited Drops</PanelLink>
+              </>
+            ) : (
+              <p className="wk-open-soon-note">Shop Opening Soon — products &amp; graphics cooking.</p>
+            )}
             <PanelLink href="/founding-crew" onClick={() => setMenuOpen(false)}>Founding Crew</PanelLink>
             <PanelLink href="/community" onClick={() => setMenuOpen(false)}>About / Join the Crew</PanelLink>
+            <PanelLink href="/" onClick={() => setMenuOpen(false)}>Home</PanelLink>
           </aside>
         </div>
       )}
 
 
-      {cartOpen && (
+      {SHOP_OPEN && cartOpen && (
         <div className="wk-panel-backdrop" role="presentation" onClick={() => setCartOpen(false)}>
           <aside className="wk-side-panel" aria-label="Shopping cart" onClick={event => event.stopPropagation()}>
             <button className="wk-close" onClick={() => setCartOpen(false)} aria-label="Close cart"><X /></button>
@@ -170,6 +207,20 @@ export default function Home() {
         .wk-cart-line { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.12); color: #f7f0e5; font-size: 14px; }
         .wk-checkout { width: 100%; margin-top: 18px; padding: 15px 18px; border: 0; border-radius: 8px; background: #37bbb9; color: #061416; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
         @media (max-width: 700px) { .wk-eyebrow-fix { font-size: 6px; letter-spacing: .12em; } .wk-top-nav a { font-size: 4.2px; padding: 0 .15vw; } }
+
+        .wk-open-soon-banner {
+          position: relative; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+          gap: 10px 18px; padding: 12px 16px; line-height: 1.35; text-align: center;
+          color: #061416; background: linear-gradient(90deg, #37bbb9 0%, #49d3cf 50%, #7ad4cd 100%);
+          font: 600 14px/1.35 Arial, sans-serif;
+        }
+        .wk-open-soon-banner strong { font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+        .wk-open-soon-cta {
+          display: inline-block; padding: 6px 12px; border-radius: 6px; background: #061416; color: #49d3cf;
+          text-decoration: none; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; font-size: 12px;
+        }
+        .wk-open-soon-cta:hover { color: #f7f0e5; }
+        .wk-open-soon-note { margin: 0 0 16px; color: rgba(247,240,229,.72); font-size: 15px; line-height: 1.45; }
       `}</style>
     </main>
   );

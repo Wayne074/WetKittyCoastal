@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Menu, X, Moon, Sun, ShoppingBag } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
+import { SHOP_OPEN } from "@/const";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +28,7 @@ export default function Header() {
   ];
 
   const communityItems = [
+    { label: "Home", href: "/" },
     { label: "Founding Crew", href: "/founding-crew" },
     { label: "About", href: "/community" },
   ];
@@ -37,6 +39,22 @@ export default function Header() {
     <>
       {/* Brand accent bar */}
       <div className="h-[3px] wave-accent" />
+
+      {!SHOP_OPEN && (
+        <div
+          className="text-center px-4 py-2.5 text-sm font-semibold tracking-wide"
+          style={{
+            background: "linear-gradient(90deg, var(--teal) 0%, var(--sea) 100%)",
+            color: "#061416",
+          }}
+          role="status"
+        >
+          Shop Opening Soon — dialing in products &amp; graphics.{" "}
+          <Link href="/founding-crew" className="underline underline-offset-2 font-bold">
+            Founding Crew is live
+          </Link>
+        </div>
+      )}
 
       {/* Header */}
       <header
@@ -71,20 +89,21 @@ export default function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {shopItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-3 py-2 rounded-lg text-[13px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
-                    isActive(item.href)
-                      ? "text-teal bg-teal/5"
-                      : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="w-px h-5 bg-border mx-2" />
+              {SHOP_OPEN &&
+                shopItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-3 py-2 rounded-lg text-[13px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
+                      isActive(item.href)
+                        ? "text-teal bg-teal/5"
+                        : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              {SHOP_OPEN && <div className="w-px h-5 bg-border mx-2" />}
               {communityItems.map((item) => (
                 <Link
                   key={item.href}
@@ -115,18 +134,20 @@ export default function Header() {
                 )}
               </button>
 
-              {/* Cart */}
-              <Link href="/cart" className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative">
-                <ShoppingBag className="w-[18px] h-[18px] text-foreground/60" />
-                {itemCount > 0 && (
-                  <span
-                    className="absolute top-1 right-1 min-w-[16px] h-4 px-1 text-[10px] font-bold rounded-full flex items-center justify-center text-white"
-                    style={{ background: "var(--teal)" }}
-                  >
-                    {itemCount}
-                  </span>
-                )}
-              </Link>
+              {/* Cart — only while shop is open */}
+              {SHOP_OPEN && (
+                <Link href="/cart" className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative">
+                  <ShoppingBag className="w-[18px] h-[18px] text-foreground/60" />
+                  {itemCount > 0 && (
+                    <span
+                      className="absolute top-1 right-1 min-w-[16px] h-4 px-1 text-[10px] font-bold rounded-full flex items-center justify-center text-white"
+                      style={{ background: "var(--teal)" }}
+                    >
+                      {itemCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* Mobile Menu Toggle */}
               <button
@@ -149,22 +170,26 @@ export default function Header() {
         >
           <nav className="border-t border-border bg-card/95 backdrop-blur-md">
             <div className="container py-4 space-y-1">
-              <p className="eyebrow px-4 py-2 text-muted-foreground">Shop</p>
-              {shopItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    isActive(item.href)
-                      ? "bg-teal/10 text-teal"
-                      : "text-foreground hover:bg-muted/50"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="divider my-3" />
+              {SHOP_OPEN && (
+                <>
+                  <p className="eyebrow px-4 py-2 text-muted-foreground">Shop</p>
+                  {shopItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`block px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                        isActive(item.href)
+                          ? "bg-teal/10 text-teal"
+                          : "text-foreground hover:bg-muted/50"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div className="divider my-3" />
+                </>
+              )}
               <p className="eyebrow px-4 py-2 text-muted-foreground">Community</p>
               {communityItems.map((item) => (
                 <Link

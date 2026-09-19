@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Instagram } from "lucide-react";
+import { SHOP_OPEN } from "@/const";
 
 export default function Footer() {
   return (
@@ -59,7 +60,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Shop Links */}
+          {/* Shop Links — hidden while soft-closed */}
+          {SHOP_OPEN && (
           <div className="md:col-span-2">
             <h4
               className="text-xs font-bold uppercase tracking-[0.2em] mb-5"
@@ -89,6 +91,7 @@ export default function Footer() {
               ))}
             </nav>
           </div>
+          )}
 
           {/* Community Links */}
           <div className="md:col-span-3">
