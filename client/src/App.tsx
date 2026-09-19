@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -23,17 +24,30 @@ import FoundingCrew from "./pages/FoundingCrew";
 import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import OpenSoon from "./pages/OpenSoon";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSettings from "./pages/admin/Settings";
+import { SHOP_OPEN } from "./const";
 
 function RedirectHome() {
   if (typeof window !== "undefined") {
     window.location.replace("/");
   }
   return null;
+}
+
+function ShopRoute({
+  open: Open,
+  closed: Closed = OpenSoon,
+}: {
+  open: ComponentType;
+  closed?: ComponentType;
+}) {
+  const Component = SHOP_OPEN ? Open : Closed;
+  return <Component />;
 }
 
 function Router() {
@@ -51,34 +65,37 @@ function Router() {
             <Header />
             <main className="flex-1">
               <Switch>
-                <Route path={"/collections/men"} component={MenCollection} />
-                <Route
-                  path={"/collections/women"}
-                  component={WomenCollection}
-                />
-                <Route path={"/collections/hats"} component={HatsCollection} />
-                <Route
-                  path={"/collections/hoodies"}
-                  component={HoodiesCollection}
-                />
-                <Route
-                  path={"/collections/beach"}
-                  component={BeachCollection}
-                />
-                <Route
-                  path={"/collections/limited-drop"}
-                  component={LimitedDropCollection}
-                />
-                <Route
-                  path={"/collections/apparel"}
-                  component={AllApparelCollection}
-                />
-                <Route path={"/products/:handle"} component={ProductDetail} />
+                <Route path={"/collections/men"}>
+                  {() => <ShopRoute open={MenCollection} />}
+                </Route>
+                <Route path={"/collections/women"}>
+                  {() => <ShopRoute open={WomenCollection} />}
+                </Route>
+                <Route path={"/collections/hats"}>
+                  {() => <ShopRoute open={HatsCollection} />}
+                </Route>
+                <Route path={"/collections/hoodies"}>
+                  {() => <ShopRoute open={HoodiesCollection} />}
+                </Route>
+                <Route path={"/collections/beach"}>
+                  {() => <ShopRoute open={BeachCollection} />}
+                </Route>
+                <Route path={"/collections/limited-drop"}>
+                  {() => <ShopRoute open={LimitedDropCollection} />}
+                </Route>
+                <Route path={"/collections/apparel"}>
+                  {() => <ShopRoute open={AllApparelCollection} />}
+                </Route>
+                <Route path={"/products/:handle"}>
+                  {() => <ShopRoute open={ProductDetail} />}
+                </Route>
                 <Route path={"/wishlist"} component={RedirectHome} />
                 <Route path={"/community"} component={Community} />
                 <Route path={"/founding-crew"} component={FoundingCrew} />
                 <Route path={"/events"} component={RedirectHome} />
-                <Route path={"/cart"} component={CartPage} />
+                <Route path={"/cart"}>
+                  {() => <ShopRoute open={CartPage} />}
+                </Route>
                 <Route path={"/returns"} component={ReturnsPage} />
                 <Route path={"/checkout/success"} component={CheckoutSuccess} />
                 <Route path={"/404"} component={NotFound} />
