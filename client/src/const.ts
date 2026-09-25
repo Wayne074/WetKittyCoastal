@@ -5,7 +5,22 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
  * Flip to `true` when products & graphics are ready — Printful data stays intact.
  * Founding Crew (`/founding-crew`) is independent and stays live either way.
  */
-export const SHOP_OPEN = true;
+const SHOP_PUBLIC = false;
+
+// Private preview: visiting any page with ?preview=wkcrew26 unlocks the full shop
+// for that browser tab session (for QA while the public site shows Coming Soon).
+function previewUnlocked(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get("preview") === "wkcrew26") sessionStorage.setItem("wk-preview", "1");
+    return sessionStorage.getItem("wk-preview") === "1";
+  } catch {
+    return false;
+  }
+}
+
+export const SHOP_OPEN = SHOP_PUBLIC || previewUnlocked();
 
 // Generate login URL at runtime so redirect URI reflects the current origin.
 export const getLoginUrl = () => {
