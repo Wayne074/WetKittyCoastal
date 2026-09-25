@@ -243,15 +243,33 @@ function mockupFromVariant(variant: SyncVariant): Image | null {
   return url ? { url, altText: variant.name || null } : null;
 }
 
+/**
+ * Printful products whose generated mockups show only the blank front of the
+ * garment (the design is printed on the back). For these we lead with the
+ * real print artwork from Printful so shoppers see the design first.
+ */
+const ARTWORK_FIRST_PRODUCTS = new Set([
+  "475046079", // Sky High Club
+  "475046373", // Race Club
+  "475046677", // Race Club Civic
+  "475056771", // Down Low Club
+  "475057564", // Wave Bike Tee
+  "475065897", // Salty Soul Wild Heart women's raglan
+  "475067424", // Wave Apparel Hoodie
+  "475064976", // Brand Mark Zip Hoodie
+]);
+
 function designImagesFromVariant(variant: SyncVariant): Image[] {
   return (variant.files ?? [])
-    .filter(file => file.type !== "preview")
+    .filter(file => file.type !== "preview" && !/label/i.test(file.type ?? ""))
     .map((file): Image | null => {
       const url = file.preview_url || file.thumbnail_url || null;
       return url
         ? {
             url,
-            altText: `Artwork${file.type && file.type !== "default" ? ` (${file.type.replace(/_/g, " ")})` : ""}`,
+            altText: /back/i.test(file.type ?? "")
+              ? "Back print artwork"
+              : "Print artwork",
           }
         : null;
     })
@@ -283,14 +301,25 @@ function normalizeProduct(detail: SyncProductDetail): Product {
       .filter((image): image is Image => Boolean(image))
   );
   const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
-  const images = uniqueImages([
-    ...mockups,
-    ...(thumbnail ? [thumbnail] : []),
-    ...designs,
-  ]).map(image => ({ ...image, altText: image.altText || title }));
+  const artworkFirst = ARTWORK_FIRST_PRODUCTS.has(
+    String(detail.sync_product.id)
+  );
+  const images = uniqueImages(
+    artworkFirst
+      ? [...designs, ...mockups, ...(thumbnail ? [thumbnail] : [])]
+      : [...mockups, ...(thumbnail ? [thumbnail] : []), ...designs]
+  ).map(image => ({ ...image, altText: image.altText || title }));
 
-  const variants = synced.map(v =>
-    normalizeVariant(v, detail.sync_product.name, mockups[0] ?? thumbnail)
+  const variants = synced.map(v => {
+    const variant = normalizeVariant(
+      v,
+      detail.sync_product.name,
+      mockups[0] ?? thumbnail
+    );
+    return artworkFirst ? { ...variant, image: images[0] ?? null } : variant;
+  });
+  const backPrint = synced.some(v =>
+    (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
   );
   const prices = variants
     .map(v => Number.parseFloat(v.price.amount))
@@ -317,9 +346,13 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     .filter(option => option.values.length > 0);
 
   const garment = blankName(detail);
-  const description = garment
-    ? `Made to order by Printful for Wet Kitty Coastal. Printed on the ${garment}.`
-    : "Made to order by Printful for Wet Kitty Coastal.";
+  const description = [
+    backPrint ? "Full Wet Kitty graphic printed on the back." : "",
+    "Made to order by Printful for Wet Kitty Coastal.",
+    garment ? `Printed on the ${garment}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return {
     id: String(detail.sync_product.id),

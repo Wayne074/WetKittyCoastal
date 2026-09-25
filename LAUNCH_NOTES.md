@@ -34,3 +34,13 @@
 
 Do not accept live apparel orders until the end-to-end test reaches Printful successfully.
 Founding Crew Payment Link checkout is already live for the $147 join.
+
+## Shop sections (2026-09-24)
+
+- Catalog is read live from Printful store 18758964; only the new designs are listed.
+- Five sections, one per product, assigned by name in `shared/commerce/sections.ts`:
+  Club, Coastal & Ride, Women, Hoodies, Accessories (hats, caps, stickers, koozies, towels).
+- Duplicate Printful listings with identical names show only the newest copy.
+- Back-print products with blank front mockups lead with the Printful print artwork
+  (`ARTWORK_FIRST_PRODUCTS` in `server/_core/printful.ts`).
+- Merging to `main` triggers the Hostinger redeploy automatically (~1–2 minutes).

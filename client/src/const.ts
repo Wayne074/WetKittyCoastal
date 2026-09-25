@@ -5,7 +5,7 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
  * Flip to `true` when products & graphics are ready — Printful data stays intact.
  * Founding Crew (`/founding-crew`) is independent and stays live either way.
  */
-export const SHOP_OPEN = false;
+export const SHOP_OPEN = true;
 
 // Generate login URL at runtime so redirect URI reflects the current origin.
 export const getLoginUrl = () => {
