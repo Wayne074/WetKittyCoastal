@@ -98,7 +98,7 @@ async function printfulFetch<T>(path: string, init?: RequestInit): Promise<T> {
   if (!isPrintfulConfigured()) {
     throw new TRPCError({
       code: "PRECONDITION_FAILED",
-      message: "The Printful catalog is not connected yet.",
+      message: "The shop catalog is not connected yet.",
     });
   }
 
@@ -115,7 +115,7 @@ async function printfulFetch<T>(path: string, init?: RequestInit): Promise<T> {
     console.error("[Printful]", path, response.status, message);
     throw new TRPCError({
       code: "BAD_GATEWAY",
-      message: "Printful could not complete that request.",
+      message: "The shop could not complete that request.",
     });
   }
   return body.result;
@@ -675,7 +675,7 @@ export async function createPrintfulOrder(input: {
     console.error("[Printful] order lookup failed", existingResponse.status);
     throw new TRPCError({
       code: "BAD_GATEWAY",
-      message: "Printful could not verify the order.",
+      message: "The order could not be verified.",
     });
   }
 
