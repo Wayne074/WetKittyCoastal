@@ -11,6 +11,7 @@ import {
   SHOP_SECTIONS,
   classifyProductSection,
 } from "@shared/commerce/sections";
+import { sortFeatured } from "@shared/commerce/featured";
 
 const PRINTFUL_API = "https://api.printful.com";
 const CATALOG_CACHE_MS = 5 * 60 * 1000;
@@ -143,6 +144,8 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "475046677": "Race Club Civic Tee",
   "475056771": "Down Low Club Tee",
   "475048215": "Salty Soul Wild Heart Tee",
+  "475058494": "Wet Kitty Brand Mark Dad Hat",
+  "475058883": "Wet Kitty Brand Mark Sticker",
 };
 
 export function displayTitle(id: string | number, name: string) {
@@ -244,19 +247,83 @@ function mockupFromVariant(variant: SyncVariant): Image | null {
 }
 
 /**
- * Printful products whose generated mockups show only the blank front of the
- * garment (the design is printed on the back). For these we lead with the
- * real print artwork from Printful so shoppers see the design first.
+ * Back-print products whose Printful mockups show only the blank FRONT of the
+ * garment. Apparel must never lead with standalone artwork, so these lead with
+ * a presentation image built from the real Printful garment mockup (correct
+ * blank + color) with the real Printful back print file shown as a labelled
+ * "BACK PRINT" callout. Files live in client/public/mockups. Keyed by Printful
+ * sync product id, then by lower-cased color name ("*" = every variant).
+ * Replace with Printful-generated back mockups once they exist.
  */
-const ARTWORK_FIRST_PRODUCTS = new Set([
-  "475046079", // Sky High Club
-  "475046373", // Race Club
-  "475046677", // Race Club Civic
-  "475056771", // Down Low Club
-  "475057564", // Wave Bike Tee
-  "475065897", // Salty Soul Wild Heart women's raglan
-  "475067424", // Wave Apparel Hoodie
-  "475064976", // Brand Mark Zip Hoodie
+const MOCKUP_ORIGIN = "https://wetkittycoastal.com/mockups";
+const BACK_PRINT_PRESENTATION: Record<string, Array<[string, string]>> = {
+  "475046079": [
+    ["black", "475046079-black.jpg"],
+    ["heliconia", "475046079-heliconia.jpg"],
+    ["white", "475046079-white.jpg"],
+  ], // Sky High Club Tee
+  "475046373": [
+    ["black", "475046373-black.jpg"],
+    ["heliconia", "475046373-heliconia.jpg"],
+    ["tropical blue", "475046373-tropical-blue.jpg"],
+    ["white", "475046373-white.jpg"],
+  ], // Race Club Tee
+  "475046677": [
+    ["black", "475046677-black.jpg"],
+    ["navy", "475046677-navy.jpg"],
+    ["orange", "475046677-orange.jpg"],
+    ["white", "475046677-white.jpg"],
+  ], // Race Club Civic Tee
+  "475057564": [
+    ["black", "475057564-black.jpg"],
+    ["tropical blue", "475057564-tropical-blue.jpg"],
+    ["daisy", "475057564-daisy.jpg"],
+    ["white", "475057564-white.jpg"],
+  ], // Wave Bike Tee
+  "475067424": [
+    ["black", "475067424-black.jpg"],
+    ["navy", "475067424-navy.jpg"],
+  ], // Wave Apparel Hoodie
+  "475056771": [["*", "475056771-white.jpg"]], // Down Low Club Tee (white)
+  "475065897": [["*", "475065897-white-black.jpg"]], // Salty Soul raglan
+};
+
+function presentationImages(productId: string, title: string): Image[] {
+  return (BACK_PRINT_PRESENTATION[productId] ?? []).map(([color, file]) => ({
+    url: `${MOCKUP_ORIGIN}/${file}`,
+    altText:
+      color === "*"
+        ? `${title} — front and back print`
+        : `${title} in ${color.replace(/\b\w/g, c => c.toUpperCase())} — front and back print`,
+  }));
+}
+
+function presentationForVariant(
+  productId: string,
+  title: string,
+  variant: ProductVariant
+): Image | null {
+  const entries = BACK_PRINT_PRESENTATION[productId];
+  if (!entries?.length) return null;
+  const color = variant.selectedOptions
+    .find(option => /^colou?r$/i.test(option.name))
+    ?.value.toLowerCase();
+  const images = presentationImages(productId, title);
+  const index = entries.findIndex(([key]) => key === color || key === "*");
+  return images[index >= 0 ? index : 0] ?? null;
+}
+
+/**
+ * Products kept off the storefront until Printful is corrected. The Brand
+ * Mark Zip Hoodie's front print is split across the zipper with the centre of
+ * the design missing, and its only Printful mockup is the blank back — there
+ * is no honest garment image to show. Re-list once the placement is changed
+ * (left chest or back) and a full-garment mockup is generated.
+ */
+const HIDDEN_PRODUCTS = new Set([
+  "475064976", // Wet Kitty Brand Mark Zip Hoodie
+  "475060906", // duplicate Brand Mark hoodie
+  "475060583", // duplicate Brand Mark hoodie
 ]);
 
 function designImagesFromVariant(variant: SyncVariant): Image[] {
@@ -301,14 +368,16 @@ function normalizeProduct(detail: SyncProductDetail): Product {
       .filter((image): image is Image => Boolean(image))
   );
   const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
-  const artworkFirst = ARTWORK_FIRST_PRODUCTS.has(
-    String(detail.sync_product.id)
-  );
-  const images = uniqueImages(
-    artworkFirst
-      ? [...designs, ...mockups, ...(thumbnail ? [thumbnail] : [])]
-      : [...mockups, ...(thumbnail ? [thumbnail] : []), ...designs]
-  ).map(image => ({ ...image, altText: image.altText || title }));
+  const productId = String(detail.sync_product.id);
+  const presentation = presentationImages(productId, title);
+  // Apparel always leads with the garment; raw print artwork is only ever a
+  // secondary detail image at the end of the gallery.
+  const images = uniqueImages([
+    ...presentation,
+    ...mockups,
+    ...(thumbnail ? [thumbnail] : []),
+    ...designs,
+  ]).map(image => ({ ...image, altText: image.altText || title }));
 
   const variants = synced.map(v => {
     const variant = normalizeVariant(
@@ -316,7 +385,8 @@ function normalizeProduct(detail: SyncProductDetail): Product {
       detail.sync_product.name,
       mockups[0] ?? thumbnail
     );
-    return artworkFirst ? { ...variant, image: images[0] ?? null } : variant;
+    const lead = presentationForVariant(productId, title, variant);
+    return lead ? { ...variant, image: lead } : variant;
   });
   const backPrint = synced.some(v =>
     (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
@@ -404,7 +474,9 @@ async function fetchCatalog(): Promise<Product[]> {
   const summaries = await printfulFetch<SyncProductSummary[]>(
     "/store/products?limit=100"
   );
-  const active = summaries.filter(product => product.synced !== 0);
+  const active = summaries.filter(
+    product => product.synced !== 0 && !HIDDEN_PRODUCTS.has(String(product.id))
+  );
   const products: Product[] = [];
 
   for (let index = 0; index < active.length; index += 5) {
@@ -421,7 +493,7 @@ async function fetchCatalog(): Promise<Product[]> {
     );
   }
 
-  const unique = dedupeByTitle(products);
+  const unique = sortFeatured(dedupeByTitle(products));
   catalogCache = { expiresAt: Date.now() + CATALOG_CACHE_MS, products: unique };
   return unique;
 }

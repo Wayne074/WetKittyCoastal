@@ -34,7 +34,7 @@ export default function CollectionPage({
   seoTitle,
   seoDescription,
 }: CollectionPageProps) {
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [sizeFilter, setSizeFilter] = useState<string | null>(null);
   const [priceFilter, setPriceFilter] = useState<{ min: number; max: number } | null>(null);
@@ -100,6 +100,8 @@ export default function CollectionPage({
         return result.sort((a: any, b: any) => parseFloat(a.variants[0]?.price.amount || "0") - parseFloat(b.variants[0]?.price.amount || "0"));
       case "price-high":
         return result.sort((a: any, b: any) => parseFloat(b.variants[0]?.price.amount || "0") - parseFloat(a.variants[0]?.price.amount || "0"));
+      case "newest":
+        return result.sort((a: any, b: any) => Number(b.id) - Number(a.id));
       case "title-az":
         return result.sort((a: any, b: any) => a.title.localeCompare(b.title));
       default:
@@ -201,6 +203,7 @@ export default function CollectionPage({
                 onChange={(e) => setSortBy(e.target.value)}
                 className="text-sm font-medium bg-transparent border-none text-foreground focus:outline-none cursor-pointer"
               >
+                <option value="featured">Featured</option>
                 <option value="newest">Newest</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
