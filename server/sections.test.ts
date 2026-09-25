@@ -16,7 +16,7 @@ describe("shop sections", () => {
     ["Wet Kitty Brand Mark Crop Tank", "women"],
     ["Wet Kitty Brand Mark Babydoll", "women"],
     ["Yacht & Rod Club Men’s Tee", "club"],
-    ["Race Club Civic Tee", "club"],
+    ["Race Club Street Tee", "club"],
     ["Wet Kitty Coastal Highway Tee", "coastal-ride"],
     ["Salty Soul Wild Heart Tee", "coastal-ride"],
     ["Wet Kitty Wave Print Skater Dress", "women"],

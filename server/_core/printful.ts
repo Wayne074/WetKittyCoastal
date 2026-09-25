@@ -142,7 +142,7 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "475069001": "Yacht & Rod Club Men’s Tee",
   "475046079": "Sky High Club Tee",
   "475046373": "Race Club Tee",
-  "475046677": "Race Club Civic Tee",
+  "475046677": "Race Club Street Tee",
   "475056771": "Down Low Club Tee",
   "475048215": "Salty Soul Wild Heart Tee",
   "475058494": "Wet Kitty Brand Mark Dad Hat",

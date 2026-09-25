@@ -26,7 +26,7 @@ export const FEATURED_ORDER: string[] = [
   "475067424", // Wave Apparel Hoodie
   "475067704", // Brand Mark Babydoll
   "475070422", // Yacht & Rod Club Sticker
-  "475046677", // Race Club Civic Tee
+  "475046677", // Race Club Street Tee
   "475069764", // Yacht & Rod Club Zip Hoodie
   "475048215", // Salty Soul Wild Heart Tee
   "475058883", // Brand Mark Sticker
