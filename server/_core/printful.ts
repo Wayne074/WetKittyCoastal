@@ -246,82 +246,8 @@ function mockupFromVariant(variant: SyncVariant): Image | null {
   return url ? { url, altText: variant.name || null } : null;
 }
 
-/**
- * Back-print products whose Printful mockups show only the blank FRONT of the
- * garment. Apparel must never lead with standalone artwork, so these lead with
- * a presentation image built from the real Printful garment mockup (correct
- * blank + color) with the real Printful back print file shown as a labelled
- * "BACK PRINT" callout. Files live in client/public/mockups. Keyed by Printful
- * sync product id, then by lower-cased color name ("*" = every variant).
- * Replace with Printful-generated back mockups once they exist.
- */
-const MOCKUP_ORIGIN = "https://wetkittycoastal.com/mockups";
-const BACK_PRINT_PRESENTATION: Record<string, Array<[string, string]>> = {
-  "475046079": [
-    ["black", "475046079-black.jpg"],
-    ["heliconia", "475046079-heliconia.jpg"],
-    ["white", "475046079-white.jpg"],
-  ], // Sky High Club Tee
-  "475046373": [
-    ["black", "475046373-black.jpg"],
-    ["heliconia", "475046373-heliconia.jpg"],
-    ["tropical blue", "475046373-tropical-blue.jpg"],
-    ["white", "475046373-white.jpg"],
-  ], // Race Club Tee
-  "475046677": [
-    ["black", "475046677-black.jpg"],
-    ["navy", "475046677-navy.jpg"],
-    ["orange", "475046677-orange.jpg"],
-    ["white", "475046677-white.jpg"],
-  ], // Race Club Civic Tee
-  "475057564": [
-    ["black", "475057564-black.jpg"],
-    ["tropical blue", "475057564-tropical-blue.jpg"],
-    ["daisy", "475057564-daisy.jpg"],
-    ["white", "475057564-white.jpg"],
-  ], // Wave Bike Tee
-  "475067424": [
-    ["black", "475067424-black.jpg"],
-    ["navy", "475067424-navy.jpg"],
-  ], // Wave Apparel Hoodie
-  "475056771": [["*", "475056771-white.jpg"]], // Down Low Club Tee (white)
-  "475065897": [["*", "475065897-white-black.jpg"]], // Salty Soul raglan
-};
-
-function presentationImages(productId: string, title: string): Image[] {
-  return (BACK_PRINT_PRESENTATION[productId] ?? []).map(([color, file]) => ({
-    url: `${MOCKUP_ORIGIN}/${file}`,
-    altText:
-      color === "*"
-        ? `${title} — front and back print`
-        : `${title} in ${color.replace(/\b\w/g, c => c.toUpperCase())} — front and back print`,
-  }));
-}
-
-function presentationForVariant(
-  productId: string,
-  title: string,
-  variant: ProductVariant
-): Image | null {
-  const entries = BACK_PRINT_PRESENTATION[productId];
-  if (!entries?.length) return null;
-  const color = variant.selectedOptions
-    .find(option => /^colou?r$/i.test(option.name))
-    ?.value.toLowerCase();
-  const images = presentationImages(productId, title);
-  const index = entries.findIndex(([key]) => key === color || key === "*");
-  return images[index >= 0 ? index : 0] ?? null;
-}
-
-/**
- * Products kept off the storefront until Printful is corrected. The Brand
- * Mark Zip Hoodie's front print is split across the zipper with the centre of
- * the design missing, and its only Printful mockup is the blank back — there
- * is no honest garment image to show. Re-list once the placement is changed
- * (left chest or back) and a full-garment mockup is generated.
- */
+/** Duplicate Printful listings kept off the storefront. */
 const HIDDEN_PRODUCTS = new Set([
-  "475064976", // Wet Kitty Brand Mark Zip Hoodie
   "475060906", // duplicate Brand Mark hoodie
   "475060583", // duplicate Brand Mark hoodie
 ]);
@@ -350,10 +276,31 @@ function uniqueImages(images: Image[]) {
   );
 }
 
-function blankName(detail: SyncProductDetail) {
-  const raw = detail.sync_variants.find(v => v.product?.name)?.product?.name;
-  return raw ? raw.replace(/\s*\([^()]*\)\s*$/, "").trim() : "";
+/** Back-print products (their print files are no longer listed by the v1 API). */
+const BACK_PRINT_PRODUCTS = new Set([
+  "475046079", "475046373", "475046677", "475048215", "475056771",
+  "475057564", "475069001", "475069318", "475065897", "475066883",
+  "475067424", "475069764", "475070138",
+]);
+
+/**
+ * Short customer-facing garment description. Deliberately no supplier,
+ * brand-of-blank or model-number details.
+ */
+function garmentBlurb(title: string, id: string) {
+  const t = title.toLowerCase();
+  if (id === "475052995") return "Soft ribbed raglan baby tee.";
+  if (/zip/.test(t) && /hoodie/.test(t)) return "Heavyweight cotton-blend zip hoodie.";
+  if (/hoodie|pullover/.test(t)) return "Heavyweight cotton-blend hoodie.";
+  if (/crop tank|tank/.test(t)) return "Soft ribbed crop tank.";
+  if (/babydoll|baby tee|raglan/.test(t)) return "Soft ribbed raglan baby tee.";
+  if (/hat|cap/.test(t)) return "Classic cotton dad hat.";
+  if (/sticker/.test(t)) return "Kiss-cut vinyl sticker.";
+  if (/koozie/.test(t)) return "Foam can koozie.";
+  if (/women/.test(t)) return "Soft cotton women's tee.";
+  return "Soft cotton tee.";
 }
+
 
 function normalizeProduct(detail: SyncProductDetail): Product {
   const title = displayTitle(detail.sync_product.id, detail.sync_product.name);
@@ -369,11 +316,9 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   );
   const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
   const productId = String(detail.sync_product.id);
-  const presentation = presentationImages(productId, title);
   // Apparel always leads with the garment; raw print artwork is only ever a
   // secondary detail image at the end of the gallery.
   const images = uniqueImages([
-    ...presentation,
     ...mockups,
     ...(thumbnail ? [thumbnail] : []),
     ...designs,
@@ -385,12 +330,13 @@ function normalizeProduct(detail: SyncProductDetail): Product {
       detail.sync_product.name,
       mockups[0] ?? thumbnail
     );
-    const lead = presentationForVariant(productId, title, variant);
-    return lead ? { ...variant, image: lead } : variant;
+    return variant;
   });
-  const backPrint = synced.some(v =>
-    (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
-  );
+  const backPrint =
+    BACK_PRINT_PRODUCTS.has(productId) ||
+    synced.some(v =>
+      (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
+    );
   const prices = variants
     .map(v => Number.parseFloat(v.price.amount))
     .filter(Number.isFinite);
@@ -415,11 +361,10 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     }))
     .filter(option => option.values.length > 0);
 
-  const garment = blankName(detail);
   const description = [
+    garmentBlurb(title, productId),
     backPrint ? "Full Wet Kitty graphic printed on the back." : "",
-    "Made to order by Printful for Wet Kitty Coastal.",
-    garment ? `Printed on the ${garment}.` : "",
+    "Made to order for Wet Kitty Coastal.",
   ]
     .filter(Boolean)
     .join(" ");

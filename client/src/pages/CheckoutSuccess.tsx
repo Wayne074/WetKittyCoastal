@@ -20,8 +20,8 @@ export default function CheckoutSuccess() {
             Your Wet Kitty gear is on the way.
           </h1>
           <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-            Stripe has securely processed your payment. Your order is being sent
-            to Printful for production and shipping.
+            Stripe has securely processed your payment. Your order is now
+            being made and will ship as soon as it's ready.
           </p>
           <div className="mb-8 grid gap-3 text-left sm:grid-cols-2">
             <div className="rounded-xl bg-muted/60 p-4">
@@ -35,7 +35,7 @@ export default function CheckoutSuccess() {
               <PackageCheck className="mb-2 h-5 w-5 text-teal" />
               <strong className="block">Made to order</strong>
               <span className="text-sm text-muted-foreground">
-                Printful will produce and ship your items.
+                Each piece is printed for you, then shipped.
               </span>
             </div>
           </div>

@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Truck,
   Shield,
-  RotateCcw,
 } from "lucide-react";
 import { useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
@@ -371,11 +370,7 @@ export default function ProductDetail() {
             <div className="border-t border-border/50 pt-5 space-y-3">
               {[
                 { icon: Truck, text: "Free shipping on orders over $100" },
-                { icon: Shield, text: "Premium quality guaranteed" },
-                {
-                  icon: RotateCcw,
-                  text: "30-day claims for damaged or misprinted items",
-                },
+                { icon: Shield, text: "Made to order just for you" },
               ].map(({ icon: Icon, text }) => (
                 <div
                   key={text}

@@ -224,7 +224,7 @@ export default function Home() {
         .wk-newdrop-head a:hover { text-decoration: underline; }
         .wk-newdrop-grid { flex: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.1cqw; padding-top: .8cqw; min-height: 0; }
         .wk-newdrop-card { display: flex; flex-direction: column; min-height: 0; color: #0b1113; text-decoration: none; }
-        .wk-newdrop-img { flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; border-radius: .6cqw; background: #fff; box-shadow: 0 .2cqw .9cqw rgba(7,16,20,.08); }
+        .wk-newdrop-img { flex: 1; min-height: 0; align-self: center; aspect-ratio: 4 / 5; max-width: 100%; display: grid; place-items: center; overflow: hidden; border-radius: .9cqw; background: #fff; box-shadow: 0 .3cqw 1.4cqw rgba(7,16,20,.08), 0 .1cqw .3cqw rgba(7,16,20,.04); }
         .wk-newdrop-img img { width: 100%; height: 100%; object-fit: contain; transition: transform .5s ease; }
         .wk-newdrop-card:hover .wk-newdrop-img img { transform: scale(1.04); }
         .wk-newdrop-title { margin-top: .7cqw; font: 700 1.05cqw/1.2 Arial, sans-serif; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -269,27 +269,13 @@ function CardCaption({ x, w, children }: { x: number; w: number; children: React
   );
 }
 
-/** One product from each section first, so the homepage row mirrors the shop. */
-const FEATURED_PRODUCT_IDS = [
-  "475069001", // Yacht & Rod Club Men's Tee
-  "475048215", // Salty Soul Wild Heart Tee
-  "475047937", // Brand Mark Crop Tank
-  "475070138", // Yacht & Rod Club Pullover Hoodie
-  "475047637", // Brand Mark Tee
-  "475071041", // Yacht & Rod Club Dad Hat
-];
-
+/**
+ * The homepage row mirrors the first six of the Shop All "Featured" order
+ * (the server already returns products in that order), so the homepage and
+ * the shop open with the same six real garment mockups.
+ */
 function pickFeatured(products: Product[]) {
-  const chosen: Product[] = [];
-  for (const id of FEATURED_PRODUCT_IDS) {
-    const match = products.find(product => product.id === id);
-    if (match) chosen.push(match);
-  }
-  for (const product of products) {
-    if (chosen.length >= 6) break;
-    if (!chosen.includes(product) && product.images.length) chosen.push(product);
-  }
-  return chosen.slice(0, 6);
+  return products.filter(product => product.images.length).slice(0, 6);
 }
 
 function formatPrice(amount: string) {
