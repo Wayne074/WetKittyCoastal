@@ -51,7 +51,7 @@ export const SHOP_SECTIONS: ShopSection[] = [
     subtitle: "Women's Collection",
     tagline: "Flirty, beachy, and still premium.",
     description:
-      "Women's tees, raglan baby tees, babydolls, and crop tanks in the newest Wet Kitty graphics.",
+      "Women's tees, raglan baby tees, babydolls, crop tanks, and dresses, plus every unisex Wet Kitty tee.",
   },
   {
     handle: "hoodies",
@@ -82,9 +82,9 @@ export const LEGACY_COLLECTION_REDIRECTS: Record<string, string> = {
 };
 
 const ACCESSORY =
-  /\b(hat|hats|cap|caps|snapback|trucker|beanie|visor|sticker|stickers|koozie|koozies|towel|towels|mug|tumbler|bottle|patch|patches|tote|bag|keychain|magnet|poster|pin)\b/;
+  /\b(hat|hats|cap|caps|snapback|trucker|beanie|visor|sticker|stickers|koozie|koozies|towel|towels|mug|tumbler|bottle|patch|patches|tote|bag|keychain|magnet|poster|pin|flag|flags)\b/;
 const HOODIE = /\b(hoodie|hoodies|sweatshirt|pullover|zip|fleece|crewneck|jacket)\b/;
-const WOMEN = /\b(women|women's|womens|ladies|babydoll|crop|raglan|bikini)\b/;
+const WOMEN = /\b(women|women's|womens|ladies|babydoll|crop|raglan|bikini|dress|dresses)\b/;
 const CLUB = /\bclub\b/;
 
 /**
@@ -100,6 +100,22 @@ export function classifyProductSection(text: string): ShopSectionHandle {
   if (WOMEN.test(value)) return "women";
   if (CLUB.test(value)) return "club";
   return "coastal-ride";
+}
+
+const TEE = /\b(tee|tees|t-shirt|shirt)\b/;
+
+/**
+ * Every section a product is listed in, primary section first. Men's and
+ * unisex tees (Club, Coastal & Ride) are also listed in Women, because women
+ * wear them too; women's-cut pieces stay out of the men's sections. Shop All
+ * still lists each product once.
+ */
+export function productSections(text: string): ShopSectionHandle[] {
+  const primary = classifyProductSection(text);
+  const value = text.toLowerCase().replace(/[’`]/g, "'");
+  if ((primary === "club" || primary === "coastal-ride") && TEE.test(value))
+    return [primary, "women"];
+  return [primary];
 }
 
 export function getShopSection(handle: string) {
