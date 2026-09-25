@@ -1,3 +1,4 @@
+import { SHIPPING_SUMMARY, setPageMeta, webImage } from "@/const";
 import { useEffect, useMemo, useState } from "react";
 import {
   Heart,
@@ -26,6 +27,15 @@ export default function ProductDetail() {
     { enabled: !!productId }
   );
   const { addItem } = useCart();
+
+  useEffect(() => {
+    if (!product) return;
+    setPageMeta(
+      `${product.title} | Wet Kitty Coastal`,
+      `${product.description} ${SHIPPING_SUMMARY}`,
+      product.images?.[0]?.url
+    );
+  }, [product?.id]);
 
   // Reset the option selection to the first available variant per product.
   useEffect(() => {
@@ -171,17 +181,15 @@ export default function ProductDetail() {
             <div
               className="aspect-square rounded-2xl overflow-hidden flex items-center justify-center"
               style={{
-                background:
-                  "linear-gradient(135deg, rgba(21, 154, 153, 0.04) 0%, rgba(121, 212, 205, 0.06) 50%, rgba(216, 195, 155, 0.04) 100%)",
+                background: "#fff",
                 border: "1px solid rgba(21, 154, 153, 0.08)",
               }}
             >
               {currentImage ? (
                 <img
                   src={currentImage.url}
-                  alt={product.title}
+                  alt={currentImage.altText || product.title}
                   className="w-full h-full object-contain"
-                  loading="lazy"
                 />
               ) : (
                 <span
@@ -214,8 +222,9 @@ export default function ProductDetail() {
                     }}
                   >
                     <img
-                      src={img.url}
-                      alt={`${product.title} ${idx}`}
+                      src={webImage(img.url, 160)}
+                      onError={e => { if (e.currentTarget.src !== img.url) e.currentTarget.src = img.url; }}
+                      alt={img.altText || `${product.title} view ${idx + 1}`}
                       className="w-full h-full object-contain bg-white"
                     />
                   </button>
@@ -369,8 +378,8 @@ export default function ProductDetail() {
             {/* Trust Signals */}
             <div className="border-t border-border/50 pt-5 space-y-3">
               {[
-                { icon: Truck, text: "Free shipping on orders over $100" },
-                { icon: Shield, text: "Made to order just for you" },
+                { icon: Truck, text: "$5.99 shipping, free on orders over $100" },
+                { icon: Shield, text: "Made to order just for you. Arrives in about 5–12 business days" },
               ].map(({ icon: Icon, text }) => (
                 <div
                   key={text}

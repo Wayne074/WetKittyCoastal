@@ -37,3 +37,38 @@ export const getLoginUrl = () => {
 
   return url.toString();
 };
+
+/** Customer support inbox (shown sitewide). */
+export const SUPPORT_EMAIL = "bigcat@wetkittycoastal.com";
+
+/** Shipping, matching what Stripe Checkout charges. */
+export const SHIPPING_SUMMARY =
+  "$5.99 flat shipping, free on orders over $100. Made to order and delivered in about 5–12 business days.";
+
+/** Set the page title and meta description (client-side SEO). */
+export function setPageMeta(title: string, description?: string, image?: string) {
+  if (typeof document === "undefined") return;
+  document.title = title;
+  const set = (selector: string, attr: string, key: string, content: string) => {
+    let el = document.querySelector(selector);
+    if (!el) {
+      el = document.createElement("meta");
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute("content", content);
+  };
+  if (description) {
+    set('meta[name="description"]', "name", "description", description);
+    set('meta[property="og:description"]', "property", "og:description", description);
+  }
+  set('meta[property="og:title"]', "property", "og:title", title);
+  if (image) set('meta[property="og:image"]', "property", "og:image", image);
+}
+
+/** Web-sized image (resized WebP via an image CDN); falls back to the original on error. */
+export function webImage(url: string | undefined | null, width = 600) {
+  if (!url) return "";
+  if (!/^https:\/\/files\.cdn\.printful\.com\//.test(url)) return url;
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&output=webp&q=82`;
+}

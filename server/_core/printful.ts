@@ -147,6 +147,7 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "475048215": "Salty Soul Wild Heart Tee",
   "475058494": "Wet Kitty Brand Mark Dad Hat",
   "475058883": "Wet Kitty Brand Mark Sticker",
+  "475052995": "Wet Kitty Coastal Highway Women’s Raglan Baby Tee",
 };
 
 /**
@@ -223,6 +224,10 @@ function variantParts(raw: SyncVariant, productName: string) {
   return parts;
 }
 
+function isAllOverPrint(name: string) {
+  return /\b(flag|towel|dress|skirt)\b/i.test(name);
+}
+
 function normalizeVariant(
   raw: SyncVariant,
   productName: string,
@@ -249,6 +254,23 @@ function normalizeVariant(
       if (!size && looksLikeSize(part)) size = part;
       else if (!color) color = part;
     }
+    // Single-color products often carry only the size in the sync variant
+    // name; the catalog variant name ("Blank (Orange / S)") has the color.
+    const catalogParts =
+      raw.product?.name?.match(/\(([^()]*)\)\s*$/)?.[1]
+        ?.split(" / ")
+        .map(part => part.trim())
+        .filter(Boolean) ?? [];
+    for (const part of catalogParts) {
+      if (!size && looksLikeSize(part)) size = part;
+      else if (!color && !looksLikeSize(part)) color = part;
+    }
+    // All-over prints (flags, towels, dresses) report the blank as "White";
+    // the real color is the artwork, so use the title's color or none.
+    if (isAllOverPrint(productName) && color && /^white$/i.test(color)) {
+      color = productName.match(/-\s*([A-Za-z ]+)\s*$/)?.[1]?.trim();
+    }
+    if (color) color = color.replace(/^Solid\s+/i, "").replace(/\s+Blend$/i, "");
     if (color) selectedOptions.push({ name: "Color", value: color });
     if (size) selectedOptions.push({ name: "Size", value: size });
   }
@@ -325,6 +347,9 @@ function garmentBlurb(title: string, id: string) {
   if (/hat|cap/.test(t)) return "Classic cotton dad hat.";
   if (/sticker/.test(t)) return "Kiss-cut vinyl sticker.";
   if (/koozie/.test(t)) return "Foam can koozie.";
+  if (/flag/.test(t)) return "Printed wall and porch flag.";
+  if (/towel/.test(t)) return "Plush, full-color beach towel.";
+  if (/dress/.test(t)) return "Soft stretch skater dress with an all-over print.";
   if (/women/.test(t)) return "Soft cotton women's tee.";
   return "Soft cotton tee.";
 }
@@ -336,6 +361,17 @@ const PRIMARY_MOCKUP: Record<string, string> = {
   // Salty Soul raglan baby tee: back print
   "475065897":
     "https://files.cdn.printful.com/files/252/2520c105a2ee138c84c3e1a95f209676_preview.png",
+};
+
+// Extra real mockups shown right after the primary image (e.g. the front of
+// a back-print zip hoodie, so the zipper is visible).
+const EXTRA_MOCKUPS: Record<string, { url: string; altText: string }[]> = {
+  "475069764": [
+    { url: "https://files.cdn.printful.com/files/4c1/4c155be7492adc6835e882ca2110a1e7_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Black" },
+    { url: "https://files.cdn.printful.com/files/11e/11e14cecc8c294ff0857fb819ba78003_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Navy" },
+    { url: "https://files.cdn.printful.com/files/f60/f60651c994dc9bd6ae2ea59d298cde45_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Dark Heather" },
+    { url: "https://files.cdn.printful.com/files/9dd/9dd2d38d5c6457cccb0a87dd04abf2f0_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, White" },
+  ],
 };
 
 function normalizeProduct(detail: SyncProductDetail): Product {
@@ -365,9 +401,10 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     thumbnail && mockups.length && THUMBNAIL_SECOND.has(productId)
       ? [mockups[0], thumbnail, ...mockups.slice(1)]
       : mockups;
+  const extras = EXTRA_MOCKUPS[String(detail.sync_product.id)] ?? [];
   const images = uniqueImages(
     mockups.length
-      ? leadImages
+      ? [...leadImages.slice(0, 1), ...extras.slice(0, 1), ...leadImages.slice(1), ...extras.slice(1)]
       : [...(thumbnail ? [thumbnail] : []), ...designs]
   ).map(image => ({ ...image, altText: image.altText || title }));
 
@@ -381,9 +418,10 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   });
   const backPrint =
     BACK_PRINT_PRODUCTS.has(productId) ||
-    synced.some(v =>
+    (!isAllOverPrint(title) &&
+      synced.some(v =>
       (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
-    );
+    ));
   const prices = variants
     .map(v => Number.parseFloat(v.price.amount))
     .filter(Number.isFinite);

@@ -23,6 +23,7 @@ describe("shop sections", () => {
     ["Wet Kitty Sky High Club Flag", "accessories"],
     ["Wet Kitty Wave Bike Beach Towel", "accessories"],
     ["Wet Kitty Coastal Lifestyle Pullover Hoodie", "hoodies"],
+    ["Wet Kitty Paw Skater Dress - Pink", "women"],
   ])("%s → %s", (name, section) => {
     expect(classifyProductSection(name)).toBe(section);
   });

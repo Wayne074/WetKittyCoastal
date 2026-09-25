@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "wouter";
 import { CheckCircle2, Mail, PackageCheck } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { EmailLink } from "./Info";
 
 export default function CheckoutSuccess() {
   const { clearCart } = useCart();
@@ -39,6 +40,9 @@ export default function CheckoutSuccess() {
               </span>
             </div>
           </div>
+          <p className="mb-8 text-sm text-muted-foreground">
+            Most orders arrive in about 5–12 business days. Questions? Email <EmailLink />.
+          </p>
           <Link href="/collections/apparel" className="btn btn-primary">
             Keep Shopping
           </Link>

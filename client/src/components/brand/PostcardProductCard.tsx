@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Heart, ShoppingBag } from "lucide-react";
+import { webImage } from "@/const";
 
 interface PostcardProductCardProps {
   handle: string;
@@ -37,11 +38,13 @@ export default function PostcardProductCard({
           }}
         >
           {/* Image area */}
-          <div className="aspect-[4/5] overflow-hidden relative bg-muted">
+          <div className="aspect-[4/5] overflow-hidden relative bg-white">
             {imageUrl ? (
               <img
-                src={imageUrl}
+                src={webImage(imageUrl, 600)}
+                onError={e => { if (e.currentTarget.src !== imageUrl) e.currentTarget.src = imageUrl; }}
                 alt={title}
+                decoding="async"
                 className="w-full h-full object-contain bg-white transition-transform duration-700 group-hover:scale-105"
                 style={{ transitionTimingFunction: "var(--ease-out)" }}
                 loading="lazy"
