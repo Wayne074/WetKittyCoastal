@@ -54,7 +54,7 @@ export function AllApparelCollection() {
       title="Shop All"
       subtitle="The Full Wet Kitty Lineup"
       tagline="Beach days, bike nights, and everything between."
-      description="Every Wet Kitty tee, hoodie, women's piece, and accessory in one place — made to order by Printful."
+      description="Every Wet Kitty tee, hoodie, women's piece, and accessory in one place — made to order."
       gradient="linear-gradient(160deg, #060e12 0%, #0d3040 44%, #17605f 100%)"
       accent="var(--teal)"
       seoTitle="Shop All | Wet Kitty"
