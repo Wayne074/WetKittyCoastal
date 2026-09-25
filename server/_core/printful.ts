@@ -318,11 +318,14 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   const productId = String(detail.sync_product.id);
   // Apparel always leads with the garment; raw print artwork is only ever a
   // secondary detail image at the end of the gallery.
-  const images = uniqueImages([
-    ...mockups,
-    ...(thumbnail ? [thumbnail] : []),
-    ...designs,
-  ]).map(image => ({ ...image, altText: image.altText || title }));
+  // Only fall back to the product thumbnail / raw print files when there are
+  // no live garment previews: those can be stale (an old placement) or a
+  // mostly transparent placement canvas.
+  const images = uniqueImages(
+    mockups.length
+      ? mockups
+      : [...(thumbnail ? [thumbnail] : []), ...designs]
+  ).map(image => ({ ...image, altText: image.altText || title }));
 
   const variants = synced.map(v => {
     const variant = normalizeVariant(
