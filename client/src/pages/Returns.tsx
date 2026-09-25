@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+import { setPageMeta } from "@/const";
+import { EmailLink } from "./Info";
+
 export default function ReturnsPage() {
+  useEffect(() => setPageMeta("Returns | Wet Kitty Coastal", "Returns and order help for made-to-order Wet Kitty Coastal gear."), []);
   return (
     <div className="min-h-screen bg-background">
       <section className="border-b border-border/60 bg-card">
@@ -12,7 +17,7 @@ export default function ReturnsPage() {
       <section className="container max-w-4xl space-y-10 py-10 md:py-14">
         <div>
           <h2 className="mb-3 text-2xl">Problem with an order?</h2>
-          <p className="text-muted-foreground">Get in touch with your order number, a short description of the problem, and clear photos, and we&apos;ll take a look.</p>
+          <p className="text-muted-foreground">Email <EmailLink /> with your order number, a short description of the problem, and clear photos, and we&apos;ll take a look.</p>
         </div>
 
         <div>
@@ -28,7 +33,7 @@ export default function ReturnsPage() {
         <div className="rounded-2xl border border-border bg-card p-6">
           <h2 className="mb-2 text-xl">Need help with an order?</h2>
           <p className="mb-5 text-muted-foreground">Have your order number and photos ready.</p>
-          <p className="text-sm font-semibold text-teal">Customer-support contact details will be added before ordering opens.</p>
+          <p className="text-sm">Email <EmailLink /></p>
         </div>
       </section>
     </div>

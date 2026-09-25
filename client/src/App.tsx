@@ -21,11 +21,7 @@ import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import OpenSoon from "./pages/OpenSoon";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminProducts from "./pages/admin/Products";
-import AdminOrders from "./pages/admin/Orders";
-import AdminCustomers from "./pages/admin/Customers";
-import AdminSettings from "./pages/admin/Settings";
+import { AboutPage, ContactPage, FaqPage, ShippingPage } from "./pages/Info";
 import { SHOP_OPEN } from "./const";
 
 function RedirectHome() {
@@ -64,18 +60,13 @@ function ShopRoute({
 function Router() {
   return (
     <Switch>
-      <Route path={"/admin"} component={AdminDashboard} />
-      <Route path={"/admin/products"} component={AdminProducts} />
-      <Route path={"/admin/orders"} component={AdminOrders} />
-      <Route path={"/admin/customers"} component={AdminCustomers} />
-      <Route path={"/admin/settings"} component={AdminSettings} />
-      <Route path={"/"} component={Home} />
       <Route>
         {() => (
           <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1">
               <Switch>
+                <Route path={"/"} component={Home} />
                 {SHOP_SECTIONS.map(section => (
                   <Route
                     key={section.handle}
@@ -107,6 +98,10 @@ function Router() {
                   {() => <ShopRoute open={CartPage} />}
                 </Route>
                 <Route path={"/returns"} component={ReturnsPage} />
+                <Route path={"/about"} component={AboutPage} />
+                <Route path={"/faq"} component={FaqPage} />
+                <Route path={"/shipping"} component={ShippingPage} />
+                <Route path={"/contact"} component={ContactPage} />
                 <Route path={"/checkout/success"} component={CheckoutSuccess} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />

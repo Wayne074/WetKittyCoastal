@@ -84,7 +84,7 @@ export const LEGACY_COLLECTION_REDIRECTS: Record<string, string> = {
 const ACCESSORY =
   /\b(hat|hats|cap|caps|snapback|trucker|beanie|visor|sticker|stickers|koozie|koozies|towel|towels|mug|tumbler|bottle|patch|patches|tote|bag|keychain|magnet|poster|pin|flag|flags)\b/;
 const HOODIE = /\b(hoodie|hoodies|sweatshirt|pullover|zip|fleece|crewneck|jacket)\b/;
-const WOMEN = /\b(women|women's|womens|ladies|babydoll|crop|raglan|bikini|dress|dresses)\b/;
+const WOMEN = /\b(women|women's|womens|ladies|babydoll|crop|raglan|bikini|dress|dresses|skirt)\b/;
 const CLUB = /\bclub\b/;
 
 /**

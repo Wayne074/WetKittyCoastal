@@ -30,7 +30,7 @@ export default function Header() {
   const communityItems = [
     { label: "Home", href: "/" },
     { label: "Founding Crew", href: "/founding-crew" },
-    { label: "About", href: "/community" },
+    { label: "About", href: "/about" },
   ];
 
   const isActive = (href: string) => location === href;

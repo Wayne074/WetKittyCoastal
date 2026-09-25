@@ -16,13 +16,14 @@ describe("shop sections", () => {
     ["Wet Kitty Brand Mark Crop Tank", "women"],
     ["Wet Kitty Brand Mark Babydoll", "women"],
     ["Yacht & Rod Club Men’s Tee", "club"],
-    ["Race Club Civic Tee", "club"],
+    ["Race Club Street Tee", "club"],
     ["Wet Kitty Coastal Highway Tee", "coastal-ride"],
     ["Salty Soul Wild Heart Tee", "coastal-ride"],
     ["Wet Kitty Wave Print Skater Dress", "women"],
     ["Wet Kitty Sky High Club Flag", "accessories"],
     ["Wet Kitty Wave Bike Beach Towel", "accessories"],
     ["Wet Kitty Coastal Lifestyle Pullover Hoodie", "hoodies"],
+    ["Wet Kitty Paw Skater Dress - Pink", "women"],
   ])("%s → %s", (name, section) => {
     expect(classifyProductSection(name)).toBe(section);
   });
