@@ -9,15 +9,11 @@ import { CartProvider } from "./contexts/CartContext";
 import Home from "./pages/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { SectionCollection, AllApparelCollection } from "./pages/Collections";
 import {
-  MenCollection,
-  WomenCollection,
-  HatsCollection,
-  HoodiesCollection,
-  BeachCollection,
-  LimitedDropCollection,
-  AllApparelCollection,
-} from "./pages/Collections";
+  LEGACY_COLLECTION_REDIRECTS,
+  SHOP_SECTIONS,
+} from "@shared/commerce/sections";
 import ProductDetail from "./pages/ProductDetail";
 import Community from "./pages/Community";
 import FoundingCrew from "./pages/FoundingCrew";
@@ -35,6 +31,21 @@ import { SHOP_OPEN } from "./const";
 function RedirectHome() {
   if (typeof window !== "undefined") {
     window.location.replace("/");
+  }
+  return null;
+}
+
+// Stable component per section so routes never remount on re-render.
+const SECTION_COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
+  SHOP_SECTIONS.map(section => [
+    section.handle,
+    () => <SectionCollection handle={section.handle} />,
+  ])
+);
+
+function LegacyCollectionRedirect({ to }: { to: string }) {
+  if (typeof window !== "undefined") {
+    window.location.replace(to);
   }
   return null;
 }
@@ -65,24 +76,23 @@ function Router() {
             <Header />
             <main className="flex-1">
               <Switch>
-                <Route path={"/collections/men"}>
-                  {() => <ShopRoute open={MenCollection} />}
-                </Route>
-                <Route path={"/collections/women"}>
-                  {() => <ShopRoute open={WomenCollection} />}
-                </Route>
-                <Route path={"/collections/hats"}>
-                  {() => <ShopRoute open={HatsCollection} />}
-                </Route>
-                <Route path={"/collections/hoodies"}>
-                  {() => <ShopRoute open={HoodiesCollection} />}
-                </Route>
-                <Route path={"/collections/beach"}>
-                  {() => <ShopRoute open={BeachCollection} />}
-                </Route>
-                <Route path={"/collections/limited-drop"}>
-                  {() => <ShopRoute open={LimitedDropCollection} />}
-                </Route>
+                {SHOP_SECTIONS.map(section => (
+                  <Route
+                    key={section.handle}
+                    path={`/collections/${section.handle}`}
+                  >
+                    {() => (
+                      <ShopRoute open={SECTION_COMPONENTS[section.handle]} />
+                    )}
+                  </Route>
+                ))}
+                {Object.entries(LEGACY_COLLECTION_REDIRECTS).map(
+                  ([legacy, to]) => (
+                    <Route key={legacy} path={`/collections/${legacy}`}>
+                      {() => <LegacyCollectionRedirect to={to} />}
+                    </Route>
+                  )
+                )}
                 <Route path={"/collections/apparel"}>
                   {() => <ShopRoute open={AllApparelCollection} />}
                 </Route>

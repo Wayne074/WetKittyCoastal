@@ -3,6 +3,9 @@ import { Link } from "wouter";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { SHOP_OPEN } from "@/const";
+import { trpc } from "@/lib/trpc";
+import type { Product } from "@shared/commerce/types";
+import { SHOP_SECTIONS } from "@shared/commerce/sections";
 
 /**
  * Approved Wet Kitty homepage artwork with functional navigation overlays.
@@ -43,14 +46,16 @@ export default function Home() {
 
       {/* Functional header overlay. */}
       <nav className="wk-top-nav" aria-label="Main navigation">
-        <Link href="/">Home</Link>
+        {!SHOP_OPEN && <Link href="/">Home</Link>}
         {SHOP_OPEN ? (
           <>
-            <Link href="/collections/men">Men</Link>
-            <Link href="/collections/women">Women</Link>
-            <Link href="/collections/beach">Beach</Link>
+            <Link href="/collections/apparel">Shop All</Link>
+            {SHOP_SECTIONS.map(section => (
+              <Link key={section.handle} href={`/collections/${section.handle}`}>
+                {section.navLabel}
+              </Link>
+            ))}
             <Link href="/founding-crew">Founding Crew</Link>
-            <Link href="/collections/hats">Accessories</Link>
             <Link href="/community">About</Link>
           </>
         ) : (
@@ -82,22 +87,24 @@ export default function Home() {
           {/* Make the single hero button in the approved artwork functional. */}
           <Hotspot href="/collections/apparel" label="Shop tees, tanks, and hoodies" x={39.5} y={25.2} w={20.5} h={2.75} />
 
-          {/* Collection cards */}
-          <Hotspot href="/collections/beach" label="High Tide collection" x={1.3} y={34.8} w={18.7} h={14.1} />
-          <Hotspot href="/collections/men" label="Men's collection" x={20.7} y={34.8} w={18.7} h={14.1} />
-          <Hotspot href="/collections/hats" label="Pier 7 collection" x={40.1} y={34.8} w={18.7} h={14.1} />
-          <Hotspot href="/collections/hoodies" label="Salt Run collection" x={59.6} y={34.8} w={18.7} h={14.1} />
-          <Hotspot href="/collections/women" label="Low Tide collection" x={79.0} y={34.8} w={19.0} h={14.1} />
+          {/* Collection cards — each maps to one balanced shop section. */}
+          <Hotspot href="/collections/coastal-ride" label="High Tide — Coastal & Ride Tees" x={1.3} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/club" label="Sunset Riders — The Club Collection" x={20.7} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/accessories" label="Pier 7 — Hats, Stickers & Accessories" x={40.1} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/hoodies" label="Salt Run — Hoodies & Zips" x={59.6} y={34.8} w={18.7} h={14.1} />
+          <Hotspot href="/collections/women" label="Low Tide — Women's Collection" x={79.0} y={34.8} w={19.0} h={14.1} />
 
-          {/* Best sellers */}
-          <Hotspot href="/collections/men" label="Ride the Tide Tee" x={1.2} y={56.4} w={15.7} h={16.7} />
-          <Hotspot href="/collections/women" label="Wave Rider Tank" x={17.5} y={56.4} w={15.7} h={16.7} />
-          <Hotspot href="/collections/men" label="Salty Soul Tee" x={33.8} y={56.4} w={15.7} h={16.7} />
-          <Hotspot href="/collections/women" label="Good Times Crop" x={50.2} y={56.4} w={15.7} h={16.7} />
-          <Hotspot href="/collections/hoodies" label="Tide Breaker Hoodie" x={66.5} y={56.4} w={15.7} h={16.7} />
-          <Hotspot href="/collections/women" label="Yacht Club Tank" x={82.8} y={56.4} w={16.0} h={16.7} />
+          {/* Replace the subtitles baked into the artwork with the real sections. */}
+          <CardCaption x={2.2} w={16.9}>Coastal &amp; Ride Tees</CardCaption>
+          <CardCaption x={21.6} w={16.9}>The Club Collection</CardCaption>
+          <CardCaption x={60.6} w={16.9}>Hoodies &amp; Zips</CardCaption>
+
+          {/* Live Printful products cover the retired "best sellers" artwork. */}
+          <NewDrop />
         </>
       )}
+
+      <Hotspot href="/" label="Wet Kitty Coastal home" x={2.5} y={0.9} w={23} h={3} />
 
       {/* Newsletter remains routed to the working community signup for now. */}
       <Hotspot href="/community" label="Join the Crew" x={45.0} y={84.4} w={31.0} h={3.4} />
@@ -105,11 +112,11 @@ export default function Home() {
       {/* Working footer links from the approved artwork. */}
       {SHOP_OPEN && (
         <>
-          <Hotspot href="/collections/men" label="Footer: Men" x={29.8} y={93.4} w={7.2} h={1.15} />
+          <Hotspot href="/collections/apparel" label="Footer: Men" x={29.8} y={93.4} w={7.2} h={1.15} />
           <Hotspot href="/collections/women" label="Footer: Women" x={29.8} y={94.45} w={7.2} h={1.15} />
           <Hotspot href="/collections/apparel" label="Footer: Collections" x={29.8} y={95.5} w={9.5} h={1.15} />
-          <Hotspot href="/collections/beach" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
-          <Hotspot href="/collections/hats" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
+          <Hotspot href="/collections/coastal-ride" label="Footer: Beach" x={29.8} y={96.55} w={7.2} h={1.15} />
+          <Hotspot href="/collections/accessories" label="Footer: Accessories" x={29.8} y={98.65} w={10.5} h={1.15} />
         </>
       )}
       <Hotspot href="/founding-crew" label="Footer: Founding Crew" x={29.8} y={97.6} w={7.2} h={1.15} />
@@ -128,11 +135,12 @@ export default function Home() {
             <h2>Explore Wet Kitty</h2>
             {SHOP_OPEN ? (
               <>
-                <PanelLink href="/collections/men" onClick={() => setMenuOpen(false)}>Men</PanelLink>
-                <PanelLink href="/collections/women" onClick={() => setMenuOpen(false)}>Women</PanelLink>
-                <PanelLink href="/collections/beach" onClick={() => setMenuOpen(false)}>Beach</PanelLink>
-                <PanelLink href="/collections/hats" onClick={() => setMenuOpen(false)}>Accessories</PanelLink>
-                <PanelLink href="/collections/limited-drop" onClick={() => setMenuOpen(false)}>Limited Drops</PanelLink>
+                <PanelLink href="/collections/apparel" onClick={() => setMenuOpen(false)}>Shop All</PanelLink>
+                {SHOP_SECTIONS.map(section => (
+                  <PanelLink key={section.handle} href={`/collections/${section.handle}`} onClick={() => setMenuOpen(false)}>
+                    {section.subtitle}
+                  </PanelLink>
+                ))}
               </>
             ) : (
               <p className="wk-open-soon-note">Shop Opening Soon — products &amp; graphics cooking.</p>
@@ -155,7 +163,7 @@ export default function Home() {
             ) : !cart || itemCount === 0 ? (
               <>
                 <p>Your cart is empty.</p>
-                <PanelLink href="/collections/men" onClick={() => setCartOpen(false)}>Start shopping</PanelLink>
+                <PanelLink href="/collections/apparel" onClick={() => setCartOpen(false)}>Start shopping</PanelLink>
               </>
             ) : (
               <>
@@ -176,7 +184,7 @@ export default function Home() {
       )}
 
       <style>{`
-        .wk-approved-home { position: relative; width: 100%; max-width: 1600px; margin: 0 auto; background: #f4eee3; line-height: 0; overflow: hidden; }
+        .wk-approved-home { container-type: inline-size; position: relative; width: 100%; max-width: 1600px; margin: 0 auto; background: #f4eee3; line-height: 0; overflow: hidden; }
         .wk-approved-art { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
         .wk-hotspot { position: absolute; z-index: 4; display: block; border: 0; border-radius: 4px; line-height: normal; color: transparent; background: transparent; outline-offset: 2px; cursor: pointer; }
         .wk-hotspot:focus-visible, .wk-top-nav a:focus-visible, .wk-header-actions button:focus-visible { outline: 2px solid #49d3cf; outline-offset: 2px; }
@@ -208,6 +216,21 @@ export default function Home() {
         .wk-checkout { width: 100%; margin-top: 18px; padding: 15px 18px; border: 0; border-radius: 8px; background: #37bbb9; color: #061416; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
         @media (max-width: 700px) { .wk-eyebrow-fix { font-size: 6px; letter-spacing: .12em; } .wk-top-nav a { font-size: 4.2px; padding: 0 .15vw; } }
 
+        .wk-card-caption { position: absolute; z-index: 5; top: 45.95%; height: 1.15%; display: flex; align-items: center; justify-content: center; pointer-events: none; background: linear-gradient(90deg, rgba(11,17,19,0) 0%, rgba(11,17,19,.96) 14%, rgba(11,17,19,.96) 86%, rgba(11,17,19,0) 100%); color: #f2ece2; font: 600 1.02cqw/1 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; border-radius: 2px; }
+        .wk-newdrop { position: absolute; z-index: 5; left: 0; top: 53.85%; width: 100%; height: 19.3%; box-sizing: border-box; padding: 0 1.3% ; background: #f2ece2; line-height: 1.2; display: flex; flex-direction: column; }
+        .wk-newdrop-head { display: flex; align-items: center; justify-content: center; gap: 2cqw; height: 3.4cqw; }
+        .wk-newdrop-head h2 { margin: 0; color: #0b1113; font: 700 1.75cqw/1 Georgia, 'Times New Roman', serif; letter-spacing: .16em; text-transform: uppercase; }
+        .wk-newdrop-head a { color: #177f7d; font: 700 1.05cqw/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+        .wk-newdrop-head a:hover { text-decoration: underline; }
+        .wk-newdrop-grid { flex: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.1cqw; padding-top: .8cqw; min-height: 0; }
+        .wk-newdrop-card { display: flex; flex-direction: column; min-height: 0; color: #0b1113; text-decoration: none; }
+        .wk-newdrop-img { flex: 1; min-height: 0; display: grid; place-items: center; overflow: hidden; border-radius: .6cqw; background: #fff; box-shadow: 0 .2cqw .9cqw rgba(7,16,20,.08); }
+        .wk-newdrop-img img { width: 100%; height: 100%; object-fit: contain; transition: transform .5s ease; }
+        .wk-newdrop-card:hover .wk-newdrop-img img { transform: scale(1.04); }
+        .wk-newdrop-title { margin-top: .7cqw; font: 700 1.05cqw/1.2 Arial, sans-serif; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wk-newdrop-price { margin-top: .3cqw; margin-bottom: .6cqw; font: 600 1cqw/1 Arial, sans-serif; text-align: center; color: #3b4447; }
+        .wk-newdrop-empty { flex: 1; display: grid; place-items: center; color: #3b4447; font: 600 1.2cqw/1.3 Arial, sans-serif; }
+
         .wk-open-soon-banner {
           position: relative; z-index: 20; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
           gap: 10px 18px; padding: 12px 16px; line-height: 1.35; text-align: center;
@@ -236,4 +259,68 @@ function Hotspot({ href, label, x, y, w, h, area }: { href: string; label: strin
 
 function PanelLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
   return <Link href={href} className="wk-panel-link" onClick={onClick}>{children}</Link>;
+}
+
+function CardCaption({ x, w, children }: { x: number; w: number; children: React.ReactNode }) {
+  return (
+    <span className="wk-card-caption" aria-hidden="true" style={{ left: `${x}%`, width: `${w}%` }}>
+      {children}
+    </span>
+  );
+}
+
+/** One product from each section first, so the homepage row mirrors the shop. */
+const FEATURED_PRODUCT_IDS = [
+  "475069001", // Yacht & Rod Club Men's Tee
+  "475048215", // Salty Soul Wild Heart Tee
+  "475047937", // Brand Mark Crop Tank
+  "475070138", // Yacht & Rod Club Pullover Hoodie
+  "475047637", // Brand Mark Tee
+  "475071041", // Yacht & Rod Club Dad Hat
+];
+
+function pickFeatured(products: Product[]) {
+  const chosen: Product[] = [];
+  for (const id of FEATURED_PRODUCT_IDS) {
+    const match = products.find(product => product.id === id);
+    if (match) chosen.push(match);
+  }
+  for (const product of products) {
+    if (chosen.length >= 6) break;
+    if (!chosen.includes(product) && product.images.length) chosen.push(product);
+  }
+  return chosen.slice(0, 6);
+}
+
+function formatPrice(amount: string) {
+  const value = Number.parseFloat(amount);
+  return Number.isFinite(value) ? `$${value.toFixed(2)}` : "";
+}
+
+function NewDrop() {
+  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({ first: 100 });
+  const featured = pickFeatured(products);
+  return (
+    <section className="wk-newdrop" aria-label="The new drop">
+      <div className="wk-newdrop-head">
+        <h2>The New Drop</h2>
+        <Link href="/collections/apparel">Shop all &rarr;</Link>
+      </div>
+      {featured.length ? (
+        <div className="wk-newdrop-grid">
+          {featured.map(product => (
+            <Link key={product.id} href={`/products/${product.handle}`} className="wk-newdrop-card">
+              <span className="wk-newdrop-img">
+                {product.images[0] && <img src={product.images[0].url} alt={product.title} loading="lazy" />}
+              </span>
+              <span className="wk-newdrop-title">{product.title}</span>
+              <span className="wk-newdrop-price">{formatPrice(product.priceRange.min.amount)}</span>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <div className="wk-newdrop-empty">{isLoading ? "Loading the new drop…" : "New gear is on the way."}</div>
+      )}
+    </section>
+  );
 }

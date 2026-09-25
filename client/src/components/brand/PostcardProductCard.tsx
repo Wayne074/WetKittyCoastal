@@ -42,7 +42,7 @@ export default function PostcardProductCard({
               <img
                 src={imageUrl}
                 alt={title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-contain bg-white transition-transform duration-700 group-hover:scale-105"
                 style={{ transitionTimingFunction: "var(--ease-out)" }}
                 loading="lazy"
               />

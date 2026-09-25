@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Instagram } from "lucide-react";
 import { SHOP_OPEN } from "@/const";
+import { SHOP_SECTIONS } from "@shared/commerce/sections";
 
 export default function Footer() {
   return (
@@ -71,12 +72,11 @@ export default function Footer() {
             </h4>
             <nav className="flex flex-col gap-3">
               {[
-                { label: "Men", href: "/collections/men" },
-                { label: "Women", href: "/collections/women" },
-                { label: "Hats", href: "/collections/hats" },
-                { label: "Hoodies", href: "/collections/hoodies" },
-                { label: "Beach", href: "/collections/beach" },
-                { label: "Limited Drop", href: "/collections/limited-drop" },
+                { label: "Shop All", href: "/collections/apparel" },
+                ...SHOP_SECTIONS.map(section => ({
+                  label: section.navLabel,
+                  href: `/collections/${section.handle}`,
+                })),
               ].map((item) => (
                 <Link
                   key={item.href}

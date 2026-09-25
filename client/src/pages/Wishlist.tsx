@@ -118,7 +118,7 @@ export default function Wishlist() {
               <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
                 Browse our collections and tap the heart icon to save your favorite items here.
               </p>
-              <a href="/collections/men" className="btn btn-primary inline-flex">
+              <a href="/collections/apparel" className="btn btn-primary inline-flex">
                 Browse Collections
               </a>
             </div>
