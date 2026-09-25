@@ -302,6 +302,14 @@ function garmentBlurb(title: string, id: string) {
 }
 
 
+// Real generated mockups for products whose auto preview shows the blank
+// side (back-print items where the store preview is the front).
+const PRIMARY_MOCKUP: Record<string, string> = {
+  // Salty Soul raglan baby tee: back print
+  "475065897":
+    "https://files.cdn.printful.com/files/252/2520c105a2ee138c84c3e1a95f209676_preview.png",
+};
+
 function normalizeProduct(detail: SyncProductDetail): Product {
   const title = displayTitle(detail.sync_product.id, detail.sync_product.name);
   const synced = detail.sync_variants.filter(v => v.synced !== false);
@@ -309,10 +317,14 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     ? { url: detail.sync_product.thumbnail_url, altText: title }
     : null;
 
+  const primary = PRIMARY_MOCKUP[String(detail.sync_product.id)];
   const mockups = uniqueImages(
-    synced
+    [
+      ...(primary ? [{ url: primary, altText: title }] : []),
+      ...synced
       .map(mockupFromVariant)
-      .filter((image): image is Image => Boolean(image))
+      .filter((image): image is Image => Boolean(image)),
+    ]
   );
   const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
   const productId = String(detail.sync_product.id);
