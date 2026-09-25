@@ -66,7 +66,7 @@ export default function CollectionPage({
   }, [title, description, seoTitle, seoDescription]);
 
   const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({
-    first: 24,
+    first: 100,
     collectionHandle: handle,
   });
 
@@ -76,8 +76,12 @@ export default function CollectionPage({
     // Size filter
     if (sizeFilter) {
       result = result.filter((p: any) =>
-        p.variants?.some((v: any) =>
-          v.title?.toUpperCase().includes(sizeFilter) && v.availableForSale !== false
+        p.variants?.some(
+          (v: any) =>
+            v.availableForSale !== false &&
+            (v.selectedOptions ?? []).some(
+              (o: any) => String(o.value).toUpperCase() === sizeFilter
+            )
         )
       );
     }

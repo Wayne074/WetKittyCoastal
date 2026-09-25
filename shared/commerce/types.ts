@@ -42,6 +42,8 @@ export type ProductVariant = {
   availableForSale: boolean;
   /** Flat list of selected options — sized for variant pickers. */
   selectedOptions: SelectedOption[];
+  /** Printful mockup for this variant (usually its color), when available. */
+  image?: Image | null;
 };
 
 export type Product = {

@@ -4,6 +4,7 @@ import { Menu, X, Moon, Sun, ShoppingBag } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
 import { SHOP_OPEN } from "@/const";
+import { SHOP_SECTIONS } from "@shared/commerce/sections";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,12 +20,11 @@ export default function Header() {
   }, []);
 
   const shopItems = [
-    { label: "Men", href: "/collections/men" },
-    { label: "Women", href: "/collections/women" },
-    { label: "Hats", href: "/collections/hats" },
-    { label: "Hoodies", href: "/collections/hoodies" },
-    { label: "Beach", href: "/collections/beach" },
-    { label: "Limited Drop", href: "/collections/limited-drop" },
+    { label: "Shop All", href: "/collections/apparel" },
+    ...SHOP_SECTIONS.map(section => ({
+      label: section.navLabel,
+      href: `/collections/${section.handle}`,
+    })),
   ];
 
   const communityItems = [
@@ -88,13 +88,13 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden xl:flex items-center gap-0.5">
               {SHOP_OPEN &&
                 shopItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-3 py-2 rounded-lg text-[13px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
+                    className={`px-2.5 py-2 rounded-lg text-[12px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
                       isActive(item.href)
                         ? "text-teal bg-teal/5"
                         : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
@@ -108,7 +108,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-2 rounded-lg text-[13px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
+                  className={`px-2.5 py-2 rounded-lg text-[12px] font-semibold uppercase tracking-[0.08em] transition-all duration-200 ${
                     isActive(item.href)
                       ? "text-teal bg-teal/5"
                       : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
@@ -152,7 +152,7 @@ export default function Header() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 ml-1"
+                className="xl:hidden p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 ml-1"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -163,8 +163,8 @@ export default function Header() {
 
         {/* Mobile Menu */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            mobileMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          className={`xl:hidden overflow-hidden transition-all duration-300 ${
+            mobileMenuOpen ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
           }`}
           style={{ transitionTimingFunction: "var(--ease-out)" }}
         >

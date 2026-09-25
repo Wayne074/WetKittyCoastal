@@ -7,6 +7,10 @@ import type {
   Product,
   ProductVariant,
 } from "@shared/commerce/types";
+import {
+  SHOP_SECTIONS,
+  classifyProductSection,
+} from "@shared/commerce/sections";
 
 const PRINTFUL_API = "https://api.printful.com";
 const CATALOG_CACHE_MS = 5 * 60 * 1000;
@@ -54,50 +58,13 @@ type CartTokenPayload = {
   lines: Array<{ variantId: string; quantity: number }>;
 };
 
-const COLLECTIONS: Collection[] = [
-  {
-    id: "men",
-    handle: "men",
-    title: "Men's Collection",
-    description: "Tees, hoodies, hats, and coastal biker gear.",
-    image: null,
-  },
-  {
-    id: "women",
-    handle: "women",
-    title: "Low Tide",
-    description: "Women's coastal and biker apparel.",
-    image: null,
-  },
-  {
-    id: "hats",
-    handle: "hats",
-    title: "Pier 7",
-    description: "Hats, caps, and embroidered headwear.",
-    image: null,
-  },
-  {
-    id: "hoodies",
-    handle: "hoodies",
-    title: "Salt Run",
-    description: "Hoodies and sweatshirts for cooler nights.",
-    image: null,
-  },
-  {
-    id: "beach",
-    handle: "beach",
-    title: "High Tide",
-    description: "Tanks, towels, shorts, and beach-ready gear.",
-    image: null,
-  },
-  {
-    id: "limited-drop",
-    handle: "limited-drop",
-    title: "Last Call",
-    description: "Limited-run Wet Kitty releases.",
-    image: null,
-  },
-];
+const COLLECTIONS: Collection[] = SHOP_SECTIONS.map(section => ({
+  id: section.handle,
+  handle: section.handle,
+  title: section.title,
+  description: section.description,
+  image: null,
+}));
 
 let catalogCache: { expiresAt: number; products: Product[] } | null = null;
 
@@ -163,97 +130,206 @@ function slugify(value: string) {
   );
 }
 
-function imageFromVariant(
-  variant: SyncVariant,
-  fallback?: string | null
-): Image | null {
-  const preview =
-    variant.files?.find(file => file.type === "preview") ?? variant.files?.[0];
-  const url =
-    preview?.preview_url ||
-    preview?.thumbnail_url ||
-    preview?.url ||
-    variant.product?.image ||
-    fallback;
-  return url ? { url, altText: variant.name || null } : null;
+/**
+ * Display-name corrections for Printful products whose store names are
+ * generic or carry an internal "(Wet Kitty)" suffix. Keyed by Printful sync
+ * product id. Everything else (prices, variants, images) comes from Printful.
+ */
+const TITLE_OVERRIDES: Record<string, string> = {
+  "475065897": "Salty Soul Wild Heart Women’s Raglan Baby Tee",
+  "475069001": "Yacht & Rod Club Men’s Tee",
+  "475046079": "Sky High Club Tee",
+  "475046373": "Race Club Tee",
+  "475046677": "Race Club Civic Tee",
+  "475056771": "Down Low Club Tee",
+  "475048215": "Salty Soul Wild Heart Tee",
+};
+
+export function displayTitle(id: string | number, name: string) {
+  const override = TITLE_OVERRIDES[String(id)];
+  if (override) return override;
+  return (
+    name
+      .replace(/\s*\((?:wet kitty(?: coastal)?)\)\s*$/i, "")
+      .replace(/\s+/g, " ")
+      .trim() || name
+  );
 }
 
-function productTags(productName: string, variants: SyncVariant[]) {
-  const text =
-    `${productName} ${variants.map(v => `${v.name} ${v.product?.name ?? ""}`).join(" ")}`.toLowerCase();
-  const tags = new Set<string>(["apparel"]);
-  const explicitlyMen = /\b(men|men's|mens|male)\b/.test(text);
-  const explicitlyWomen = /\b(women|women's|womens|ladies|female)\b/.test(text);
+const SIZE_TOKENS = new Set([
+  "XXS",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "2XL",
+  "3XL",
+  "4XL",
+  "5XL",
+  "6XL",
+  "ONE SIZE",
+]);
 
-  if (!explicitlyWomen || /\bunisex\b/.test(text)) tags.add("men");
-  if (!explicitlyMen || /\bunisex\b/.test(text)) tags.add("women");
-  if (/\b(hat|cap|snapback|trucker|beanie|visor)\b/.test(text))
-    tags.add("hats");
-  if (/\b(hoodie|sweatshirt|fleece|pullover)\b/.test(text)) tags.add("hoodies");
-  if (
-    /\b(beach|tank|towel|swim|shorts|board short|rash guard|bikini)\b/.test(
-      text
+function looksLikeSize(value: string) {
+  const v = value.trim().toUpperCase();
+  return (
+    SIZE_TOKENS.has(v) ||
+    /\d\s*(?:″|"|in\b|oz\b|×|x\d)/i.test(value) ||
+    /\b(?:regular|slim|youth|toddler)\b/i.test(value)
+  );
+}
+
+/** Split "Product Name / Black / M" into its option parts. */
+function variantParts(raw: SyncVariant, productName: string) {
+  let label = raw.name || "";
+  if (label.startsWith(productName)) label = label.slice(productName.length);
+  label = label.replace(/^\s*[-/]\s*/, "");
+  const parts = label
+    .split(" / ")
+    .map(part => part.trim())
+    .filter(Boolean);
+  return parts;
+}
+
+function normalizeVariant(
+  raw: SyncVariant,
+  productName: string,
+  fallbackImage: Image | null
+): ProductVariant {
+  // Printful sometimes returns real color/size options; most store products
+  // instead carry embroidery metadata here, which is not customer-facing.
+  const printfulOptions = (raw.options ?? [])
+    .filter(
+      option =>
+        typeof option.value === "string" &&
+        option.value &&
+        /^(color|colour|size)$/i.test(option.id ?? "")
     )
-  )
-    tags.add("beach");
-  if (/\b(limited|last call|drop|numbered)\b/.test(text))
-    tags.add("limited-drop");
-  return Array.from(tags);
-}
+    .map(option => ({ name: option.id!, value: option.value! }));
 
-function normalizeVariant(raw: SyncVariant): ProductVariant {
-  const selectedOptions = (raw.options ?? [])
-    .filter(option => option.value)
-    .map(option => ({ name: option.id || "Option", value: option.value! }));
-
+  const parts = variantParts(raw, productName);
+  let selectedOptions = printfulOptions;
   if (!selectedOptions.length) {
-    selectedOptions.push({
-      name: "Style",
-      value: raw.product?.variant_name || raw.name || "Standard",
-    });
+    selectedOptions = [];
+    let color: string | undefined;
+    let size: string | undefined;
+    for (const part of parts) {
+      if (!size && looksLikeSize(part)) size = part;
+      else if (!color) color = part;
+    }
+    if (color) selectedOptions.push({ name: "Color", value: color });
+    if (size) selectedOptions.push({ name: "Size", value: size });
+  }
+  if (!selectedOptions.length) {
+    selectedOptions.push({ name: "Style", value: "Standard" });
   }
 
   return {
     id: String(raw.id),
-    title: raw.product?.variant_name || raw.name,
+    title:
+      parts.join(" / ") || raw.product?.variant_name || "Standard",
     price: { amount: raw.retail_price, currencyCode: raw.currency || "USD" },
     compareAtPrice: null,
     availableForSale: raw.synced !== false,
     selectedOptions,
+    image: mockupFromVariant(raw) ?? fallbackImage,
   };
 }
 
+function mockupFromVariant(variant: SyncVariant): Image | null {
+  const preview = variant.files?.find(file => file.type === "preview");
+  const url = preview?.preview_url || preview?.thumbnail_url || null;
+  return url ? { url, altText: variant.name || null } : null;
+}
+
+function designImagesFromVariant(variant: SyncVariant): Image[] {
+  return (variant.files ?? [])
+    .filter(file => file.type !== "preview")
+    .map((file): Image | null => {
+      const url = file.preview_url || file.thumbnail_url || null;
+      return url
+        ? {
+            url,
+            altText: `Artwork${file.type && file.type !== "default" ? ` (${file.type.replace(/_/g, " ")})` : ""}`,
+          }
+        : null;
+    })
+    .filter((image): image is Image => Boolean(image));
+}
+
+function uniqueImages(images: Image[]) {
+  return images.filter(
+    (image, index, all) =>
+      all.findIndex(other => other.url === image.url) === index
+  );
+}
+
+function blankName(detail: SyncProductDetail) {
+  const raw = detail.sync_variants.find(v => v.product?.name)?.product?.name;
+  return raw ? raw.replace(/\s*\([^()]*\)\s*$/, "").trim() : "";
+}
+
 function normalizeProduct(detail: SyncProductDetail): Product {
-  const variants = detail.sync_variants
-    .filter(v => v.synced !== false)
-    .map(normalizeVariant);
+  const title = displayTitle(detail.sync_product.id, detail.sync_product.name);
+  const synced = detail.sync_variants.filter(v => v.synced !== false);
+  const thumbnail: Image | null = detail.sync_product.thumbnail_url
+    ? { url: detail.sync_product.thumbnail_url, altText: title }
+    : null;
+
+  const mockups = uniqueImages(
+    synced
+      .map(mockupFromVariant)
+      .filter((image): image is Image => Boolean(image))
+  );
+  const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
+  const images = uniqueImages([
+    ...mockups,
+    ...(thumbnail ? [thumbnail] : []),
+    ...designs,
+  ]).map(image => ({ ...image, altText: image.altText || title }));
+
+  const variants = synced.map(v =>
+    normalizeVariant(v, detail.sync_product.name, mockups[0] ?? thumbnail)
+  );
   const prices = variants
     .map(v => Number.parseFloat(v.price.amount))
     .filter(Number.isFinite);
   const currency = variants[0]?.price.currencyCode || "USD";
-  const images = detail.sync_variants
-    .map(variant =>
-      imageFromVariant(variant, detail.sync_product.thumbnail_url)
-    )
-    .filter((image): image is Image => Boolean(image))
-    .filter(
-      (image, index, all) =>
-        all.findIndex(other => other.url === image.url) === index
-    );
-  const handle = `${slugify(detail.sync_product.name)}-${detail.sync_product.id}`;
+  const handle = `${slugify(title)}-${detail.sync_product.id}`;
+  const section = classifyProductSection(title);
+
+  const optionNames: string[] = [];
+  for (const v of variants)
+    for (const o of v.selectedOptions)
+      if (!optionNames.includes(o.name)) optionNames.push(o.name);
+  const options = optionNames
+    .map(name => ({
+      name,
+      values: Array.from(
+        new Set(
+          variants
+            .map(v => v.selectedOptions.find(o => o.name === name)?.value)
+            .filter((value): value is string => Boolean(value))
+        )
+      ),
+    }))
+    .filter(option => option.values.length > 0);
+
+  const garment = blankName(detail);
+  const description = garment
+    ? `Made to order by Printful for Wet Kitty Coastal. Printed on the ${garment}.`
+    : "Made to order by Printful for Wet Kitty Coastal.";
 
   return {
     id: String(detail.sync_product.id),
     handle,
-    title: detail.sync_product.name,
-    description: "Made to order by Printful for Wet Kitty Coastal.",
-    descriptionHtml: "<p>Made to order by Printful for Wet Kitty Coastal.</p>",
-    productType:
-      productTags(detail.sync_product.name, detail.sync_variants).find(
-        tag => tag !== "apparel"
-      ) ?? "Apparel",
+    title,
+    description,
+    descriptionHtml: `<p>${description.replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]!)}</p>`,
+    productType: section,
     vendor: "Wet Kitty Coastal",
-    tags: productTags(detail.sync_product.name, detail.sync_variants),
+    tags: [section],
     images,
     priceRange: {
       min: {
@@ -265,9 +341,27 @@ function normalizeProduct(detail: SyncProductDetail): Product {
         currencyCode: currency,
       },
     },
-    options: [],
+    options,
     variants,
   };
+}
+
+/**
+ * Printful occasionally ends up with the same product created twice (same
+ * name). Show only the newest copy so the storefront never lists identical
+ * cards side by side.
+ */
+function dedupeByTitle(products: Product[]) {
+  const newest = new Map<string, Product>();
+  for (const product of products) {
+    const key = product.title.toLowerCase();
+    const current = newest.get(key);
+    if (!current || Number(product.id) > Number(current.id))
+      newest.set(key, product);
+  }
+  return products.filter(
+    product => newest.get(product.title.toLowerCase()) === product
+  );
 }
 
 async function fetchCatalog(): Promise<Product[]> {
@@ -294,24 +388,31 @@ async function fetchCatalog(): Promise<Product[]> {
     );
   }
 
-  catalogCache = { expiresAt: Date.now() + CATALOG_CACHE_MS, products };
-  return products;
+  const unique = dedupeByTitle(products);
+  catalogCache = { expiresAt: Date.now() + CATALOG_CACHE_MS, products: unique };
+  return unique;
 }
 
 export async function listProducts(
   options: { first?: number; collectionHandle?: string } = {}
 ) {
   const products = await fetchCatalog();
-  const filtered = options.collectionHandle
-    ? products.filter(product =>
-        product.tags.includes(options.collectionHandle!)
-      )
-    : products;
-  return filtered.slice(0, options.first ?? 24);
+  const filtered =
+    options.collectionHandle && options.collectionHandle !== "apparel"
+      ? products.filter(product =>
+          product.tags.includes(options.collectionHandle!)
+        )
+      : products;
+  return filtered.slice(0, options.first ?? 100);
 }
 
 export async function getProductByHandle(handle: string) {
-  const product = (await fetchCatalog()).find(item => item.handle === handle);
+  const catalog = await fetchCatalog();
+  // Accept older handles (pre-rename) by matching the trailing Printful id.
+  const id = handle.match(/-(\d+)$/)?.[1];
+  const product =
+    catalog.find(item => item.handle === handle) ??
+    (id ? catalog.find(item => item.id === id) : undefined);
   if (!product)
     throw new TRPCError({ code: "NOT_FOUND", message: "Product not found." });
   return product;
@@ -395,7 +496,7 @@ export async function resolveCart(cartId: string): Promise<Cart | null> {
         message: "A cart item is no longer available.",
       });
     }
-    const image = product.images[0] ?? null;
+    const image = variant.image ?? product.images[0] ?? null;
     const unit = Number.parseFloat(variant.price.amount);
     return {
       lineId: line.variantId,

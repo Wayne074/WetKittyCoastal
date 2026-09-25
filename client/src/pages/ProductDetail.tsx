@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Heart,
   Share2,
@@ -17,7 +17,7 @@ import { PawLoader, WaveSeparator } from "@/components/brand";
 export default function ProductDetail() {
   const [, params] = useRoute("/products/:handle");
   const productId = params?.handle;
-  const [selectedVariant, setSelectedVariant] = useState(0);
+  const [selection, setSelection] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
@@ -27,6 +27,53 @@ export default function ProductDetail() {
     { enabled: !!productId }
   );
   const { addItem } = useCart();
+
+  // Reset the option selection to the first available variant per product.
+  useEffect(() => {
+    if (!product) return;
+    const first =
+      product.variants.find(v => v.availableForSale) ?? product.variants[0];
+    setSelection(
+      Object.fromEntries(
+        (first?.selectedOptions ?? []).map(o => [o.name, String(o.value)])
+      )
+    );
+    setImageIndex(0);
+  }, [product?.id]);
+
+  const variant = useMemo(() => {
+    if (!product) return undefined;
+    return (
+      product.variants.find(v =>
+        v.selectedOptions.every(o => selection[o.name] === String(o.value))
+      ) ?? product.variants[0]
+    );
+  }, [product, selection]);
+
+  const chooseOption = (name: string, value: string) => {
+    if (!product) return;
+    const next = { ...selection, [name]: value };
+    const exact = product.variants.find(v =>
+      v.selectedOptions.every(o => next[o.name] === String(o.value))
+    );
+    const fallback =
+      exact ??
+      product.variants.find(v =>
+        v.selectedOptions.some(o => o.name === name && String(o.value) === value)
+      );
+    if (fallback) {
+      setSelection(
+        Object.fromEntries(
+          fallback.selectedOptions.map(o => [o.name, String(o.value)])
+        )
+      );
+      const imageUrl = fallback.image?.url;
+      const idx = imageUrl
+        ? (product.images || []).findIndex(img => img.url === imageUrl)
+        : -1;
+      if (idx >= 0) setImageIndex(idx);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -63,7 +110,7 @@ export default function ProductDetail() {
           <p className="text-sm text-muted-foreground mb-6">
             This product may have been removed or the link is incorrect.
           </p>
-          <a href="/collections/men" className="btn btn-primary inline-flex">
+          <a href="/collections/apparel" className="btn btn-primary inline-flex">
             Browse Collections
           </a>
         </div>
@@ -71,7 +118,6 @@ export default function ProductDetail() {
     );
   }
 
-  const variant = product.variants[selectedVariant];
   const images = product.images || [];
   const currentImage = images[imageIndex];
 
@@ -106,7 +152,7 @@ export default function ProductDetail() {
             </a>
             <ChevronRight className="w-3 h-3" />
             <a
-              href="/collections/men"
+              href="/collections/apparel"
               className="hover:text-foreground transition-colors"
             >
               Collections
@@ -135,7 +181,7 @@ export default function ProductDetail() {
                 <img
                   src={currentImage.url}
                   alt={product.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   loading="lazy"
                 />
               ) : (
@@ -171,7 +217,7 @@ export default function ProductDetail() {
                     <img
                       src={img.url}
                       alt={`${product.title} ${idx}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain bg-white"
                     />
                   </button>
                 ))}
@@ -185,7 +231,7 @@ export default function ProductDetail() {
               className="text-[10px] font-bold tracking-[0.2em] uppercase mb-3 block"
               style={{ color: "var(--teal)" }}
             >
-              Premium Apparel
+              Wet Kitty Coastal
             </span>
             <h1
               className="text-2xl md:text-3xl font-bold text-foreground mb-3"
@@ -213,39 +259,54 @@ export default function ProductDetail() {
                 "Premium quality apparel designed for the coastal lifestyle and biker culture. Made with care, built to last."}
             </p>
 
-            {/* Variants */}
-            {product.variants.length > 1 && (
-              <div className="mb-6">
-                <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3 block">
-                  Size
-                </label>
-                <div className="flex gap-2 flex-wrap">
-                  {product.variants.map((v: any, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedVariant(idx)}
-                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-                      style={{
-                        border:
-                          idx === selectedVariant
-                            ? "2px solid var(--teal)"
-                            : "1px solid var(--border)",
-                        background:
-                          idx === selectedVariant
-                            ? "rgba(21, 154, 153, 0.06)"
-                            : "transparent",
-                        color:
-                          idx === selectedVariant
-                            ? "var(--teal)"
-                            : "var(--foreground)",
-                      }}
-                    >
-                      {v.title || `Size ${idx + 1}`}
-                    </button>
-                  ))}
+            {/* Variants — one picker per option (Color, Size, …) */}
+            {(product.options || [])
+              .filter(option => option.values.length > 1)
+              .map(option => (
+                <div className="mb-6" key={option.name}>
+                  <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-3 block">
+                    {option.name}
+                    {selection[option.name] ? (
+                      <span className="ml-2 normal-case tracking-normal text-foreground/80">
+                        {selection[option.name]}
+                      </span>
+                    ) : null}
+                  </label>
+                  <div className="flex gap-2 flex-wrap">
+                    {option.values.map(value => {
+                      const active = selection[option.name] === value;
+                      const available = product.variants.some(
+                        v =>
+                          v.availableForSale &&
+                          v.selectedOptions.some(
+                            o => o.name === option.name && String(o.value) === value
+                          )
+                      );
+                      return (
+                        <button
+                          key={value}
+                          type="button"
+                          disabled={!available}
+                          aria-pressed={active}
+                          onClick={() => chooseOption(option.name, value)}
+                          className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                          style={{
+                            border: active
+                              ? "2px solid var(--teal)"
+                              : "1px solid var(--border)",
+                            background: active
+                              ? "rgba(21, 154, 153, 0.06)"
+                              : "transparent",
+                            color: active ? "var(--teal)" : "var(--foreground)",
+                          }}
+                        >
+                          {value}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
 
             {/* Quantity & Actions */}
             <div className="mb-6">
