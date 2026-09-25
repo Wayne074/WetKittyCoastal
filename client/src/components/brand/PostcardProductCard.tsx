@@ -116,7 +116,7 @@ export default function PostcardProductCard({
           {/* Card footer — the "postcard" feel */}
           <div className="p-4 bg-card border-t border-border/50">
             <h3
-              className="text-sm font-bold text-foreground mb-1 line-clamp-1 group-hover:text-teal transition-colors duration-300"
+              className="text-sm font-bold text-foreground mb-1 line-clamp-3 min-h-[3.75rem] md:line-clamp-2 md:min-h-[2.5rem] leading-5 group-hover:text-teal transition-colors duration-300"
               style={{ fontFamily: "var(--font-display)", letterSpacing: "0.02em" }}
             >
               {title}

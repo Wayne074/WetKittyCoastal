@@ -41,6 +41,13 @@ Founding Crew Payment Link checkout is already live for the $147 join.
 - Five sections, one per product, assigned by name in `shared/commerce/sections.ts`:
   Club, Coastal & Ride, Women, Hoodies, Accessories (hats, caps, stickers, koozies, towels).
 - Duplicate Printful listings with identical names show only the newest copy.
-- Back-print products with blank front mockups lead with the Printful print artwork
-  (`ARTWORK_FIRST_PRODUCTS` in `server/_core/printful.ts`).
+- Apparel never leads with raw artwork. Back-print products whose Printful mockups only
+  show the blank front lead with a presentation image (real Printful garment mockup in the
+  selected color + the real back print file as a labelled "BACK PRINT" callout), stored in
+  `client/public/mockups` (`BACK_PRINT_PRESENTATION` in `server/_core/printful.ts`).
+  Replace with Printful-generated back mockups once the API token is available on the box.
+- `HIDDEN_PRODUCTS` keeps the Brand Mark Zip Hoodie (475064976) off the site until its
+  split front print is re-placed in Printful (left chest or back) and re-mocked.
+- Shop All default = "Featured" curated order (`shared/commerce/featured.ts`); sections use
+  the same relative order.
 - Merging to `main` triggers the Hostinger redeploy automatically (~1–2 minutes).
