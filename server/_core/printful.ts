@@ -10,6 +10,7 @@ import type {
 import {
   SHOP_SECTIONS,
   classifyProductSection,
+  productSections,
 } from "@shared/commerce/sections";
 import { sortFeatured } from "@shared/commerce/featured";
 
@@ -147,6 +148,33 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "475058494": "Wet Kitty Brand Mark Dad Hat",
   "475058883": "Wet Kitty Brand Mark Sticker",
 };
+
+/**
+ * Short customer-facing descriptions for the newer non-apparel / all-over
+ * products. Keyed by Printful sync product id.
+ */
+const DESCRIPTION_OVERRIDES: Record<string, string> = {
+  "475246689": "Soft cotton tee with the Wet Kitty Coastal Lifestyle back print.",
+  "475246695": "Soft cotton women's tee with the Wet Kitty Coastal Lifestyle back print.",
+  "475246699": "Heavyweight cotton-blend zip hoodie with the Wet Kitty Coastal Lifestyle back print.",
+  "475246703": "Heavyweight cotton-blend hoodie with the Wet Kitty Coastal Lifestyle back print.",
+  "475247521": "Soft cotton skater dress with an all-over Wet Kitty paw print.",
+  "475246968": "Wet Kitty Yacht & Rod Club flag for the wall, garage, or dock bar. Grommets for easy hanging.",
+  "475246971": "The Wet Kitty brand mark as a flag for the wall, garage, or dock bar. Grommets for easy hanging.",
+  "475246973": "Wet Kitty Sky High Club flag for the wall, garage, or dock bar. Grommets for easy hanging.",
+  "475246981": "Soft, absorbent beach towel with the Wet Kitty Wave Bike graphic.",
+};
+
+/**
+ * Products whose Printful thumbnail is a second real mockup (the garment
+ * front, or the flag/towel in use). It is shown as the second gallery image.
+ */
+const THUMBNAIL_SECOND = new Set([
+  "475246689", "475246695", "475246699", "475246703", // Coastal Lifestyle (front)
+  "475247521", // Paw Skater Dress (back)
+  "475246968", "475246971", "475246973", // flags (on the wall)
+  "475246981", // beach towel (at the beach)
+]);
 
 export function displayTitle(id: string | number, name: string) {
   const override = TITLE_OVERRIDES[String(id)];
@@ -333,9 +361,13 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   // Only fall back to the product thumbnail / raw print files when there are
   // no live garment previews: those can be stale (an old placement) or a
   // mostly transparent placement canvas.
+  const leadImages =
+    thumbnail && mockups.length && THUMBNAIL_SECOND.has(productId)
+      ? [mockups[0], thumbnail, ...mockups.slice(1)]
+      : mockups;
   const images = uniqueImages(
     mockups.length
-      ? mockups
+      ? leadImages
       : [...(thumbnail ? [thumbnail] : []), ...designs]
   ).map(image => ({ ...image, altText: image.altText || title }));
 
@@ -376,7 +408,7 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     }))
     .filter(option => option.values.length > 0);
 
-  const description = [
+  const description = DESCRIPTION_OVERRIDES[productId] ?? [
     garmentBlurb(title, productId),
     backPrint ? "Full Wet Kitty graphic printed on the back." : "",
     "Made to order for Wet Kitty Coastal.",
@@ -392,7 +424,7 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     descriptionHtml: `<p>${description.replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]!)}</p>`,
     productType: section,
     vendor: "Wet Kitty Coastal",
-    tags: [section],
+    tags: productSections(title),
     images,
     priceRange: {
       min: {
@@ -407,6 +439,89 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     options,
     variants,
   };
+}
+
+/**
+ * All-over-print products have a single blank colour in Printful, so each
+ * background colour is its own sync product. These groups merge them into one
+ * storefront card with a Color picker (variant ids stay the real Printful sync
+ * variant ids, so cart and checkout are unchanged). First member leads.
+ */
+const COLOR_GROUPS: Array<{ title: string; members: Array<[string, string]> }> =
+  [
+    {
+      title: "Wet Kitty Paw Skater Dress",
+      members: [
+        ["475247521", "Black"],
+        ["475247534", "White"],
+        ["475247551", "Pink"],
+      ],
+    },
+  ];
+
+function mergeColorGroups(products: Product[]) {
+  let result = products;
+  for (const group of COLOR_GROUPS) {
+    const members = group.members
+      .map(([id, color]) => ({
+        color,
+        product: result.find(product => product.id === id),
+      }))
+      .filter(
+        (member): member is { color: string; product: Product } =>
+          Boolean(member.product)
+      );
+    if (!members.length) continue;
+    const lead = members[0].product;
+    const variants = members.flatMap(({ color, product }) =>
+      product.variants.map(variant => {
+        const rest = variant.selectedOptions.filter(
+          option => !/^colou?r$/i.test(option.name)
+        );
+        return {
+          ...variant,
+          title: [color, ...rest.map(option => option.value)].join(" / "),
+          selectedOptions: [{ name: "Color", value: color }, ...rest],
+        };
+      })
+    );
+    const optionNames = Array.from(
+      new Set(variants.flatMap(v => v.selectedOptions.map(o => o.name)))
+    );
+    const prices = variants
+      .map(v => Number.parseFloat(v.price.amount))
+      .filter(Number.isFinite);
+    const currency = lead.priceRange.min.currencyCode;
+    const merged: Product = {
+      ...lead,
+      title: group.title,
+      handle: `${slugify(group.title)}-${lead.id}`,
+      images: uniqueImages([
+        ...members.map(({ product }) => product.images[0]).filter(Boolean),
+        ...members.flatMap(({ product }) => product.images.slice(1)),
+      ]),
+      variants,
+      options: optionNames.map(name => ({
+        name,
+        values: Array.from(
+          new Set(
+            variants
+              .map(v => v.selectedOptions.find(o => o.name === name)?.value)
+              .filter((value): value is string => Boolean(value))
+          )
+        ),
+      })),
+      priceRange: {
+        min: { amount: Math.min(...prices).toFixed(2), currencyCode: currency },
+        max: { amount: Math.max(...prices).toFixed(2), currencyCode: currency },
+      },
+    };
+    const memberIds = new Set(members.map(({ product }) => product.id));
+    result = result
+      .map(product => (product.id === lead.id ? merged : product))
+      .filter(product => product.id === lead.id || !memberIds.has(product.id));
+  }
+  return result;
 }
 
 /**
@@ -453,7 +568,7 @@ async function fetchCatalog(): Promise<Product[]> {
     );
   }
 
-  const unique = sortFeatured(dedupeByTitle(products));
+  const unique = sortFeatured(dedupeByTitle(mergeColorGroups(products)));
   catalogCache = { expiresAt: Date.now() + CATALOG_CACHE_MS, products: unique };
   return unique;
 }
@@ -462,12 +577,17 @@ export async function listProducts(
   options: { first?: number; collectionHandle?: string } = {}
 ) {
   const products = await fetchCatalog();
-  const filtered =
-    options.collectionHandle && options.collectionHandle !== "apparel"
-      ? products.filter(product =>
-          product.tags.includes(options.collectionHandle!)
-        )
+  const handle = options.collectionHandle;
+  let filtered =
+    handle && handle !== "apparel"
+      ? products.filter(product => product.tags.includes(handle))
       : products;
+  // In Women, the women's-cut pieces lead; unisex tees follow.
+  if (handle === "women")
+    filtered = [
+      ...filtered.filter(product => product.productType === "women"),
+      ...filtered.filter(product => product.productType !== "women"),
+    ];
   return filtered.slice(0, options.first ?? 100);
 }
 
