@@ -95,9 +95,9 @@ export default function Home() {
           <Hotspot href="/collections/women" label="Low Tide — Women's Collection" x={79.0} y={34.8} w={19.0} h={14.1} />
 
           {/* Replace the subtitles baked into the artwork with the real sections. */}
-          <CardCaption x={2.2} w={16.9}>Coastal &amp; Ride Tees</CardCaption>
-          <CardCaption x={21.6} w={16.9}>The Club Collection</CardCaption>
-          <CardCaption x={60.6} w={16.9}>Hoodies &amp; Zips</CardCaption>
+          <CardCaption x={1.6} w={18.8}>Coastal &amp; Ride Tees</CardCaption>
+          <CardCaption x={21.4} w={18.7}>The Club Collection</CardCaption>
+          <CardCaption x={60.5} w={18.4}>Hoodies &amp; Zips</CardCaption>
 
           {/* Live Printful products cover the retired "best sellers" artwork. */}
           <NewDrop />
@@ -216,7 +216,7 @@ export default function Home() {
         .wk-checkout { width: 100%; margin-top: 18px; padding: 15px 18px; border: 0; border-radius: 8px; background: #37bbb9; color: #061416; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
         @media (max-width: 700px) { .wk-eyebrow-fix { font-size: 6px; letter-spacing: .12em; } .wk-top-nav a { font-size: 4.2px; padding: 0 .15vw; } }
 
-        .wk-card-caption { position: absolute; z-index: 5; top: 45.95%; height: 1.15%; display: flex; align-items: center; justify-content: center; pointer-events: none; background: linear-gradient(90deg, rgba(11,17,19,0) 0%, rgba(11,17,19,.96) 14%, rgba(11,17,19,.96) 86%, rgba(11,17,19,0) 100%); color: #f2ece2; font: 600 1.02cqw/1 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; border-radius: 2px; }
+        .wk-card-caption { position: absolute; z-index: 5; top: 45.8%; height: 1.4%; display: flex; align-items: center; justify-content: center; pointer-events: none; background: linear-gradient(90deg, rgba(11,17,19,.55) 0%, rgba(11,17,19,.97) 5%, rgba(11,17,19,.97) 95%, rgba(11,17,19,.55) 100%); color: #f2ece2; font: 600 1.02cqw/1 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; border-radius: 2px; }
         .wk-newdrop { position: absolute; z-index: 5; left: 0; top: 53.85%; width: 100%; height: 19.3%; box-sizing: border-box; padding: 0 1.3% ; background: #f2ece2; line-height: 1.2; display: flex; flex-direction: column; }
         .wk-newdrop-head { display: flex; align-items: center; justify-content: center; gap: 2cqw; height: 3.4cqw; }
         .wk-newdrop-head h2 { margin: 0; color: #0b1113; font: 700 1.75cqw/1 Georgia, 'Times New Roman', serif; letter-spacing: .16em; text-transform: uppercase; }
