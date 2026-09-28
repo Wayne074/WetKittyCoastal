@@ -11,9 +11,27 @@ import {
   Users,
 } from "lucide-react";
 
+/** Hostinger / deploy can override via VITE_FOUNDING_CREW_SOLD (number string). */
+const FOUNDING_CREW_SOLD = 58;
+const FOUNDING_CREW_CAP = 1500;
+
+
 const foundingCrewPaymentUrl =
   import.meta.env.VITE_FOUNDING_CREW_PAYMENT_URL ||
   "https://buy.stripe.com/14AbJ17FYatPh2718OfAc00";
+
+function parseSold(): number {
+  const fromEnv = import.meta.env.VITE_FOUNDING_CREW_SOLD;
+  if (fromEnv !== undefined && fromEnv !== "") {
+    const n = Number(fromEnv);
+    if (Number.isFinite(n) && n >= 0) return Math.min(Math.floor(n), FOUNDING_CREW_CAP);
+  }
+  return FOUNDING_CREW_SOLD;
+}
+
+function formatSpots(n: number): string {
+  return n.toLocaleString("en-US");
+}
 
 const kitItems = [
   {
@@ -62,6 +80,9 @@ const plusItems = [
 ];
 
 export default function FoundingCrew() {
+  const sold = parseSold();
+  const remaining = Math.max(0, FOUNDING_CREW_CAP - sold);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -294,7 +315,7 @@ export default function FoundingCrew() {
         </div>
       </section>
 
-      {/* ── CTA ────────────────────────────────────────────── */}
+      {/* ── CTA + remaining ──────────────────────────────────── */}
       <section
         className="bg-[#080a0c] px-5 py-16 sm:px-8 sm:py-20"
         aria-labelledby="claim-spot"
@@ -326,10 +347,10 @@ export default function FoundingCrew() {
               className="text-lg font-black uppercase tracking-[0.12em] text-white sm:text-xl"
               aria-live="polite"
             >
-              1,500 numbered. Ever.
+              {formatSpots(remaining)} of 1,500 spots remain
             </p>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#3ec9c5] sm:text-sm">
-              Early numbers go first.
+              Once they&apos;re gone, they&apos;re gone.
             </p>
           </div>
         </div>
