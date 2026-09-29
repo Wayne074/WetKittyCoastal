@@ -12,7 +12,14 @@ import {
   classifyProductSection,
   productSections,
 } from "@shared/commerce/sections";
-import { sortFeatured } from "@shared/commerce/featured";
+import { customerDescription } from "@shared/commerce/copy";
+import {
+  MEN_ORDER,
+  WOMEN_CUT_ORDER,
+  WOMEN_UNISEX_ORDER,
+  sortByPreference,
+  sortFeatured,
+} from "@shared/commerce/featured";
 
 const PRINTFUL_API = "https://api.printful.com";
 const CATALOG_CACHE_MS = 5 * 60 * 1000;
@@ -151,41 +158,39 @@ const TITLE_OVERRIDES: Record<string, string> = {
 };
 
 /**
- * Short customer-facing descriptions for the newer non-apparel / all-over
- * products. Keyed by Printful sync product id.
- */
-const DESCRIPTION_OVERRIDES: Record<string, string> = {
-  "475246689": "Soft cotton tee with the Wet Kitty Coastal Lifestyle back print.",
-  "475246695": "Soft cotton women's tee with the Wet Kitty Coastal Lifestyle back print.",
-  "475246699": "Heavyweight cotton-blend zip hoodie with the Wet Kitty Coastal Lifestyle back print.",
-  "475246703": "Heavyweight cotton-blend hoodie with the Wet Kitty Coastal Lifestyle back print.",
-  "475247521": "Soft cotton skater dress with an all-over Wet Kitty paw print.",
-  "475246968": "Wet Kitty Yacht & Rod Club flag for the wall, garage, or dock bar. Grommets for easy hanging.",
-  "475246971": "The Wet Kitty brand mark as a flag for the wall, garage, or dock bar. Grommets for easy hanging.",
-  "475246973": "Wet Kitty Sky High Club flag for the wall, garage, or dock bar. Grommets for easy hanging.",
-  "475246981": "Soft, absorbent beach towel with the Wet Kitty Wave Bike graphic.",
-};
-
-/**
  * Products whose Printful thumbnail is a second real mockup (the garment
  * front, or the flag/towel in use). It is shown as the second gallery image.
  */
 const THUMBNAIL_SECOND = new Set([
-  "475246689", "475246695", "475246699", "475246703", // Coastal Lifestyle (front)
+  "475246689",
+  "475246695",
+  "475246699",
+  "475246703", // Coastal Lifestyle (front)
   "475247521", // Paw Skater Dress (back)
-  "475246968", "475246971", "475246973", // flags (on the wall)
+  "475246968",
+  "475246971",
+  "475246973", // flags (on the wall)
   "475246981", // beach towel (at the beach)
 ]);
 
+function printSide(name: string): "Front" | "Back" | null {
+  const match = name.match(/(?:—|–|-)\s*(front|back)\b/i);
+  if (!match) return null;
+  return match[1].toLowerCase() === "front" ? "Front" : "Back";
+}
+
 export function displayTitle(id: string | number, name: string) {
+  const side = printSide(name);
   const override = TITLE_OVERRIDES[String(id)];
-  if (override) return override;
-  return (
-    name
-      .replace(/\s*\((?:wet kitty(?: coastal)?)\)\s*$/i, "")
-      .replace(/\s+/g, " ")
-      .trim() || name
-  );
+  let title = override
+    ? override
+    : name.replace(/\s*\((?:wet kitty(?: coastal)?)\)/gi, " ");
+  title = title
+    .replace(/\s*(?:—|–|-)\s*(front|back)\s*$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (side && !/\b(front|back)\b/i.test(title)) title = `${title} — ${side}`;
+  return title || name;
 }
 
 const SIZE_TOKENS = new Set([
@@ -257,7 +262,8 @@ function normalizeVariant(
     // Single-color products often carry only the size in the sync variant
     // name; the catalog variant name ("Blank (Orange / S)") has the color.
     const catalogParts =
-      raw.product?.name?.match(/\(([^()]*)\)\s*$/)?.[1]
+      raw.product?.name
+        ?.match(/\(([^()]*)\)\s*$/)?.[1]
         ?.split(" / ")
         .map(part => part.trim())
         .filter(Boolean) ?? [];
@@ -270,7 +276,8 @@ function normalizeVariant(
     if (isAllOverPrint(productName) && color && /^white$/i.test(color)) {
       color = productName.match(/-\s*([A-Za-z ]+)\s*$/)?.[1]?.trim();
     }
-    if (color) color = color.replace(/^Solid\s+/i, "").replace(/\s+Blend$/i, "");
+    if (color)
+      color = color.replace(/^Solid\s+/i, "").replace(/\s+Blend$/i, "");
     if (color) selectedOptions.push({ name: "Color", value: color });
     if (size) selectedOptions.push({ name: "Size", value: size });
   }
@@ -280,8 +287,7 @@ function normalizeVariant(
 
   return {
     id: String(raw.id),
-    title:
-      parts.join(" / ") || raw.product?.variant_name || "Standard",
+    title: parts.join(" / ") || raw.product?.variant_name || "Standard",
     price: { amount: raw.retail_price, currencyCode: raw.currency || "USD" },
     compareAtPrice: null,
     availableForSale: raw.synced !== false,
@@ -328,33 +334,23 @@ function uniqueImages(images: Image[]) {
 
 /** Back-print products (their print files are no longer listed by the v1 API). */
 const BACK_PRINT_PRODUCTS = new Set([
-  "475046079", "475046373", "475046677", "475048215", "475056771",
-  "475057564", "475069001", "475069318", "475065897",
-  "475069764", "475070138",
+  "475046079",
+  "475046373",
+  "475046677",
+  "475048215",
+  "475056771",
+  "475057564",
+  "475069001",
+  "475069318",
+  "475065897",
+  "475069764",
+  "475070138",
 ]);
 
 /**
  * Short customer-facing garment description. Deliberately no supplier,
  * brand-of-blank or model-number details.
  */
-function garmentBlurb(title: string, id: string) {
-  const t = title.toLowerCase();
-  if (id === "475052995") return "Soft ribbed raglan baby tee.";
-  if (/zip/.test(t) && /hoodie/.test(t)) return "Heavyweight cotton-blend zip hoodie.";
-  if (/hoodie|pullover/.test(t)) return "Heavyweight cotton-blend hoodie.";
-  if (/crop tank|tank/.test(t)) return "Soft ribbed crop tank.";
-  if (/babydoll|baby tee|raglan/.test(t)) return "Soft ribbed raglan baby tee.";
-  if (/hat|cap/.test(t)) return "Classic cotton dad hat.";
-  if (/sticker/.test(t)) return "Kiss-cut vinyl sticker.";
-  if (/koozie/.test(t)) return "Foam can koozie.";
-  if (/flag/.test(t)) return "Printed wall and porch flag.";
-  if (/towel/.test(t)) return "Plush, full-color beach towel.";
-  if (/dress/.test(t)) return "Soft stretch skater dress with an all-over print.";
-  if (/women/.test(t)) return "Soft cotton women's tee.";
-  return "Soft cotton tee.";
-}
-
-
 // Real generated mockups for products whose auto preview shows the blank
 // side (back-print items where the store preview is the front).
 const PRIMARY_MOCKUP: Record<string, string> = {
@@ -367,10 +363,22 @@ const PRIMARY_MOCKUP: Record<string, string> = {
 // a back-print zip hoodie, so the zipper is visible).
 const EXTRA_MOCKUPS: Record<string, { url: string; altText: string }[]> = {
   "475069764": [
-    { url: "https://files.cdn.printful.com/files/4c1/4c155be7492adc6835e882ca2110a1e7_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Black" },
-    { url: "https://files.cdn.printful.com/files/11e/11e14cecc8c294ff0857fb819ba78003_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Navy" },
-    { url: "https://files.cdn.printful.com/files/f60/f60651c994dc9bd6ae2ea59d298cde45_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, Dark Heather" },
-    { url: "https://files.cdn.printful.com/files/9dd/9dd2d38d5c6457cccb0a87dd04abf2f0_preview.png", altText: "Yacht & Rod Club Zip Hoodie front, White" },
+    {
+      url: "https://files.cdn.printful.com/files/4c1/4c155be7492adc6835e882ca2110a1e7_preview.png",
+      altText: "Yacht & Rod Club Zip Hoodie front, Black",
+    },
+    {
+      url: "https://files.cdn.printful.com/files/11e/11e14cecc8c294ff0857fb819ba78003_preview.png",
+      altText: "Yacht & Rod Club Zip Hoodie front, Navy",
+    },
+    {
+      url: "https://files.cdn.printful.com/files/f60/f60651c994dc9bd6ae2ea59d298cde45_preview.png",
+      altText: "Yacht & Rod Club Zip Hoodie front, Dark Heather",
+    },
+    {
+      url: "https://files.cdn.printful.com/files/9dd/9dd2d38d5c6457cccb0a87dd04abf2f0_preview.png",
+      altText: "Yacht & Rod Club Zip Hoodie front, White",
+    },
   ],
 };
 
@@ -382,14 +390,12 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     : null;
 
   const primary = PRIMARY_MOCKUP[String(detail.sync_product.id)];
-  const mockups = uniqueImages(
-    [
-      ...(primary ? [{ url: primary, altText: title }] : []),
-      ...synced
+  const mockups = uniqueImages([
+    ...(primary ? [{ url: primary, altText: title }] : []),
+    ...synced
       .map(mockupFromVariant)
       .filter((image): image is Image => Boolean(image)),
-    ]
-  );
+  ]);
   const designs = uniqueImages(synced.flatMap(designImagesFromVariant));
   const productId = String(detail.sync_product.id);
   // Apparel always leads with the garment; raw print artwork is only ever a
@@ -404,7 +410,12 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   const extras = EXTRA_MOCKUPS[String(detail.sync_product.id)] ?? [];
   const images = uniqueImages(
     mockups.length
-      ? [...leadImages.slice(0, 1), ...extras.slice(0, 1), ...leadImages.slice(1), ...extras.slice(1)]
+      ? [
+          ...leadImages.slice(0, 1),
+          ...extras.slice(0, 1),
+          ...leadImages.slice(1),
+          ...extras.slice(1),
+        ]
       : [...(thumbnail ? [thumbnail] : []), ...designs]
   ).map(image => ({ ...image, altText: image.altText || title }));
 
@@ -420,8 +431,8 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     BACK_PRINT_PRODUCTS.has(productId) ||
     (!isAllOverPrint(title) &&
       synced.some(v =>
-      (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
-    ));
+        (v.files ?? []).some(file => /^back/i.test(file.type ?? ""))
+      ));
   const prices = variants
     .map(v => Number.parseFloat(v.price.amount))
     .filter(Number.isFinite);
@@ -446,13 +457,11 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     }))
     .filter(option => option.values.length > 0);
 
-  const description = DESCRIPTION_OVERRIDES[productId] ?? [
-    garmentBlurb(title, productId),
-    backPrint ? "Full Wet Kitty graphic printed on the back." : "",
-    "Made to order for Wet Kitty Coastal.",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const description = customerDescription({
+    title,
+    backPrint,
+    womensCut: section === "women",
+  });
 
   return {
     id: String(detail.sync_product.id),
@@ -505,9 +514,8 @@ function mergeColorGroups(products: Product[]) {
         color,
         product: result.find(product => product.id === id),
       }))
-      .filter(
-        (member): member is { color: string; product: Product } =>
-          Boolean(member.product)
+      .filter((member): member is { color: string; product: Product } =>
+        Boolean(member.product)
       );
     if (!members.length) continue;
     const lead = members[0].product;
@@ -620,12 +628,18 @@ export async function listProducts(
     handle && handle !== "apparel"
       ? products.filter(product => product.tags.includes(handle))
       : products;
-  // In Women, the women's-cut pieces lead; unisex tees follow.
-  if (handle === "women")
+  // Women's Club: her cuts first, then unisex tees in a beach-and-night
+  // order that is not the Men's Club order.
+  if (handle === "women") {
+    const cut = filtered.filter(product => product.productType === "women");
+    const rest = filtered.filter(product => product.productType !== "women");
     filtered = [
-      ...filtered.filter(product => product.productType === "women"),
-      ...filtered.filter(product => product.productType !== "women"),
+      ...sortByPreference(cut, WOMEN_CUT_ORDER),
+      ...sortByPreference(rest, WOMEN_UNISEX_ORDER),
     ];
+  }
+  // Men's Club: boats, cars, and bikes before the rest.
+  if (handle === "men") filtered = sortByPreference(filtered, MEN_ORDER);
   return filtered.slice(0, options.first ?? 100);
 }
 

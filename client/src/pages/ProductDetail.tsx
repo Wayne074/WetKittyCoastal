@@ -1,4 +1,4 @@
-import { SHIPPING_SUMMARY, setPageMeta, webImage } from "@/const";
+import { SHIPPING_SUMMARY, setPageMeta } from "@/const";
 import { useEffect, useMemo, useState } from "react";
 import {
   Heart,
@@ -21,6 +21,7 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
+  const [imageFailed, setImageFailed] = useState(false);
 
   const { data: product, isLoading } = trpc.commerce.products.byHandle.useQuery(
     { handle: productId || "" },
@@ -48,6 +49,7 @@ export default function ProductDetail() {
       )
     );
     setImageIndex(0);
+    setImageFailed(false);
   }, [product?.id]);
 
   const variant = useMemo(() => {
@@ -68,7 +70,9 @@ export default function ProductDetail() {
     const fallback =
       exact ??
       product.variants.find(v =>
-        v.selectedOptions.some(o => o.name === name && String(o.value) === value)
+        v.selectedOptions.some(
+          o => o.name === name && String(o.value) === value
+        )
       );
     if (fallback) {
       setSelection(
@@ -119,7 +123,10 @@ export default function ProductDetail() {
           <p className="text-sm text-muted-foreground mb-6">
             This product may have been removed or the link is incorrect.
           </p>
-          <a href="/collections/apparel" className="btn btn-primary inline-flex">
+          <a
+            href="/collections/apparel"
+            className="btn btn-primary inline-flex"
+          >
             Browse Collections
           </a>
         </div>
@@ -185,11 +192,16 @@ export default function ProductDetail() {
                 border: "1px solid rgba(21, 154, 153, 0.08)",
               }}
             >
-              {currentImage ? (
+              {currentImage && !imageFailed ? (
                 <img
                   src={currentImage.url}
                   alt={currentImage.altText || product.title}
                   className="w-full h-full object-contain"
+                  onError={() => {
+                    if (imageIndex + 1 < images.length)
+                      setImageIndex(imageIndex + 1);
+                    else setImageFailed(true);
+                  }}
                 />
               ) : (
                 <span
@@ -222,8 +234,7 @@ export default function ProductDetail() {
                     }}
                   >
                     <img
-                      src={webImage(img.url, 160)}
-                      onError={e => { if (e.currentTarget.src !== img.url) e.currentTarget.src = img.url; }}
+                      src={img.url}
                       alt={img.altText || `${product.title} view ${idx + 1}`}
                       className="w-full h-full object-contain bg-white"
                     />
@@ -287,7 +298,9 @@ export default function ProductDetail() {
                         v =>
                           v.availableForSale &&
                           v.selectedOptions.some(
-                            o => o.name === option.name && String(o.value) === value
+                            o =>
+                              o.name === option.name &&
+                              String(o.value) === value
                           )
                       );
                       return (
@@ -378,8 +391,14 @@ export default function ProductDetail() {
             {/* Trust Signals */}
             <div className="border-t border-border/50 pt-5 space-y-3">
               {[
-                { icon: Truck, text: "$5.99 shipping, free on orders over $100" },
-                { icon: Shield, text: "Made to order just for you. Arrives in about 5–12 business days" },
+                {
+                  icon: Truck,
+                  text: "$5.99 shipping, free on orders over $100",
+                },
+                {
+                  icon: Shield,
+                  text: "Made to order just for you. Arrives in about 5–12 business days",
+                },
               ].map(({ icon: Icon, text }) => (
                 <div
                   key={text}

@@ -29,11 +29,11 @@ describe("shop sections", () => {
   });
 
   it.each([
-    ["Yacht & Rod Club Men’s Tee", ["club", "women"]],
-    ["Wet Kitty Coastal Lifestyle Tee", ["coastal-ride", "women"]],
+    ["Yacht & Rod Club Men’s Tee", ["club", "men", "women"]],
+    ["Wet Kitty Coastal Lifestyle Tee", ["coastal-ride", "men", "women"]],
     ["Wet Kitty Coastal Lifestyle Women's Tee", ["women"]],
     ["Wet Kitty Brand Mark Crop Tank", ["women"]],
-    ["Wet Kitty Coastal Lifestyle Zip Hoodie", ["hoodies"]],
+    ["Wet Kitty Coastal Lifestyle Zip Hoodie", ["hoodies", "men"]],
     ["Wet Kitty Brand Mark Flag", ["accessories"]],
   ])("%s lists in %j", (name, sections) => {
     expect(productSections(name)).toEqual(sections);

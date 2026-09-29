@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Heart, ShoppingBag } from "lucide-react";
-import { webImage } from "@/const";
 
 interface PostcardProductCardProps {
   handle: string;
@@ -8,7 +8,52 @@ interface PostcardProductCardProps {
   price: string;
   compareAtPrice?: string;
   imageUrl?: string;
+  /** Ordered candidates. The first is the merchandised shot; the rest are fallbacks. */
+  imageUrls?: string[];
   tags?: string[];
+  /** First-screen cards should not wait on lazy loading. */
+  eager?: boolean;
+}
+
+function CardPhoto({
+  urls,
+  title,
+  eager,
+}: {
+  urls: string[];
+  title: string;
+  eager?: boolean;
+}) {
+  const [index, setIndex] = useState(0);
+  const url = urls[index];
+  if (!url) {
+    return (
+      <div
+        className="w-full h-full flex items-center justify-center"
+        style={{
+          background: "linear-gradient(160deg, #0f3a3d 0%, #123e48 100%)",
+        }}
+      >
+        <span
+          className="text-sm font-bold tracking-[0.2em] text-white/80"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          WK
+        </span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={url}
+      alt={title}
+      decoding="async"
+      loading={eager ? "eager" : "lazy"}
+      onError={() => setIndex(current => current + 1)}
+      className="w-full h-full object-contain bg-[#f4f1ea] transition-transform duration-700 group-hover:scale-105"
+      style={{ transitionTimingFunction: "var(--ease-out)" }}
+    />
+  );
 }
 
 /**
@@ -21,10 +66,15 @@ export default function PostcardProductCard({
   price,
   compareAtPrice,
   imageUrl,
+  imageUrls,
   tags = [],
+  eager = false,
 }: PostcardProductCardProps) {
-  const isLimited = tags.some((t) => t.toLowerCase().includes("limited"));
-  const isNew = tags.some((t) => t.toLowerCase().includes("new"));
+  const photos = (
+    imageUrls && imageUrls.length ? imageUrls : imageUrl ? [imageUrl] : []
+  ).filter(Boolean);
+  const isLimited = tags.some(t => t.toLowerCase().includes("limited"));
+  const isNew = tags.some(t => t.toLowerCase().includes("new"));
 
   return (
     <Link href={`/products/${handle}`}>
@@ -33,61 +83,34 @@ export default function PostcardProductCard({
         <div
           className="relative overflow-hidden rounded-2xl transition-all duration-500"
           style={{
-            boxShadow: "0 4px 20px rgba(7, 16, 20, 0.08), 0 1px 4px rgba(7, 16, 20, 0.04)",
+            boxShadow:
+              "0 4px 20px rgba(7, 16, 20, 0.08), 0 1px 4px rgba(7, 16, 20, 0.04)",
             transitionTimingFunction: "var(--ease-out)",
           }}
         >
           {/* Image area */}
-          <div className="aspect-[4/5] overflow-hidden relative bg-white">
-            {imageUrl ? (
-              <img
-                src={webImage(imageUrl, 600)}
-                onError={e => { if (e.currentTarget.src !== imageUrl) e.currentTarget.src = imageUrl; }}
-                alt={title}
-                decoding="async"
-                className="w-full h-full object-contain bg-white transition-transform duration-700 group-hover:scale-105"
-                style={{ transitionTimingFunction: "var(--ease-out)" }}
-                loading="lazy"
-              />
-            ) : (
-              <div
-                className="w-full h-full flex items-center justify-center"
-                style={{
-                  background: "linear-gradient(160deg, rgba(21, 154, 153, 0.08) 0%, rgba(121, 212, 205, 0.12) 50%, rgba(216, 195, 155, 0.08) 100%)",
-                }}
-              >
-                <div className="text-center">
-                  <div
-                    className="w-16 h-16 mx-auto mb-3 rounded-xl flex items-center justify-center"
-                    style={{ background: "rgba(21, 154, 153, 0.1)" }}
-                  >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal/60">
-                      <path d="M12 15c-3 0-6-2-6-5s3-5 6-5 6 2 6 5-3 5-6 5z" />
-                      <circle cx="8" cy="6" r="1.5" />
-                      <circle cx="12" cy="4.5" r="1.5" />
-                      <circle cx="16" cy="6" r="1.5" />
-                    </svg>
-                  </div>
-                  <span className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider">
-                    Wet Kitty
-                  </span>
-                </div>
-              </div>
-            )}
+          <div className="aspect-[4/5] overflow-hidden relative bg-[#f4f1ea]">
+            <CardPhoto urls={photos} title={title} eager={eager} />
 
             {/* Hover overlay with quick actions */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100">
               <div className="flex gap-2">
                 <button
                   className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95"
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   aria-label="Add to wishlist"
                 >
                   <Heart className="w-4 h-4 text-ink" />
                 </button>
                 <button
                   className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95"
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   aria-label="Quick add to cart"
                 >
                   <ShoppingBag className="w-4 h-4 text-ink" />
@@ -120,7 +143,10 @@ export default function PostcardProductCard({
           <div className="p-4 bg-card border-t border-border/50">
             <h3
               className="text-sm font-bold text-foreground mb-1 line-clamp-3 min-h-[3.75rem] md:line-clamp-2 md:min-h-[2.5rem] leading-5 group-hover:text-teal transition-colors duration-300"
-              style={{ fontFamily: "var(--font-display)", letterSpacing: "0.02em" }}
+              style={{
+                fontFamily: "var(--font-display)",
+                letterSpacing: "0.02em",
+              }}
             >
               {title}
             </h3>

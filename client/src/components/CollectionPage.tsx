@@ -1,7 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { Filter, SlidersHorizontal, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { WaveSeparator, PawLoader, PostcardProductCard } from "@/components/brand";
+import {
+  WaveSeparator,
+  PawLoader,
+  PostcardProductCard,
+} from "@/components/brand";
+import { cardImageUrls } from "@shared/commerce/featured";
 
 interface CollectionPageProps {
   handle?: string;
@@ -11,6 +16,7 @@ interface CollectionPageProps {
   tagline: string;
   gradient: string;
   accent: string;
+  heroImage?: string;
   seoTitle?: string;
   seoDescription?: string;
 }
@@ -31,20 +37,26 @@ export default function CollectionPage({
   tagline,
   gradient,
   accent,
+  heroImage,
   seoTitle,
   seoDescription,
 }: CollectionPageProps) {
   const [sortBy, setSortBy] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [sizeFilter, setSizeFilter] = useState<string | null>(null);
-  const [priceFilter, setPriceFilter] = useState<{ min: number; max: number } | null>(null);
+  const [priceFilter, setPriceFilter] = useState<{
+    min: number;
+    max: number;
+  } | null>(null);
 
   // SEO: Update document title and meta description
   useEffect(() => {
     const pageTitle = seoTitle || `${title} | Wet Kitty Apparel`;
     document.title = pageTitle;
     const metaDesc = document.querySelector('meta[name="description"]');
-    const descContent = seoDescription || `${description} Shop the ${title} collection at Wet Kitty — premium coastal biker lifestyle apparel.`;
+    const descContent =
+      seoDescription ||
+      `${description} Shop the ${title} collection at Wet Kitty — premium coastal biker lifestyle apparel.`;
     if (metaDesc) {
       metaDesc.setAttribute("content", descContent);
     } else {
@@ -56,7 +68,11 @@ export default function CollectionPage({
     // Open Graph
     const setOg = (prop: string, content: string) => {
       let el = document.querySelector(`meta[property="${prop}"]`);
-      if (!el) { el = document.createElement("meta"); el.setAttribute("property", prop); document.head.appendChild(el); }
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("property", prop);
+        document.head.appendChild(el);
+      }
       el.setAttribute("content", content);
     };
     setOg("og:title", pageTitle);
@@ -65,10 +81,11 @@ export default function CollectionPage({
     setOg("og:url", window.location.href);
   }, [title, description, seoTitle, seoDescription]);
 
-  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({
-    first: 100,
-    collectionHandle: handle,
-  });
+  const { data: products = [], isLoading } =
+    trpc.commerce.products.list.useQuery({
+      first: 100,
+      collectionHandle: handle,
+    });
 
   const filteredAndSorted = useMemo(() => {
     let result = [...products];
@@ -97,9 +114,17 @@ export default function CollectionPage({
     // Sort
     switch (sortBy) {
       case "price-low":
-        return result.sort((a: any, b: any) => parseFloat(a.variants[0]?.price.amount || "0") - parseFloat(b.variants[0]?.price.amount || "0"));
+        return result.sort(
+          (a: any, b: any) =>
+            parseFloat(a.variants[0]?.price.amount || "0") -
+            parseFloat(b.variants[0]?.price.amount || "0")
+        );
       case "price-high":
-        return result.sort((a: any, b: any) => parseFloat(b.variants[0]?.price.amount || "0") - parseFloat(a.variants[0]?.price.amount || "0"));
+        return result.sort(
+          (a: any, b: any) =>
+            parseFloat(b.variants[0]?.price.amount || "0") -
+            parseFloat(a.variants[0]?.price.amount || "0")
+        );
       case "newest":
         return result.sort((a: any, b: any) => Number(b.id) - Number(a.id));
       case "title-az":
@@ -114,8 +139,22 @@ export default function CollectionPage({
   return (
     <div className="min-h-screen">
       {/* ─── STORY HERO ─── Full-page intro that sets the mood */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0" style={{ background: gradient }} />
+      <section className="relative h-[300px] md:h-[380px] flex items-end overflow-hidden">
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : null}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: heroImage
+              ? "linear-gradient(180deg, rgba(5,12,16,0.15) 0%, rgba(5,12,16,0.55) 45%, rgba(5,12,16,0.82) 100%)"
+              : gradient,
+          }}
+        />
         {/* Glow accent */}
         <div
           className="absolute inset-0"
@@ -142,10 +181,13 @@ export default function CollectionPage({
         {/* Bottom fade */}
         <div
           className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{ background: "linear-gradient(to top, var(--background), transparent)" }}
+          style={{
+            background:
+              "linear-gradient(to top, var(--background), transparent)",
+          }}
         />
 
-        <div className="container relative z-10 py-20 md:py-28">
+        <div className="container relative z-10 pb-10 pt-16 md:pb-12">
           <div className="max-w-2xl">
             <span
               className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4 block"
@@ -155,17 +197,28 @@ export default function CollectionPage({
             </span>
             <h1
               className="text-4xl md:text-6xl font-bold text-white mb-4"
-              style={{ fontFamily: "var(--font-editorial)", lineHeight: 1.1, letterSpacing: "-0.01em" }}
+              style={{
+                fontFamily: "var(--font-editorial)",
+                lineHeight: 1.1,
+                letterSpacing: "-0.01em",
+              }}
             >
               {title}
             </h1>
             <p
               className="text-xl md:text-2xl font-medium mb-6"
-              style={{ fontFamily: "var(--font-editorial)", fontStyle: "italic", color: "rgba(255, 250, 240, 0.7)" }}
+              style={{
+                fontFamily: "var(--font-editorial)",
+                fontStyle: "italic",
+                color: "rgba(255, 250, 240, 0.7)",
+              }}
             >
               {tagline}
             </p>
-            <p className="text-sm max-w-lg" style={{ color: "rgba(255, 250, 240, 0.5)", lineHeight: 1.7 }}>
+            <p
+              className="text-sm max-w-lg"
+              style={{ color: "rgba(255, 250, 240, 0.5)", lineHeight: 1.7 }}
+            >
               {description}
             </p>
           </div>
@@ -186,13 +239,17 @@ export default function CollectionPage({
                 <Filter className="w-4 h-4" />
                 Filters
                 {activeFilterCount > 0 && (
-                  <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white" style={{ background: "var(--teal)" }}>
+                  <span
+                    className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center text-white"
+                    style={{ background: "var(--teal)" }}
+                  >
                     {activeFilterCount}
                   </span>
                 )}
               </button>
               <span className="text-sm text-muted-foreground">
-                {filteredAndSorted.length} {filteredAndSorted.length === 1 ? "product" : "products"}
+                {filteredAndSorted.length}{" "}
+                {filteredAndSorted.length === 1 ? "product" : "products"}
               </span>
             </div>
 
@@ -200,7 +257,7 @@ export default function CollectionPage({
               <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={e => setSortBy(e.target.value)}
                 className="text-sm font-medium bg-transparent border-none text-foreground focus:outline-none cursor-pointer"
               >
                 <option value="featured">Featured</option>
@@ -218,17 +275,30 @@ export default function CollectionPage({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Size Filter */}
                 <div>
-                  <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2 block">Size</label>
+                  <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2 block">
+                    Size
+                  </label>
                   <div className="flex flex-wrap gap-2">
-                    {SIZE_OPTIONS.map((size) => (
+                    {SIZE_OPTIONS.map(size => (
                       <button
                         key={size}
-                        onClick={() => setSizeFilter(sizeFilter === size ? null : size)}
+                        onClick={() =>
+                          setSizeFilter(sizeFilter === size ? null : size)
+                        }
                         className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                         style={{
-                          border: sizeFilter === size ? "1.5px solid var(--teal)" : "1px solid var(--border)",
-                          background: sizeFilter === size ? "rgba(21, 154, 153, 0.06)" : "transparent",
-                          color: sizeFilter === size ? "var(--teal)" : "var(--foreground)",
+                          border:
+                            sizeFilter === size
+                              ? "1.5px solid var(--teal)"
+                              : "1px solid var(--border)",
+                          background:
+                            sizeFilter === size
+                              ? "rgba(21, 154, 153, 0.06)"
+                              : "transparent",
+                          color:
+                            sizeFilter === size
+                              ? "var(--teal)"
+                              : "var(--foreground)",
                         }}
                       >
                         {size}
@@ -239,17 +309,38 @@ export default function CollectionPage({
 
                 {/* Price Filter */}
                 <div>
-                  <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2 block">Price</label>
+                  <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2 block">
+                    Price
+                  </label>
                   <div className="flex flex-wrap gap-2">
-                    {PRICE_RANGES.map((range) => (
+                    {PRICE_RANGES.map(range => (
                       <button
                         key={range.label}
-                        onClick={() => setPriceFilter((priceFilter?.min === range.min && priceFilter?.max === range.max) ? null : range)}
+                        onClick={() =>
+                          setPriceFilter(
+                            priceFilter?.min === range.min &&
+                              priceFilter?.max === range.max
+                              ? null
+                              : range
+                          )
+                        }
                         className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                         style={{
-                          border: priceFilter?.min === range.min && priceFilter?.max === range.max ? "1.5px solid var(--teal)" : "1px solid var(--border)",
-                          background: priceFilter?.min === range.min && priceFilter?.max === range.max ? "rgba(21, 154, 153, 0.06)" : "transparent",
-                          color: priceFilter?.min === range.min && priceFilter?.max === range.max ? "var(--teal)" : "var(--foreground)",
+                          border:
+                            priceFilter?.min === range.min &&
+                            priceFilter?.max === range.max
+                              ? "1.5px solid var(--teal)"
+                              : "1px solid var(--border)",
+                          background:
+                            priceFilter?.min === range.min &&
+                            priceFilter?.max === range.max
+                              ? "rgba(21, 154, 153, 0.06)"
+                              : "transparent",
+                          color:
+                            priceFilter?.min === range.min &&
+                            priceFilter?.max === range.max
+                              ? "var(--teal)"
+                              : "var(--foreground)",
                         }}
                       >
                         {range.label}
@@ -261,7 +352,10 @@ export default function CollectionPage({
 
               {activeFilterCount > 0 && (
                 <button
-                  onClick={() => { setSizeFilter(null); setPriceFilter(null); }}
+                  onClick={() => {
+                    setSizeFilter(null);
+                    setPriceFilter(null);
+                  }}
                   className="mt-3 flex items-center gap-1 text-xs font-medium transition-colors"
                   style={{ color: "var(--teal)" }}
                 >
@@ -283,14 +377,15 @@ export default function CollectionPage({
             </div>
           ) : filteredAndSorted.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {filteredAndSorted.map((product: any) => (
+              {filteredAndSorted.map((product: any, index: number) => (
                 <PostcardProductCard
                   key={product.id}
                   handle={product.handle}
                   title={product.title}
                   price={product.variants?.[0]?.price?.amount || "0"}
                   compareAtPrice={product.variants?.[0]?.compareAtPrice?.amount}
-                  imageUrl={product.images?.[0]?.url}
+                  imageUrls={cardImageUrls(product.images, index)}
+                  eager={index < 8}
                   tags={product.tags || []}
                 />
               ))}
@@ -301,13 +396,25 @@ export default function CollectionPage({
                 className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center"
                 style={{ background: "rgba(21, 154, 153, 0.08)" }}
               >
-                <span className="text-2xl font-bold" style={{ color: "var(--teal)", fontFamily: "var(--font-display)" }}>WK</span>
+                <span
+                  className="text-2xl font-bold"
+                  style={{
+                    color: "var(--teal)",
+                    fontFamily: "var(--font-display)",
+                  }}
+                >
+                  WK
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-display)" }}>
+              <h3
+                className="text-lg font-bold text-foreground mb-2"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
                 Coming Soon
               </h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                This collection is being curated. Join the Crew to get first access when it drops.
+                This collection is being curated. Join the Crew to get first
+                access when it drops.
               </p>
             </div>
           )}
