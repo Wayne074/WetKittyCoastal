@@ -24,9 +24,23 @@ import OpenSoon from "./pages/OpenSoon";
 import { AboutPage, ContactPage, FaqPage, ShippingPage } from "./pages/Info";
 import { SHOP_OPEN } from "./const";
 
+function withPreview(path: string) {
+  try {
+    const on =
+      sessionStorage.getItem("wk-preview") === "1" ||
+      new URLSearchParams(window.location.search).get("preview") === "wkcrew26";
+    if (!on) return path;
+  } catch {
+    return path;
+  }
+  const u = new URL(path, window.location.origin);
+  u.searchParams.set("preview", "wkcrew26");
+  return u.pathname + u.search + u.hash;
+}
+
 function RedirectHome() {
   if (typeof window !== "undefined") {
-    window.location.replace("/");
+    window.location.replace(withPreview("/"));
   }
   return null;
 }
@@ -41,7 +55,7 @@ const SECTION_COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
 
 function LegacyCollectionRedirect({ to }: { to: string }) {
   if (typeof window !== "undefined") {
-    window.location.replace(to);
+    window.location.replace(withPreview(to));
   }
   return null;
 }
