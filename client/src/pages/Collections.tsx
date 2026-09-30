@@ -18,7 +18,7 @@ const GRADIENTS: Record<
   "coastal-ride": {
     gradient: "linear-gradient(160deg, #041a25 0%, #0a3040 100%)",
     accent: "var(--teal)",
-    image: "/images/lifestyle/coastal-boat.jpg",
+    image: "/images/lifestyle/coastal-road.jpg",
   },
   women: {
     gradient: "linear-gradient(160deg, #1a0e20 0%, #2a1a3a 100%)",
