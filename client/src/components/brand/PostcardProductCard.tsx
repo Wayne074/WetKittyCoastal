@@ -149,7 +149,7 @@ export default function PostcardProductCard({
           {/* Card footer — the "postcard" feel */}
           <div className="p-4 bg-card border-t border-border/50">
             <h3
-              className="text-sm font-bold text-foreground mb-1 line-clamp-3 min-h-[3.75rem] leading-5 group-hover:text-teal transition-colors duration-300"
+              className="text-sm font-bold text-foreground mb-1 min-h-[3.75rem] leading-5 break-words group-hover:text-teal transition-colors duration-300"
               style={{
                 fontFamily: "var(--font-display)",
                 letterSpacing: "0.02em",

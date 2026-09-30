@@ -67,7 +67,7 @@ export const MEN_ORDER: string[] = [
   "476296287", // Race Club — cars
   "476298400", // Race Club Street — cars
   "476302437", // Wave Bike — bikes
-  "476295516", // Sky High — night out, getting her attention
+  "476295516", // Sky High — guys' night
   "475050986", // Coastal Highway — front
   "476301010", // Salty Soul — front
   "475066883", // Wave zip hoodie

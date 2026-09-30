@@ -376,21 +376,44 @@ function isHoodieTitle(title: string) {
   return /\b(hoodie|pullover)\b/i.test(title);
 }
 
-/** Garment back when the store thumbnail is one; otherwise the existing back print file. */
+/** Print-file previews (front chest art, back art). Not garment photos. */
+export function rawPrintUrls(detail: SyncProductDetail) {
+  const urls = new Set<string>();
+  for (const variant of detail.sync_variants) {
+    for (const file of variant.files ?? []) {
+      const type = file.type ?? "";
+      if (/^preview$/i.test(type) || /label/i.test(type)) continue;
+      for (const url of [file.preview_url, file.thumbnail_url, file.url]) {
+        if (url) urls.add(url);
+      }
+    }
+  }
+  return urls;
+}
+
+/**
+ * A hoodie back belongs in the gallery only when Printful already has a
+ * garment-back mockup (the store thumbnail). A `back` print-file preview is
+ * raw artwork and is never returned here. Blank-front thumbnails are not backs.
+ */
+export function garmentBackUrl(
+  productId: string,
+  thumbnailUrl: string | null | undefined,
+  printUrls: Set<string>
+) {
+  if (!thumbnailUrl) return null;
+  if (BLANK_HOODIE_THUMBNAILS.has(productId)) return null;
+  if (printUrls.has(thumbnailUrl)) return null;
+  return thumbnailUrl;
+}
+
 function hoodieBackShot(
   detail: SyncProductDetail,
   productId: string,
   thumbnail: Image | null
 ): Image | null {
-  if (thumbnail && !BLANK_HOODIE_THUMBNAILS.has(productId)) {
-    return { url: thumbnail.url, altText: HOODIE_BACK_ALT };
-  }
-  for (const variant of detail.sync_variants) {
-    const file = (variant.files ?? []).find(item => /^back$/i.test(item.type ?? ""));
-    const url = file?.preview_url || file?.thumbnail_url || null;
-    if (url) return { url, altText: HOODIE_BACK_ALT };
-  }
-  return null;
+  const url = garmentBackUrl(productId, thumbnail?.url, rawPrintUrls(detail));
+  return url ? { url, altText: HOODIE_BACK_ALT } : null;
 }
 
 function normalizeProduct(detail: SyncProductDetail): Product {
@@ -422,6 +445,7 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   const backShot = isHoodieTitle(title)
     ? hoodieBackShot(detail, productId, thumbnail)
     : null;
+  const printUrls = isHoodieTitle(title) ? rawPrintUrls(detail) : null;
   const images = uniqueImages(
     mockups.length
       ? [
@@ -438,7 +462,9 @@ function normalizeProduct(detail: SyncProductDetail): Product {
           ...designs,
           ...(backShot ? [backShot] : []),
         ]
-  ).map(image => ({ ...image, altText: image.altText || title }));
+  )
+    .filter(image => !printUrls?.has(image.url))
+    .map(image => ({ ...image, altText: image.altText || title }));
 
   const variants = synced.map(v => {
     const variant = normalizeVariant(

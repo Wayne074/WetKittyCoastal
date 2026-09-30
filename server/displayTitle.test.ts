@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { displayTitle } from "./_core/printful";
+import { displayTitle, garmentBackUrl } from "./_core/printful";
 import { customerDescription } from "@shared/commerce/copy";
 import {
   FEATURED_ORDER,
@@ -100,5 +100,25 @@ describe("hoodie cards", () => {
     );
     expect(urls[0]).toBe("https://example.test/navy-front.png");
     expect(urls).toContain("https://example.test/back.png");
+  });
+});
+
+
+describe("hoodie back gallery", () => {
+  it("uses a real garment-back thumbnail and never a raw print file", () => {
+    const raw = new Set(["https://files.example/back-print.png"]);
+    expect(
+      garmentBackUrl(
+        "475070138",
+        "https://files.example/yacht-back-mockup.png",
+        raw
+      )
+    ).toBe("https://files.example/yacht-back-mockup.png");
+    expect(
+      garmentBackUrl("475246703", "https://files.example/blank-front.png", raw)
+    ).toBeNull();
+    expect(
+      garmentBackUrl("475067424", "https://files.example/back-print.png", raw)
+    ).toBeNull();
   });
 });

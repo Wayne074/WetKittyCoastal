@@ -15,12 +15,12 @@ function lifeLine(title: string, hers: boolean) {
   if (/yacht|rod club/.test(t)) {
     return hers
       ? "Boats, dock lights, and a night she got ready for because she wanted to."
-      : "Boats, fishing, and a Gulf night that starts on the water and ends at the bar. The kind of shirt that gets her attention.";
+      : "Boats, fishing, and a Gulf night that starts on the water and ends at the bar.";
   }
   if (/sky high/.test(t)) {
     return hers
       ? "Girls' night and skyline lights. She wore it because she wanted to."
-      : "A guys' night, skyline lights, and a shirt that gets her attention.";
+      : "Guys' night under the skyline lights, and a date night if the weekend turns that way.";
   }
   if (/race club|street tee/.test(t)) {
     return hers
@@ -49,8 +49,8 @@ function lifeLine(title: string, hers: boolean) {
   }
   if (/coastal lifestyle|lifestyle/.test(t)) {
     return hers
-      ? "Panama City Beach. Water, friends, nightlife, and a look she put on for herself."
-      : "Panama City Beach with the guys. Boats, trucks, and nowhere to be in the morning.";
+      ? "Panama City Beach. Water, boats, nightlife, and a night she chose for herself."
+      : "Panama City Beach with the guys. Beach, boats, trucks, and nowhere to be in the morning.";
   }
   if (/hoodie|pullover|\bzip\b/.test(t)) {
     return hers
@@ -81,8 +81,8 @@ function lifeLine(title: string, hers: boolean) {
       : "The Wet Kitty mark for boats, trucks, and nights with the guys.";
   }
   return hers
-    ? "Beach days, boats, and a night she got ready for because she wanted to."
-    : "Gulf Coast weekends: boats, trucks, bikes, the guys, and a night that gets her attention.";
+    ? "Beach, boats, and the water, then a night out she chose. Confident, and not dressed for anyone else."
+    : "Gulf Coast weekends: beach, boats, trucks, bikes, the bar, and a night out with the guys.";
 }
 
 function garmentFacts(title: string) {

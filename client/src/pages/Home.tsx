@@ -119,14 +119,14 @@ export default function Home() {
               image="/images/lifestyle/mens-club.jpg"
               kicker="Men's Club"
               title="The night starts on the water."
-              body="Boats and fishing, trucks and cars, bikes, and the bar after. A guys' weekend, and the shirt that gets her attention."
+              body="Beach, boats and fishing, trucks and cars, bikes, then the bar. Guys' night, date night, a weekend that runs long."
             />
             <ClubBand
               href="/collections/women"
               image="/images/lifestyle/womens-club.jpg"
               kicker="Women's Club"
               title="Sun on the water. Lights after."
-              body="Beach days, boats, nightlife, and girls' night. She looks good because she wants to. Same coast. Not his closet."
+              body="Beach, boats, and the water, then nightlife and girls' night. Confident and independent. She looks like that because she wants to."
             />
           </div>
         </section>
