@@ -1,8 +1,8 @@
-import type { ComponentType } from "react";
+import { useEffect, type ComponentType } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { CartProvider } from "./contexts/CartContext";
@@ -79,58 +79,72 @@ function ShopRoute({
 }
 
 function Router() {
+  const [location] = useLocation();
+  useEffect(() => {
+    document.getElementById("app-scroll")?.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <Switch>
       <Route>
         {() => (
-          <div className="flex flex-col min-h-screen">
+          <div className="flex h-dvh min-h-0 flex-col overflow-hidden">
             <Header />
-            <main className="flex-1">
-              <Switch>
-                <Route path={"/"} component={Home} />
-                {CUSTOMER_NAV_SECTIONS.map(section => (
-                  <Route
-                    key={section.handle}
-                    path={`/collections/${section.handle}`}
-                  >
-                    {() => (
-                      <ShopRoute open={SECTION_COMPONENTS[section.handle]} />
+            <div id="app-scroll" className="min-h-0 flex-1 overflow-y-auto">
+              <div className="flex min-h-full flex-col">
+                <main className="flex-1">
+                  <Switch>
+                    <Route path={"/"} component={Home} />
+                    {CUSTOMER_NAV_SECTIONS.map(section => (
+                      <Route
+                        key={section.handle}
+                        path={`/collections/${section.handle}`}
+                      >
+                        {() => (
+                          <ShopRoute
+                            open={SECTION_COMPONENTS[section.handle]}
+                          />
+                        )}
+                      </Route>
+                    ))}
+                    {Object.entries(LEGACY_COLLECTION_REDIRECTS).map(
+                      ([legacy, to]) => (
+                        <Route key={legacy} path={`/collections/${legacy}`}>
+                          {() => <LegacyCollectionRedirect to={to} />}
+                        </Route>
+                      )
                     )}
-                  </Route>
-                ))}
-                {Object.entries(LEGACY_COLLECTION_REDIRECTS).map(
-                  ([legacy, to]) => (
-                    <Route key={legacy} path={`/collections/${legacy}`}>
-                      {() => <LegacyCollectionRedirect to={to} />}
+                    <Route path={"/collections/apparel"}>
+                      {() => <ShopRoute open={AllApparelCollection} />}
                     </Route>
-                  )
-                )}
-                <Route path={"/collections/apparel"}>
-                  {() => <ShopRoute open={AllApparelCollection} />}
-                </Route>
-                <Route path={"/products/:handle"}>
-                  {() => <ShopRoute open={ProductDetail} />}
-                </Route>
-                <Route path={"/wishlist"} component={RedirectHome} />
-                <Route path={"/community"} component={Community} />
-                <Route path={"/founding-crew"} component={FoundingCrew} />
-                <Route path={"/events"} component={RedirectHome} />
-                <Route path={"/cart"}>
-                  {() => <ShopRoute open={CartPage} />}
-                </Route>
-                <Route path={"/returns"} component={ReturnsPage} />
-                <Route path={"/about"} component={AboutPage} />
-                <Route path={"/faq"} component={FaqPage} />
-                <Route path={"/shipping"} component={ShippingPage} />
-                <Route path={"/contact"} component={ContactPage} />
-                <Route path={"/privacy"} component={PrivacyPage} />
-                <Route path={"/terms"} component={TermsPage} />
-                <Route path={"/checkout/success"} component={CheckoutSuccess} />
-                <Route path={"/404"} component={NotFound} />
-                <Route component={NotFound} />
-              </Switch>
-            </main>
-            <Footer />
+                    <Route path={"/products/:handle"}>
+                      {() => <ShopRoute open={ProductDetail} />}
+                    </Route>
+                    <Route path={"/wishlist"} component={RedirectHome} />
+                    <Route path={"/community"} component={Community} />
+                    <Route path={"/founding-crew"} component={FoundingCrew} />
+                    <Route path={"/events"} component={RedirectHome} />
+                    <Route path={"/cart"}>
+                      {() => <ShopRoute open={CartPage} />}
+                    </Route>
+                    <Route path={"/returns"} component={ReturnsPage} />
+                    <Route path={"/about"} component={AboutPage} />
+                    <Route path={"/faq"} component={FaqPage} />
+                    <Route path={"/shipping"} component={ShippingPage} />
+                    <Route path={"/contact"} component={ContactPage} />
+                    <Route path={"/privacy"} component={PrivacyPage} />
+                    <Route path={"/terms"} component={TermsPage} />
+                    <Route
+                      path={"/checkout/success"}
+                      component={CheckoutSuccess}
+                    />
+                    <Route path={"/404"} component={NotFound} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </main>
+                <Footer />
+              </div>
+            </div>
           </div>
         )}
       </Route>

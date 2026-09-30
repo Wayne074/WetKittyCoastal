@@ -228,7 +228,7 @@ export default function CollectionPage({
       <WaveSeparator />
 
       {/* ─── FILTER BAR ─── */}
-      <section className="py-4 border-b border-border/50 sticky top-[72px] z-30 bg-background/95 backdrop-blur-md">
+      <section className="py-4 border-b border-border/50 bg-background">
         <div className="container">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -387,7 +387,9 @@ export default function CollectionPage({
                   imageUrls={cardImageUrls(product.images, index)}
                   eager={index < 8}
                   tags={product.tags || []}
-                  club={handle === "men" || handle === "women" ? handle : undefined}
+                  club={
+                    handle === "men" || handle === "women" ? handle : undefined
+                  }
                 />
               ))}
             </div>
