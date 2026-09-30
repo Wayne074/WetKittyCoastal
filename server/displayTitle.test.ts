@@ -3,8 +3,10 @@ import { displayTitle } from "./_core/printful";
 import { customerDescription } from "@shared/commerce/copy";
 import {
   FEATURED_ORDER,
+  HOODIE_BACK_ALT,
   MEN_ORDER,
   WOMEN_UNISEX_ORDER,
+  cardImageUrls,
 } from "@shared/commerce/featured";
 
 describe("display titles keep Front and Back", () => {
@@ -56,5 +58,47 @@ describe("shop all variety", () => {
 
   it("merchandises unisex tees differently for each club", () => {
     expect(MEN_ORDER[0]).not.toBe(WOMEN_UNISEX_ORDER[0]);
+    expect(MEN_ORDER.slice(0, 4)).toEqual([
+      "476307026",
+      "476302132",
+      "476296287",
+      "476298400",
+    ]);
+    expect(WOMEN_UNISEX_ORDER[0]).toBe("476301010");
+    expect(WOMEN_UNISEX_ORDER[1]).toBe("476295516");
+  });
+});
+
+describe("club voice", () => {
+  it("does not use the men's line on a women's club product", () => {
+    const title = "Salty Soul Wild Heart Tee — Front";
+    const his = customerDescription({ title, backPrint: false });
+    const hers = customerDescription({
+      title,
+      backPrint: false,
+      womensCut: true,
+    });
+    expect(his).not.toBe(hers);
+    expect(hers.toLowerCase()).toContain("girls' night");
+    expect(hers.toLowerCase()).not.toContain("his attention");
+    expect(hers.toLowerCase()).not.toContain("printful");
+    expect(hers.toLowerCase()).not.toContain("gildan");
+    expect(hers.toLowerCase()).not.toContain("30-day");
+    expect(his.toLowerCase()).toContain("guys");
+  });
+});
+
+describe("hoodie cards", () => {
+  it("leads with a front, not the back shot", () => {
+    const urls = cardImageUrls(
+      [
+        { url: "https://example.test/black-front.png", altText: "Hoodie / Black / S" },
+        { url: "https://example.test/back.png", altText: HOODIE_BACK_ALT },
+        { url: "https://example.test/navy-front.png", altText: "Hoodie / Navy / S" },
+      ],
+      0
+    );
+    expect(urls[0]).toBe("https://example.test/navy-front.png");
+    expect(urls).toContain("https://example.test/back.png");
   });
 });

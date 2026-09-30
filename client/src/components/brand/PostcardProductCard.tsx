@@ -13,6 +13,8 @@ interface PostcardProductCardProps {
   tags?: string[];
   /** First-screen cards should not wait on lazy loading. */
   eager?: boolean;
+  /** Which club the shopper came from, so the product page can use that voice. */
+  club?: "men" | "women";
 }
 
 function CardPhoto({
@@ -69,7 +71,12 @@ export default function PostcardProductCard({
   imageUrls,
   tags = [],
   eager = false,
+  club,
 }: PostcardProductCardProps) {
+  const href =
+    club === "men" || club === "women"
+      ? `/products/${handle}?club=${club}`
+      : `/products/${handle}`;
   const photos = (
     imageUrls && imageUrls.length ? imageUrls : imageUrl ? [imageUrl] : []
   ).filter(Boolean);
@@ -77,7 +84,7 @@ export default function PostcardProductCard({
   const isNew = tags.some(t => t.toLowerCase().includes("new"));
 
   return (
-    <Link href={`/products/${handle}`}>
+    <Link href={href}>
       <article className="group relative cursor-pointer">
         {/* Card body */}
         <div
@@ -142,7 +149,7 @@ export default function PostcardProductCard({
           {/* Card footer — the "postcard" feel */}
           <div className="p-4 bg-card border-t border-border/50">
             <h3
-              className="text-sm font-bold text-foreground mb-1 line-clamp-3 min-h-[3.75rem] md:line-clamp-2 md:min-h-[2.5rem] leading-5 group-hover:text-teal transition-colors duration-300"
+              className="text-sm font-bold text-foreground mb-1 line-clamp-3 min-h-[3.75rem] leading-5 group-hover:text-teal transition-colors duration-300"
               style={{
                 fontFamily: "var(--font-display)",
                 letterSpacing: "0.02em",

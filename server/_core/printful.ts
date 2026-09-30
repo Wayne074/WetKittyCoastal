@@ -14,6 +14,7 @@ import {
 } from "@shared/commerce/sections";
 import { customerDescription } from "@shared/commerce/copy";
 import {
+  HOODIE_BACK_ALT,
   MEN_ORDER,
   WOMEN_CUT_ORDER,
   WOMEN_UNISEX_ORDER,
@@ -164,8 +165,6 @@ const TITLE_OVERRIDES: Record<string, string> = {
 const THUMBNAIL_SECOND = new Set([
   "475246689",
   "475246695",
-  "475246699",
-  "475246703", // Coastal Lifestyle (front)
   "475247521", // Paw Skater Dress (back)
   "475246968",
   "475246971",
@@ -359,28 +358,40 @@ const PRIMARY_MOCKUP: Record<string, string> = {
     "https://files.cdn.printful.com/files/252/2520c105a2ee138c84c3e1a95f209676_preview.png",
 };
 
-// Extra real mockups shown right after the primary image (e.g. the front of
-// a back-print zip hoodie, so the zipper is visible).
-const EXTRA_MOCKUPS: Record<string, { url: string; altText: string }[]> = {
-  "475069764": [
-    {
-      url: "https://files.cdn.printful.com/files/4c1/4c155be7492adc6835e882ca2110a1e7_preview.png",
-      altText: "Yacht & Rod Club Zip Hoodie front, Black",
-    },
-    {
-      url: "https://files.cdn.printful.com/files/11e/11e14cecc8c294ff0857fb819ba78003_preview.png",
-      altText: "Yacht & Rod Club Zip Hoodie front, Navy",
-    },
-    {
-      url: "https://files.cdn.printful.com/files/f60/f60651c994dc9bd6ae2ea59d298cde45_preview.png",
-      altText: "Yacht & Rod Club Zip Hoodie front, Dark Heather",
-    },
-    {
-      url: "https://files.cdn.printful.com/files/9dd/9dd2d38d5c6457cccb0a87dd04abf2f0_preview.png",
-      altText: "Yacht & Rod Club Zip Hoodie front, White",
-    },
-  ],
-};
+// Do not inject older blank-front mockups here. Yacht & Rod zip 475069764
+// used to, and the card rotator preferred those empty navy/white fronts
+// over the live previews that actually show the left-chest mark.
+const EXTRA_MOCKUPS: Record<string, { url: string; altText: string }[]> = {};
+
+/**
+ * Sync-product thumbnails that are an unprinted front. They are not a back
+ * mockup and must not be used as a card or gallery image.
+ */
+const BLANK_HOODIE_THUMBNAILS = new Set([
+  "475246699", // Coastal Lifestyle zip — blank front
+  "475246703", // Coastal Lifestyle pullover — blank front
+]);
+
+function isHoodieTitle(title: string) {
+  return /\b(hoodie|pullover)\b/i.test(title);
+}
+
+/** Garment back when the store thumbnail is one; otherwise the existing back print file. */
+function hoodieBackShot(
+  detail: SyncProductDetail,
+  productId: string,
+  thumbnail: Image | null
+): Image | null {
+  if (thumbnail && !BLANK_HOODIE_THUMBNAILS.has(productId)) {
+    return { url: thumbnail.url, altText: HOODIE_BACK_ALT };
+  }
+  for (const variant of detail.sync_variants) {
+    const file = (variant.files ?? []).find(item => /^back$/i.test(item.type ?? ""));
+    const url = file?.preview_url || file?.thumbnail_url || null;
+    if (url) return { url, altText: HOODIE_BACK_ALT };
+  }
+  return null;
+}
 
 function normalizeProduct(detail: SyncProductDetail): Product {
   const title = displayTitle(detail.sync_product.id, detail.sync_product.name);
@@ -408,6 +419,9 @@ function normalizeProduct(detail: SyncProductDetail): Product {
       ? [mockups[0], thumbnail, ...mockups.slice(1)]
       : mockups;
   const extras = EXTRA_MOCKUPS[String(detail.sync_product.id)] ?? [];
+  const backShot = isHoodieTitle(title)
+    ? hoodieBackShot(detail, productId, thumbnail)
+    : null;
   const images = uniqueImages(
     mockups.length
       ? [
@@ -415,8 +429,15 @@ function normalizeProduct(detail: SyncProductDetail): Product {
           ...extras.slice(0, 1),
           ...leadImages.slice(1),
           ...extras.slice(1),
+          ...(backShot ? [backShot] : []),
         ]
-      : [...(thumbnail ? [thumbnail] : []), ...designs]
+      : [
+          ...(thumbnail && !BLANK_HOODIE_THUMBNAILS.has(productId)
+            ? [thumbnail]
+            : []),
+          ...designs,
+          ...(backShot ? [backShot] : []),
+        ]
   ).map(image => ({ ...image, altText: image.altText || title }));
 
   const variants = synced.map(v => {

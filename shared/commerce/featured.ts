@@ -62,12 +62,12 @@ export const FEATURED_ORDER: string[] = [
  * Different from Women's Club on purpose.
  */
 export const MEN_ORDER: string[] = [
-  "476307026", // Yacht & Rod — front
-  "476296287", // Race Club — front
-  "476295516", // Sky High — front
-  "476302437", // Wave Bike — front
-  "476298400", // Race Club Street — front
-  "476302132", // Down Low — front
+  "476307026", // Yacht & Rod — boats and fishing
+  "476302132", // Down Low — trucks
+  "476296287", // Race Club — cars
+  "476298400", // Race Club Street — cars
+  "476302437", // Wave Bike — bikes
+  "476295516", // Sky High — night out, getting her attention
   "475050986", // Coastal Highway — front
   "476301010", // Salty Soul — front
   "475066883", // Wave zip hoodie
@@ -110,14 +110,14 @@ export const WOMEN_CUT_ORDER: string[] = [
  * boat-and-race lead.
  */
 export const WOMEN_UNISEX_ORDER: string[] = [
-  "476301010", // Salty Soul — front
-  "476309361", // Coastal Lifestyle — front
+  "476301010", // Salty Soul — beach day
+  "476295516", // Sky High — girls' night
+  "476309361", // Coastal Lifestyle — beach into night
   "475050986", // Coastal Highway — front
-  "476302437", // Wave Bike — front
+  "476302437", // Wave Bike — boats and the ride
   "475061289", // Wave Apparel — front
-  "476295516", // Sky High — front
-  "476307026", // Yacht — front
-  "476296287", // Race Club — front
+  "476307026", // Yacht — her night on the boat
+  "476296287", // Race Club — nightlife
   "475048215", // Salty — back
   "475246689", // Coastal Lifestyle — back
   "475057564", // Wave Bike — back
@@ -177,11 +177,22 @@ type CardImage = { url: string; altText?: string | null };
  * through the gallery so neighboring cards don't all open on black.
  * Remaining URLs stay as fallbacks if the first file fails.
  */
+/** Alt text for a hoodie back shot. Cards skip it so the chest front leads. */
+export const HOODIE_BACK_ALT = "Back of the hoodie";
+
 export function cardImageUrls(images: CardImage[] | undefined, index: number) {
   const list = (images ?? []).filter(image => image.url);
   if (!list.length) return [];
-  const colored = list.filter(image => !/\bblack\b/i.test(image.altText ?? ""));
-  const pool = colored.length ? colored : list;
+  // A back shot has no color in the alt, so the old "skip black" rule was
+  // choosing it (or a blank front thumbnail) over the printed chest.
+  const fronts = list.filter(
+    image => !new RegExp(HOODIE_BACK_ALT, "i").test(image.altText ?? "")
+  );
+  const poolSource = fronts.length ? fronts : list;
+  const colored = poolSource.filter(
+    image => !/\bblack\b/i.test(image.altText ?? "")
+  );
+  const pool = colored.length ? colored : poolSource;
   const lead = pool[index % pool.length];
   const urls = [lead.url, ...list.map(image => image.url)];
   return urls.filter((url, i) => urls.indexOf(url) === i);

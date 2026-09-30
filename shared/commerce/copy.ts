@@ -14,46 +14,48 @@ function lifeLine(title: string, hers: boolean) {
   const t = title.toLowerCase();
   if (/yacht|rod club/.test(t)) {
     return hers
-      ? "Dock lights, a cold drink, and the kind of night he notices before he says anything."
-      : "Boats, rods, and a Gulf night that starts on the water and ends at the bar.";
+      ? "Boats, dock lights, and a night she got ready for because she wanted to."
+      : "Boats, fishing, and a Gulf night that starts on the water and ends at the bar. The kind of shirt that gets her attention.";
   }
   if (/sky high/.test(t)) {
     return hers
-      ? "Girls' night, skyline lights, and a look that does the talking."
-      : "Night out, skyline lights, and a shirt that gets noticed.";
+      ? "Girls' night and skyline lights. She wore it because she wanted to."
+      : "A guys' night, skyline lights, and a shirt that gets her attention.";
   }
   if (/race club|street tee/.test(t)) {
     return hers
-      ? "Date night, chrome, and a weekend that does not stay in one lane."
-      : "Cars, bikes, and a Saturday that starts loud and stays out late.";
+      ? "Nightlife, chrome, and a weekend she showed up for because she wanted to."
+      : "Cars, bikes, and a Saturday with the guys that starts loud and stays out late.";
   }
   if (/down low/.test(t)) {
     return hers
-      ? "Low and easy. Beach road, windows down, nowhere you have to be."
-      : "Trucks, low light, and a Gulf Coast weekend that runs long.";
+      ? "Beach road, windows down, nowhere she has to be. She dressed for it."
+      : "Trucks, low light, and a guys' weekend that runs long.";
   }
   if (/wave bike|\bbike\b/.test(t)) {
     return hers
-      ? "Salt air, two wheels, and a sunset ride that turns into the whole night."
-      : "Bikes, salt air, and the long way home along the water.";
+      ? "Salt air, a boat day that turned into a night ride, because she felt like it."
+      : "Bikes, salt air, and the long way home with the guys.";
   }
   if (/highway/.test(t)) {
     return hers
-      ? "Highway sun, a beach day that runs late, and a reason to look back."
-      : "Open highway, the Gulf on one side, and no clock on the weekend.";
+      ? "Highway sun, a beach day that runs late, and a look she chose."
+      : "Open highway, the truck or the bike, the Gulf on one side, no clock on the weekend.";
   }
   if (/salty/.test(t)) {
     return hers
-      ? "Beach day into girls' night. Sun on your shoulders, then the lights come up."
-      : "Salt on your skin, friends on the boat, and a weekend that refuses to end.";
+      ? "Beach day into girls' night. Sun on her shoulders, then the lights, because she wanted the whole day."
+      : "Salt, the boat, the guys, and a weekend that refuses to end.";
   }
   if (/coastal lifestyle|lifestyle/.test(t)) {
     return hers
-      ? "Panama City Beach energy. Water, friends, and a night you actually dressed for."
-      : "Panama City Beach weekends: water, friends, and nowhere to be in the morning.";
+      ? "Panama City Beach. Water, friends, nightlife, and a look she put on for herself."
+      : "Panama City Beach with the guys. Boats, trucks, and nowhere to be in the morning.";
   }
   if (/hoodie|pullover|\bzip\b/.test(t)) {
-    return "Sun goes down, bonfire comes up, and the ride home is finally cool enough.";
+    return hers
+      ? "The air drops after the beach. She keeps the night going because she wants to."
+      : "Bonfire, a cool ride, and the bar if the guys are still out.";
   }
   if (/hat|\bcap\b/.test(t)) {
     return "Shade on the boat, the truck, the bar. The day keeps going.";
@@ -75,12 +77,12 @@ function lifeLine(title: string, hers: boolean) {
   }
   if (/brand mark|paw|wave apparel/.test(t)) {
     return hers
-      ? "The mark, worn because you want to. Beach, boats, and a night out."
-      : "The Wet Kitty mark for days on the water and nights that run long.";
+      ? "The mark, worn because she wants to. Beach, boats, and a night out."
+      : "The Wet Kitty mark for boats, trucks, and nights with the guys.";
   }
   return hers
-    ? "Beach days, boats, and a night you got ready for."
-    : "Gulf Coast weekends: boats, bikes, friends, and a night that runs long.";
+    ? "Beach days, boats, and a night she got ready for because she wanted to."
+    : "Gulf Coast weekends: boats, trucks, bikes, the guys, and a night that gets her attention.";
 }
 
 function garmentFacts(title: string) {

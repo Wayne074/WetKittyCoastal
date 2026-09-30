@@ -387,6 +387,7 @@ export default function CollectionPage({
                   imageUrls={cardImageUrls(product.images, index)}
                   eager={index < 8}
                   tags={product.tags || []}
+                  club={handle === "men" || handle === "women" ? handle : undefined}
                 />
               ))}
             </div>

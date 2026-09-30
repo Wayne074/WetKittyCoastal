@@ -8,7 +8,8 @@ import {
   Truck,
   Shield,
 } from "lucide-react";
-import { useRoute } from "wouter";
+import { useRoute, useSearch } from "wouter";
+import { customerDescription } from "@shared/commerce/copy";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
@@ -16,7 +17,9 @@ import { PawLoader, WaveSeparator } from "@/components/brand";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/products/:handle");
+  const search = useSearch();
   const productId = params?.handle;
+  const club = new URLSearchParams(search).get("club");
   const [selection, setSelection] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -29,14 +32,29 @@ export default function ProductDetail() {
   );
   const { addItem } = useCart();
 
+  const description = useMemo(() => {
+    if (!product) return "";
+    const voice =
+      club === "women"
+        ? true
+        : club === "men"
+          ? false
+          : product.productType === "women";
+    return customerDescription({
+      title: product.title,
+      backPrint: /\bback\b/i.test(product.title),
+      womensCut: voice,
+    });
+  }, [product, club]);
+
   useEffect(() => {
     if (!product) return;
     setPageMeta(
       `${product.title} | Wet Kitty Coastal`,
-      `${product.description} ${SHIPPING_SUMMARY}`,
+      `${description} ${SHIPPING_SUMMARY}`,
       product.images?.[0]?.url
     );
-  }, [product?.id]);
+  }, [product?.id, description]);
 
   // Reset the option selection to the first available variant per product.
   useEffect(() => {
@@ -274,8 +292,7 @@ export default function ProductDetail() {
 
             {/* Description */}
             <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-              {product.description ||
-                "Premium quality apparel designed for the coastal lifestyle and biker culture. Made with care, built to last."}
+              {description}
             </p>
 
             {/* Variants — one picker per option (Color, Size, …) */}
@@ -427,7 +444,7 @@ export default function ProductDetail() {
               "@context": "https://schema.org",
               "@type": "Product",
               name: product.title,
-              description: product.description,
+              description,
               image: images.map((img: any) => img.url),
               brand: { "@type": "Brand", name: "Wet Kitty" },
               offers: {

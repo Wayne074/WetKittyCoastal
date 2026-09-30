@@ -38,18 +38,18 @@ export const SHOP_SECTIONS: ShopSection[] = [
     navLabel: "Men's Club",
     title: "The Night Starts on the Water.",
     subtitle: "Men's Club",
-    tagline: "Boats, trucks, bikes, and a weekend with the guys.",
+    tagline: "Boats, trucks, cars, bikes, and the bar after.",
     description:
-      "Gulf Coast attitude for the dock, the highway, and the bar after. Unisex tees and hoodies, shown for the crew. Not a generic men's department.",
+      "Guys' weekends on the Gulf. Boats and fishing, trucks and cars, bikes, then the bar. Worn to get her attention. Unisex tees and hoodies, not a generic men's department.",
   },
   {
     handle: "women",
     navLabel: "Women's Club",
     title: "Sun on the Water. Lights After.",
     subtitle: "Women's Club",
-    tagline: "Beach days, boats, girls' nights, and a look she chose.",
+    tagline: "Beach days, boats, nightlife, and girls' night.",
     description:
-      "Confident coastal, not a pink boutique. Her cuts first, then the same unisex tees, merchandised for beach days, date night, and getting his attention.",
+      "She dresses because she wants to. Beach days, boats, nightlife, and girls' nights. Confident coastal, not a pink boutique. Her cuts first, then the same unisex tees in her order.",
   },
   {
     handle: "club",
