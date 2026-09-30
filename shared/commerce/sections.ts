@@ -67,9 +67,9 @@ export const SHOP_SECTIONS: ShopSection[] = [
     navLabel: "Coastal & Ride",
     title: "Salt and the Open Road.",
     subtitle: "Coastal & Ride",
-    tagline: "Highway sun, wave bikes, and a salty soul.",
+    tagline: "Beach days, the open road, and bike nights.",
     description:
-      "Coastal Highway, Wave Bike, Salty Soul, and the brand tees built for beach days and bike nights.",
+      "Salt, the highway, and a weekend that starts on the sand and keeps going after dark. Beach days, the open road, and bike nights. Coastal Highway, Wave Bike, and Salty Soul.",
   },
   {
     handle: "hoodies",

@@ -126,7 +126,7 @@ export default function Home() {
               image="/images/lifestyle/womens-club.jpg"
               kicker="Women's Club"
               title="Sun on the water. Lights after."
-              body="Beach, boats, and the water, then nightlife and girls' night. Confident and independent. She looks like that because she wants to."
+              body="Beach, boats, and the water, then nightlife, girls' night, and date night. Confident, sexy, and independent. She looks like that because she wants to."
             />
           </div>
         </section>
@@ -137,7 +137,7 @@ export default function Home() {
       <StoryBand
         eyebrow="After dark"
         title="The dock, then the lights."
-        body="Daytime is salt and highway. Night is the bonfire, the bar, and whoever you were hoping would notice. That is the whole brand."
+        body="Daytime is salt and highway. Night is the bonfire, the bar, and staying out because you want to. That is the whole brand."
         image="/images/lifestyle/club-night.jpg"
       />
 

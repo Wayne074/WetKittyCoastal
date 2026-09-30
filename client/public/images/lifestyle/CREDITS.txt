@@ -2,11 +2,12 @@ Lifestyle photos are Unsplash images, stored in the repo so the shop does not ho
 License: https://unsplash.com/license
 Attribution is optional under that license. Photo ids:
 
-mens-club.jpg     photo-1559416523-140ddc3d238c
-womens-club.jpg   photo-1502680390469-be75c86b636f
+mens-club.jpg     photo-1605281317010-fe5ffe798166
+womens-club.jpg   photo-1515019647021-21af2ecca43c
 shop-all.jpg      photo-1468413253725-0d5181091126
 club-night.jpg    photo-1514933651103-005eec06c04b
 coastal-boat.jpg  photo-1567899378494-47b22a2ae96a
+coastal-road.jpg  photo-1720670272553-d352388d54d0
 after-dark.jpg    photo-1470337458703-46ad1756a187
 gulf-wave.jpg     photo-1500375592092-40eb2168fd21
 
