@@ -14,9 +14,13 @@ export default function Header() {
   const [location] = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const scroller = document.getElementById("app-scroll");
+    const readTop = () => (scroller ? scroller.scrollTop : window.scrollY);
+    const handleScroll = () => setScrolled(readTop() > 20);
+    handleScroll();
+    const target: EventTarget = scroller ?? window;
+    target.addEventListener("scroll", handleScroll, { passive: true });
+    return () => target.removeEventListener("scroll", handleScroll);
   }, []);
 
   const shopItems = [
@@ -36,7 +40,7 @@ export default function Header() {
   const isActive = (href: string) => location === href;
 
   return (
-    <>
+    <div className="relative z-50 shrink-0 max-h-full overflow-y-auto bg-background">
       {/* Brand accent bar */}
       <div className="h-[3px] wave-accent" />
 
@@ -44,13 +48,17 @@ export default function Header() {
         <div
           className="text-center px-4 py-2.5 text-sm font-semibold tracking-wide"
           style={{
-            background: "linear-gradient(90deg, var(--teal) 0%, var(--sea) 100%)",
+            background:
+              "linear-gradient(90deg, var(--teal) 0%, var(--sea) 100%)",
             color: "#061416",
           }}
           role="status"
         >
           Shop Opening Soon — dialing in products &amp; graphics.{" "}
-          <Link href="/founding-crew" className="underline underline-offset-2 font-bold">
+          <Link
+            href="/founding-crew"
+            className="underline underline-offset-2 font-bold"
+          >
             Founding Crew is live
           </Link>
         </div>
@@ -58,9 +66,9 @@ export default function Header() {
 
       {/* Header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`transition-all duration-300 ${
           scrolled
-            ? "bg-background/95 backdrop-blur-md shadow-md border-b border-border/50"
+            ? "bg-background shadow-md border-b border-border/50"
             : "bg-background border-b border-transparent"
         }`}
       >
@@ -71,14 +79,22 @@ export default function Header() {
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
                 style={{
-                  background: "linear-gradient(135deg, var(--teal) 0%, var(--sea) 100%)"}}
+                  background:
+                    "linear-gradient(135deg, var(--teal) 0%, var(--sea) 100%)",
+                }}
               >
-                <span className="text-white font-bold text-sm tracking-wide" style={{ fontFamily: "var(--font-display)" }}>
+                <span
+                  className="text-white font-bold text-sm tracking-wide"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
                   WK
                 </span>
               </div>
               <div className="hidden sm:block">
-                <div className="font-bold text-lg tracking-wide text-foreground" style={{ fontFamily: "var(--font-display)" }}>
+                <div
+                  className="font-bold text-lg tracking-wide text-foreground"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
                   Wet Kitty
                 </div>
                 <div className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground">
@@ -90,7 +106,7 @@ export default function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden xl:flex items-center gap-0.5">
               {SHOP_OPEN &&
-                shopItems.map((item) => (
+                shopItems.map(item => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -104,7 +120,7 @@ export default function Header() {
                   </Link>
                 ))}
               {SHOP_OPEN && <div className="w-px h-5 bg-border mx-2" />}
-              {communityItems.map((item) => (
+              {communityItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -136,7 +152,10 @@ export default function Header() {
 
               {/* Cart — only while shop is open */}
               {SHOP_OPEN && (
-                <Link href="/cart" className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative">
+                <Link
+                  href="/cart"
+                  className="p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 relative"
+                >
                   <ShoppingBag className="w-[18px] h-[18px] text-foreground/60" />
                   {itemCount > 0 && (
                     <span
@@ -155,7 +174,11 @@ export default function Header() {
                 className="xl:hidden p-2.5 rounded-lg hover:bg-muted/60 transition-all duration-200 active:scale-95 ml-1"
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -168,12 +191,14 @@ export default function Header() {
           }`}
           style={{ transitionTimingFunction: "var(--ease-out)" }}
         >
-          <nav className="border-t border-border bg-card/95 backdrop-blur-md">
+          <nav className="border-t border-border bg-card">
             <div className="container py-4 space-y-1">
               {SHOP_OPEN && (
                 <>
-                  <p className="eyebrow px-4 py-2 text-muted-foreground">Shop</p>
-                  {shopItems.map((item) => (
+                  <p className="eyebrow px-4 py-2 text-muted-foreground">
+                    Shop
+                  </p>
+                  {shopItems.map(item => (
                     <Link
                       key={item.href}
                       href={item.href}
@@ -190,8 +215,10 @@ export default function Header() {
                   <div className="divider my-3" />
                 </>
               )}
-              <p className="eyebrow px-4 py-2 text-muted-foreground">Community</p>
-              {communityItems.map((item) => (
+              <p className="eyebrow px-4 py-2 text-muted-foreground">
+                Community
+              </p>
+              {communityItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -209,6 +236,6 @@ export default function Header() {
           </nav>
         </div>
       </header>
-    </>
+    </div>
   );
 }
