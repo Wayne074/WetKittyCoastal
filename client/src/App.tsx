@@ -11,8 +11,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { SectionCollection, AllApparelCollection } from "./pages/Collections";
 import {
+  CUSTOMER_NAV_SECTIONS,
   LEGACY_COLLECTION_REDIRECTS,
-  SHOP_SECTIONS,
 } from "@shared/commerce/sections";
 import ProductDetail from "./pages/ProductDetail";
 import Community from "./pages/Community";
@@ -21,7 +21,14 @@ import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import OpenSoon from "./pages/OpenSoon";
-import { AboutPage, ContactPage, FaqPage, ShippingPage } from "./pages/Info";
+import {
+  AboutPage,
+  ContactPage,
+  FaqPage,
+  PrivacyPage,
+  ShippingPage,
+  TermsPage,
+} from "./pages/Info";
 import { SHOP_OPEN } from "./const";
 
 function withPreview(path: string) {
@@ -47,7 +54,7 @@ function RedirectHome() {
 
 // Stable component per section so routes never remount on re-render.
 const SECTION_COMPONENTS: Record<string, ComponentType> = Object.fromEntries(
-  SHOP_SECTIONS.map(section => [
+  CUSTOMER_NAV_SECTIONS.map(section => [
     section.handle,
     () => <SectionCollection handle={section.handle} />,
   ])
@@ -81,7 +88,7 @@ function Router() {
             <main className="flex-1">
               <Switch>
                 <Route path={"/"} component={Home} />
-                {SHOP_SECTIONS.map(section => (
+                {CUSTOMER_NAV_SECTIONS.map(section => (
                   <Route
                     key={section.handle}
                     path={`/collections/${section.handle}`}
@@ -116,6 +123,8 @@ function Router() {
                 <Route path={"/faq"} component={FaqPage} />
                 <Route path={"/shipping"} component={ShippingPage} />
                 <Route path={"/contact"} component={ContactPage} />
+                <Route path={"/privacy"} component={PrivacyPage} />
+                <Route path={"/terms"} component={TermsPage} />
                 <Route path={"/checkout/success"} component={CheckoutSuccess} />
                 <Route path={"/404"} component={NotFound} />
                 <Route component={NotFound} />

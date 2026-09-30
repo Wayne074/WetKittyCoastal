@@ -100,3 +100,198 @@ export function ContactPage() {
     </InfoPage>
   );
 }
+
+function Mark({
+  who,
+  children,
+}: {
+  who: "WAYNE" | "COUNSEL";
+  children: ReactNode;
+}) {
+  const label = who === "WAYNE" ? "NEEDS WAYNE" : "NEEDS COUNSEL";
+  return (
+    <strong className="text-foreground">
+      [{label}] {children}
+    </strong>
+  );
+}
+
+export function PrivacyPage() {
+  return (
+    <InfoPage
+      eyebrow="Legal"
+      title="Privacy Policy"
+      meta="How Wet Kitty Coastal handles order, membership, and contact information. Draft for the private preview, not a lawyer-approved policy."
+      intro="This page describes what this site actually does today. It is a draft for the private preview. It is not a finished legal policy."
+    >
+      <Block title="Who this is about">
+        <p>
+          The shop name on this site is Wet Kitty Coastal.{" "}
+          <Mark who="WAYNE">
+            Legal name of the seller, mailing address, and state of formation are not on this page.
+          </Mark>
+        </p>
+        <p>
+          Questions about your information: <EmailLink />.
+        </p>
+      </Block>
+      <Block title="What we collect">
+        <p>
+          Apparel is made to order. Founding Crew is a separate one-time membership, not a product in the cart.
+        </p>
+        <p>
+          Shop checkout is Stripe-hosted. PayPal is not offered. Stripe collects the payment details. This site does not store your full card number. Stripe also receives the name, email, and shipping address you enter so the order can be made and shipped.
+        </p>
+        <p>
+          Founding Crew checkout is a Stripe payment link for a $147 one-time membership. The same Stripe-hosted collection applies. PayPal is not part of that checkout either.
+        </p>
+        <p>
+          If you email <EmailLink />, we keep that email and whatever you send, including an order number or photos, so we can answer you.
+        </p>
+        <p>
+          The shopping bag keeps a cart id in your browser&apos;s local storage so the bag can be reopened on this device.
+        </p>
+        <p>
+          <Mark who="WAYNE">
+            Confirm whether any extra fields (shirt size, wall name, phone) are collected on the live Founding Crew payment link. This page does not list fields that were not confirmed.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="What we do not do">
+        <p>
+          This site does not run its own ad pixels, analytics tags, or a mailing-list signup in the code that ships with the storefront today.
+        </p>
+        <p>
+          <Mark who="WAYNE">
+            Say if a separate email tool, ad account, or analytics tool is already collecting visitor data outside this repo.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="Who else sees it">
+        <p>
+          Stripe processes the payment. The printer who makes the gear receives what they need to print and ship the order (the item, size, and delivery address). We do not sell customer lists.
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            Name the fulfillment company in a customer-facing policy only if you want it public. Customer product pages do not name the printer.
+          </Mark>
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            Whether GDPR, UK GDPR, CCPA/CPRA, or another privacy law applies, and what access, deletion, or opt-out rights to promise, is not decided here.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="How long we keep it">
+        <p>
+          <Mark who="COUNSEL">
+            Retention periods for orders, memberships, and support emails are not set.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="Founding Crew count">
+        <p>
+          Founding Crew is capped at 1,500 memberships. The price is $147 once. The page counter is maintained by hand. The seeded figure in the site code is 58 sold (1,442 remaining). That seed is not a live count of Stripe charges, and this policy does not add any sales on top of it.
+        </p>
+        <p>
+          <Mark who="WAYNE">
+            Confirm that 58 is still the number you want shown before this page is treated as describing real memberships.
+          </Mark>
+        </p>
+      </Block>
+    </InfoPage>
+  );
+}
+
+export function TermsPage() {
+  return (
+    <InfoPage
+      eyebrow="Legal"
+      title="Terms of Service"
+      meta="Draft terms for Wet Kitty Coastal made-to-order apparel and the Founding Crew membership. Not lawyer-approved."
+      intro="These terms are a draft so the private preview has a page to link. They are not a lawyer-approved contract."
+    >
+      <Block title="The seller">
+        <p>
+          You are buying from the Wet Kitty Coastal shop.{" "}
+          <Mark who="WAYNE">
+            Legal entity name, mailing address, and state of formation go here.
+          </Mark>
+        </p>
+        <p>
+          Support: <EmailLink />.
+        </p>
+      </Block>
+      <Block title="Made-to-order apparel">
+        <p>
+          Tees, hoodies, hats, and the other gear are printed when you order them. They are not sitting in a warehouse waiting. That is why a change of mind or a wrong size is not a normal return. The <Link href="/returns" className="font-semibold text-teal underline underline-offset-2">Returns</Link> page says the same thing.
+        </p>
+        <p>
+          If something arrives damaged, misprinted, or not what you ordered, email <EmailLink /> with the order number and clear photos.
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            A refund or replacement window was not provided, so none is stated here. Do not read the returns page as a 30-day policy.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="Price, shipping, and payment">
+        <p>
+          The price on the product page is the item price in US dollars. Shipping is $5.99 for standard shipping, and free on orders over $100. Most made-to-order orders arrive in about 5–12 business days after you order. Shipping is shown again before you pay.
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            Sales tax is calculated at Stripe checkout. This page does not state a tax rate or which states are registered.
+          </Mark>
+        </p>
+        <p>
+          Shop checkout is hosted by Stripe. PayPal is not live and is not a way to pay. We do not store your full card number.
+        </p>
+        <p>
+          The public shop is not open yet. These product terms apply when an order can actually be placed. Founding Crew can be purchased while the apparel shop is still closed.
+        </p>
+      </Block>
+      <Block title="Founding Crew">
+        <p>
+          Founding Crew is a one-time $147 membership. It is not a subscription and it is not a monthly charge. Memberships are capped at 1,500. The on-site counter is manual. The seeded sold count in the code is 58, which the page turns into 1,442 remaining. This page does not claim any sales beyond that seed.
+        </p>
+        <p>
+          <Mark who="WAYNE">
+            Confirm the seeded 58 still matches the memberships you want counted, and list the kit and the permanent discount in numbers you will actually honor. The discount amount is not stated here because it was not provided.
+          </Mark>
+        </p>
+        <p>
+          Founding Crew payment runs through a Stripe-hosted payment link. PayPal is not offered.
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            Whether a Founding Crew membership is refundable, transferable, or numbered only after payment clears is not decided on this page.
+          </Mark>
+        </p>
+      </Block>
+      <Block title="Disputes">
+        <p>
+          <Mark who="COUNSEL">
+            Governing law, venue, arbitration, class-action waiver, and any cap on damages are intentionally left out. Do not assume Florida law or an arbitration clause.
+          </Mark>
+        </p>
+        <p>
+          Until that is written, write to <EmailLink /> and we will try to fix a real order problem.
+        </p>
+      </Block>
+      <Block title="The rest">
+        <p>
+          <Mark who="WAYNE">
+            Minimum age to buy, and whether the brand&apos;s adult positioning is a rule of purchase, was not set for these terms.
+          </Mark>
+        </p>
+        <p>
+          <Mark who="COUNSEL">
+            Trademark, user-content, and limitation-of-liability language is not included until counsel writes it.
+          </Mark>
+        </p>
+        <p>Last drafted for the private preview on September 30, 2026. The shop is not published by this page.</p>
+      </Block>
+    </InfoPage>
+  );
+}

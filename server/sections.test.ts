@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  CUSTOMER_NAV_SECTIONS,
+  LEGACY_COLLECTION_REDIRECTS,
   classifyProductSection,
   productSections,
 } from "@shared/commerce/sections";
@@ -37,5 +39,24 @@ describe("shop sections", () => {
     ["Wet Kitty Brand Mark Flag", ["accessories"]],
   ])("%s lists in %j", (name, sections) => {
     expect(productSections(name)).toEqual(sections);
+  });
+});
+
+describe("customer navigation", () => {
+  it("does not link a vague Club section", () => {
+    expect(CUSTOMER_NAV_SECTIONS.map(section => section.handle)).not.toContain(
+      "club"
+    );
+    expect(CUSTOMER_NAV_SECTIONS.map(section => section.navLabel)).toEqual([
+      "Men's Club",
+      "Women's Club",
+      "Coastal & Ride",
+      "Hoodies",
+      "Accessories",
+    ]);
+  });
+
+  it("sends the old Club URL to Shop All", () => {
+    expect(LEGACY_COLLECTION_REDIRECTS.club).toBe("/collections/apparel");
   });
 });

@@ -7,7 +7,7 @@ import {
   setPageMeta,
 } from "@/const";
 import { trpc } from "@/lib/trpc";
-import { SHOP_SECTIONS } from "@shared/commerce/sections";
+import { CUSTOMER_NAV_SECTIONS } from "@shared/commerce/sections";
 import { cardImageUrls } from "@shared/commerce/featured";
 import PostcardProductCard from "@/components/brand/PostcardProductCard";
 
@@ -317,7 +317,7 @@ function Sections() {
           not share the mood.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SHOP_SECTIONS.map(section => (
+          {CUSTOMER_NAV_SECTIONS.map(section => (
             <Link
               key={section.handle}
               href={`/collections/${section.handle}`}

@@ -25,6 +25,11 @@ export type ShopSection = {
   subtitle: string;
   tagline: string;
   description: string;
+  /**
+   * When false, the section stays a classification bucket but is not linked
+   * from the nav, footer, or homepage collection cards.
+   */
+  customerNav?: boolean;
 };
 
 export const SHOP_SECTIONS: ShopSection[] = [
@@ -54,6 +59,8 @@ export const SHOP_SECTIONS: ShopSection[] = [
     tagline: "Sky High, Race Club, Down Low, Yacht & Rod.",
     description:
       "The named Wet Kitty clubs. Wear one loud on the boat, in the garage, or out with the guys.",
+    // "Club" by itself is vague next to Men's Club and Women's Club.
+    customerNav: false,
   },
   {
     handle: "coastal-ride",
@@ -84,11 +91,26 @@ export const SHOP_SECTIONS: ShopSection[] = [
   },
 ];
 
-/** Old collection URLs that now point at a new section (or Shop All). */
+/**
+ * Sections shown in the header, footer, and homepage collection cards.
+ * "Club" stays in `SHOP_SECTIONS` so club-design tees still classify, and
+ * those tees remain listed in Men's Club, Women's Club, and Shop All.
+ */
+export const CUSTOMER_NAV_SECTIONS = SHOP_SECTIONS.filter(
+  section => section.customerNav !== false
+);
+
+/**
+ * Old collection URLs that now point at a new section (or Shop All).
+ * `/collections/club` goes to Shop All, not Men's Club: the club bucket is
+ * the shared unisex named-club tees, which are merchandised in both clubs.
+ * Women's cuts, hoodies, and accessories never lived only in that bucket.
+ */
 export const LEGACY_COLLECTION_REDIRECTS: Record<string, string> = {
   hats: "/collections/accessories",
   beach: "/collections/coastal-ride",
   "limited-drop": "/collections/apparel",
+  club: "/collections/apparel",
 };
 
 const ACCESSORY =

@@ -4,7 +4,7 @@ import { Menu, X, Moon, Sun, ShoppingBag } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
 import { SHOP_OPEN } from "@/const";
-import { SHOP_SECTIONS } from "@shared/commerce/sections";
+import { CUSTOMER_NAV_SECTIONS } from "@shared/commerce/sections";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Header() {
 
   const shopItems = [
     { label: "Shop All", href: "/collections/apparel" },
-    ...SHOP_SECTIONS.map(section => ({
+    ...CUSTOMER_NAV_SECTIONS.map(section => ({
       label: section.navLabel,
       href: `/collections/${section.handle}`,
     })),

@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { SHOP_OPEN } from "@/const";
-import { SHOP_SECTIONS } from "@shared/commerce/sections";
+import { CUSTOMER_NAV_SECTIONS } from "@shared/commerce/sections";
 
 export default function Footer() {
   return (
@@ -45,7 +45,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3">
               {[
                 { label: "Shop All", href: "/collections/apparel" },
-                ...SHOP_SECTIONS.map(section => ({
+                ...CUSTOMER_NAV_SECTIONS.map(section => ({
                   label: section.navLabel,
                   href: `/collections/${section.handle}`,
                 })),
@@ -107,6 +107,8 @@ export default function Footer() {
                 { label: "FAQ", href: "/faq" },
                 { label: "About", href: "/about" },
                 { label: "Contact", href: "/contact" },
+                { label: "Privacy Policy", href: "/privacy" },
+                { label: "Terms of Service", href: "/terms" },
               ].map(item => (
                 <Link key={item.href} href={item.href} className="text-sm transition-colors duration-200 hover:text-[var(--sea)]" style={{ color: "rgba(255, 250, 240, 0.6)" }}>
                   {item.label}
