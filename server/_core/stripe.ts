@@ -18,6 +18,7 @@ type StripeAddress = {
 type StripeSession = {
   id: string;
   url?: string | null;
+  livemode?: boolean;
   payment_status?: "paid" | "unpaid" | "no_payment_required";
   customer_details?: {
     email?: string | null;
@@ -328,6 +329,7 @@ async function fulfillPaidSession(sessionId: string) {
 
   await createPrintfulOrder({
     stripeSessionId: session.id,
+    stripeLivemode: session.livemode === true,
     recipient: {
       name: shipping.name,
       email,

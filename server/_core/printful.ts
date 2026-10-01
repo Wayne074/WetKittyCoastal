@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { TRPCError } from "@trpc/server";
 import type {
   Cart,
@@ -879,8 +879,63 @@ export async function removeCartLines(cartId: string, lineIds: string[]) {
   );
 }
 
+/** Live confirmation stays off unless PRINTFUL_LIVE_FULFILLMENT is exactly "true".
+ *  A Stripe test-mode payment (livemode false) can never confirm. */
+export function printfulOrderConfirm(stripeLivemode: boolean): boolean {
+  if (stripeLivemode !== true) return false;
+  return process.env.PRINTFUL_LIVE_FULFILLMENT === "true";
+}
+
+/** Printful external ids are limited to 32 characters. The hash is stable, so a Stripe retry finds the same draft. */
+export function printfulExternalId(stripeSessionId: string) {
+  return `wk${createHash("sha256").update(stripeSessionId).digest("hex").slice(0, 30)}`;
+}
+
+export function buildPrintfulOrder(input: {
+  stripeSessionId: string;
+  stripeLivemode: boolean;
+  recipient: {
+    name: string;
+    email: string;
+    phone?: string | null;
+    address1: string;
+    address2?: string | null;
+    city: string;
+    stateCode?: string | null;
+    countryCode: string;
+    zip: string;
+  };
+  items: Array<{ variantId: string; quantity: number; retailPrice?: string }>;
+}) {
+  const confirm = printfulOrderConfirm(input.stripeLivemode);
+  return {
+    path: `/orders?confirm=${confirm ? "true" : "false"}&update_existing=true`,
+    body: {
+      external_id: printfulExternalId(input.stripeSessionId),
+      shipping: "STANDARD",
+      recipient: {
+        name: input.recipient.name,
+        email: input.recipient.email,
+        phone: input.recipient.phone || undefined,
+        address1: input.recipient.address1,
+        address2: input.recipient.address2 || undefined,
+        city: input.recipient.city,
+        state_code: input.recipient.stateCode || undefined,
+        country_code: input.recipient.countryCode,
+        zip: input.recipient.zip,
+      },
+      items: input.items.map(item => ({
+        sync_variant_id: Number(item.variantId),
+        quantity: item.quantity,
+        retail_price: item.retailPrice,
+      })),
+    },
+  };
+}
+
 export async function createPrintfulOrder(input: {
   stripeSessionId: string;
+  stripeLivemode: boolean;
   recipient: {
     name: string;
     email: string;
@@ -897,7 +952,7 @@ export async function createPrintfulOrder(input: {
   // Stripe retries webhooks. Treat an existing Printful order with the same
   // external id as success so a retry can never create a duplicate shipment.
   const existingResponse = await fetch(
-    `${PRINTFUL_API}/orders/@${encodeURIComponent(input.stripeSessionId)}`,
+    `${PRINTFUL_API}/orders/@${encodeURIComponent(printfulExternalId(input.stripeSessionId))}`,
     { headers: printfulHeaders() }
   );
   if (existingResponse.ok) {
@@ -913,29 +968,10 @@ export async function createPrintfulOrder(input: {
     });
   }
 
-  const body = {
-    external_id: input.stripeSessionId,
-    shipping: "STANDARD",
-    recipient: {
-      name: input.recipient.name,
-      email: input.recipient.email,
-      phone: input.recipient.phone || undefined,
-      address1: input.recipient.address1,
-      address2: input.recipient.address2 || undefined,
-      city: input.recipient.city,
-      state_code: input.recipient.stateCode || undefined,
-      country_code: input.recipient.countryCode,
-      zip: input.recipient.zip,
-    },
-    items: input.items.map(item => ({
-      sync_variant_id: Number(item.variantId),
-      quantity: item.quantity,
-      retail_price: item.retailPrice,
-    })),
-  };
+  const order = buildPrintfulOrder(input);
 
-  return printfulFetch<unknown>("/orders?confirm=true&update_existing=true", {
+  return printfulFetch<unknown>(order.path, {
     method: "POST",
-    body: JSON.stringify(body),
+    body: JSON.stringify(order.body),
   });
 }

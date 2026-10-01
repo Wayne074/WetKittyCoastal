@@ -16,7 +16,7 @@ Requirements: Node.js 22+, pnpm, a Printful store, and a Stripe account.
 2. Cart contents are stored in a signed token. Prices are always reloaded from Printful on the server.
 3. Checkout creates a Stripe-hosted payment page with the verified prices and shipping charge.
 4. Stripe sends `checkout.session.completed` to `/api/webhooks/stripe`.
-5. The server verifies Stripe's signature and payment status, then submits the order to Printful with `confirm=true`.
+5. The server verifies Stripe's signature and payment status. A test-mode payment can only create a Printful draft (`confirm=false`). Live confirmation stays off until `PRINTFUL_LIVE_FULFILLMENT` is set, and a test payment can never confirm.
 
 The browser never receives the Printful token, Stripe secret key, webhook secret, or cart-signing secret.
 
