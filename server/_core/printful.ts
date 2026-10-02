@@ -163,8 +163,9 @@ const TITLE_OVERRIDES: Record<string, string> = {
  * front, or the flag/towel in use). It is shown as the second gallery image.
  */
 const THUMBNAIL_SECOND = new Set([
-  "475246689",
-  "475246695",
+  // Coastal Lifestyle tees 475246689 and 475246695 used to inject the sync
+  // thumbnail as a second shot. That thumbnail is now a blank front (neck
+  // label only). The variant preview is the large back, so it leads alone.
   "475247521", // Paw Skater Dress (back)
   "475246968",
   "475246971",
@@ -372,6 +373,20 @@ const BLANK_HOODIE_THUMBNAILS = new Set([
   "475246703", // Coastal Lifestyle pullover — blank front
 ]);
 
+/**
+ * Garment-back photos generated for the gallery. Store thumbnails for these
+ * products are either a blank front or a raw file host, not the photo to show.
+ * Cards still lead with the chest; this shot is the back in the gallery.
+ */
+const HOODIE_BACK_MOCKUP: Record<string, string> = {
+  "475246703": "/images/mockups/coastal-lifestyle-pullover-back.jpg",
+  "475246699": "/images/mockups/coastal-lifestyle-zip-back.jpg",
+  "475067424": "/images/mockups/wave-apparel-pullover-back.jpg",
+  "475066883": "/images/mockups/wave-apparel-zip-back.jpg",
+  "475065629": "/images/mockups/brand-mark-pullover-back.jpg",
+  "475064976": "/images/mockups/brand-mark-zip-back.jpg",
+};
+
 function isHoodieTitle(title: string) {
   return /\b(hoodie|pullover)\b/i.test(title);
 }
@@ -412,6 +427,8 @@ function hoodieBackShot(
   productId: string,
   thumbnail: Image | null
 ): Image | null {
+  const generated = HOODIE_BACK_MOCKUP[productId];
+  if (generated) return { url: generated, altText: HOODIE_BACK_ALT };
   const url = garmentBackUrl(productId, thumbnail?.url, rawPrintUrls(detail));
   return url ? { url, altText: HOODIE_BACK_ALT } : null;
 }
