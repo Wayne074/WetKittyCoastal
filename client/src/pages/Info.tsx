@@ -39,16 +39,37 @@ export function EmailLink() {
 
 export function AboutPage() {
   return (
-    <InfoPage eyebrow="Our story" title="About Wet Kitty Coastal" meta="Wet Kitty Coastal is beach and biker lifestyle apparel, inspired by and born in Panama City Beach." intro="Stay Salty. Ride Free. Life's Better Wet.">
-      <Block title="Born on the coast">
-        <p>Wet Kitty Coastal started in Panama City Beach, where the beach crowd and the bike crowd share the same sunsets. We make tees, hoodies, hats and accessories for the riders, the beach lovers and the good-time chasers.</p>
+    <InfoPage eyebrow="OUR STORY" title="ABOUT WET KITTY COASTAL" meta="Stay Salty. Ride Free. Life’s Better Wet." intro="Stay Salty. Ride Free. Life’s Better Wet.">
+      <Block title="BORN ON THE COAST">
+        <p>Wet Kitty Coastal was born in Panama City Beach, Florida — where boats, bikes, beach days and late nights are all part of the same life. We wanted a brand that actually belonged here. Not another souvenir shirt. Not another generic beach logo. Something built around the people who live for the water, the road, and whatever happens after sunset.</p>
       </Block>
-      <Block title="Made to order">
-        <p>Every piece is printed when you order it, just for you. That means less waste and no warehouse full of leftovers.</p>
+      <Block title="ONE MORE SHOT">
+        <p>Wet Kitty didn’t start with investors, a big company, or a safety net. It started with an idea and one guy trying to build something from the ground up when starting over was the only direction left to go.</p>
+        <p>This is one more shot at building something that matters — a real brand from Panama City Beach that can grow far beyond it. Every order, every shirt in the wild, and every person who tells somebody about Wet Kitty becomes part of that story.</p>
       </Block>
-      <Block title="Join the crew">
-        <p>Want in early? The <Link href="/founding-crew" className="font-semibold text-teal underline underline-offset-2">Founding Crew</Link> is open now.</p>
+      <Block title="MORE THAN A SHIRT">
+        <p>Wet Kitty is about the life around the clothes. Boats tied up at the sandbar. Motorcycles headed toward the coast. Trucks, fishing, beach bars, bonfires, good friends and weekends that run longer than planned.</p>
+        <p>Beach people and bike people may look like different crowds, but around here they end up watching the same sunset.</p>
+        <p>Same sand. Different breed.</p>
       </Block>
+      <Block title="MADE TO ORDER">
+        <p>Most Wet Kitty apparel is made when you order it instead of sitting in a warehouse waiting to be sold. That lets us build the brand without filling shelves with leftovers and keeps the focus on creating designs people actually want to wear.</p>
+      </Block>
+      <Block title="GET IN EARLY">
+        <p>Wet Kitty Coastal is still at the beginning. That is the point.</p>
+        <p>The people finding us now aren’t showing up after the brand became something. They’re the people helping make it something.</p>
+        <p>Years from now, if Wet Kitty is everywhere, we want the original crew to be able to say:</p>
+        <p>“I was there before everybody knew the name.”</p>
+      </Block>
+      <div>
+        <h2 className="mb-3 text-2xl">JOIN THE FOUNDING CREW</h2>
+        <div className="space-y-3 text-muted-foreground">
+          <p>Be part of Wet Kitty from the beginning. Get early drops, Founding Crew benefits, and your place in the story while we’re still writing it.</p>
+        </div>
+        <div className="mt-3">
+          <Link href="/founding-crew" className="btn btn-primary">JOIN THE FOUNDING CREW</Link>
+        </div>
+      </div>
     </InfoPage>
   );
 }

@@ -1,353 +1,452 @@
-import { useEffect } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "wouter";
-import {
-  SHOP_OPEN,
-  SHIPPING_SUMMARY,
-  SUPPORT_EMAIL,
-  setPageMeta,
-} from "@/const";
+import { Bike, Mail, Sparkles, Star, Waves } from "lucide-react";
+import { SHOP_OPEN, setPageMeta } from "@/const";
 import { trpc } from "@/lib/trpc";
-import { CUSTOMER_NAV_SECTIONS } from "@shared/commerce/sections";
 import { cardImageUrls } from "@shared/commerce/featured";
-import PostcardProductCard from "@/components/brand/PostcardProductCard";
+import { toast } from "sonner";
 
 /**
- * Real-HTML, responsive homepage. While the shop is closed it is a clean
- * Coming Soon page (no products); with the shop open it tells the Gulf Coast
- * life between the merch, then the first products of the Shop All order.
+ * Approved homepage structure recovered from 04cdb1b
+ * (client/src/pages/Home.tsx.backup and home-assets/wet-kitty-homepage-final.webp).
+ * Presentation only: collection links and best sellers use the current catalog.
  */
+const collectionCards = [
+  {
+    title: "High Tide",
+    subtitle: "Swimwear & Beach Gear",
+    href: "/collections/coastal-ride",
+    image: "/home-assets/slices/card-high-tide.webp",
+  },
+  {
+    title: "Sunset Riders",
+    subtitle: "Men's Collection",
+    href: "/collections/men",
+    image: "/home-assets/slices/card-sunset-riders.webp",
+  },
+  {
+    title: "Pier 7",
+    subtitle: "Caps & Accessories",
+    href: "/collections/accessories",
+    image: "/home-assets/slices/card-pier-7.webp",
+  },
+  {
+    title: "Salt Run",
+    subtitle: "Long Sleeves & Lightweight",
+    href: "/collections/hoodies",
+    image: "/home-assets/slices/card-salt-run.webp",
+  },
+  {
+    title: "Low Tide",
+    subtitle: "Women's Collection",
+    href: "/collections/women",
+    image: "/home-assets/slices/card-low-tide.webp",
+  },
+];
+
+const lifestyle = [
+  { src: "/home-assets/slices/life-beach.webp", alt: "Beach day with a motorcycle" },
+  { src: "/home-assets/slices/life-bonfire.webp", alt: "Bonfire on the beach" },
+  { src: "/home-assets/slices/life-center.webp", alt: "Beach bum, sea kitty, biker soul" },
+  { src: "/home-assets/slices/life-hoodie.webp", alt: "Wet Kitty hoodie at sunset" },
+  { src: "/home-assets/slices/life-coast.webp", alt: "Gulf coast shoreline" },
+];
+
 export default function Home() {
   useEffect(() => {
     setPageMeta(
       "Wet Kitty Coastal | Beach • Biker • Apparel",
-      "Wet Kitty Coastal: beach and biker lifestyle apparel, born in Panama City Beach. Stay Salty. Ride Free. Life's Better Wet."
+      "Ride the Tide. Own the Night. Premium beach and biker lifestyle apparel from Panama City Beach."
     );
   }, []);
 
   return (
-    <div className="bg-background">
-      <section className="relative overflow-hidden min-h-[420px] md:min-h-[520px] flex items-center">
-        <img
-          src="/images/lifestyle/shop-all.jpg"
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(5,16,18,0.35) 0%, rgba(5,16,18,0.72) 100%)",
-          }}
-        />
-        <div className="container relative py-16 md:py-24 text-center">
-          <span
-            className="inline-block mb-6 px-4 py-1.5 rounded-full text-[11px] md:text-xs font-bold uppercase tracking-[0.25em]"
-            style={{
-              color: "var(--sea)",
-              border: "1px solid rgba(121,212,205,.35)",
-            }}
-          >
-            Panama City Beach • Gulf Coast
-          </span>
-          <h1
-            className="mx-auto max-w-4xl text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.05] text-white"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            Stay Salty. Ride Free.
-            <br />
-            <span style={{ color: "var(--sea)" }}>Life&apos;s Better Wet.</span>
-          </h1>
-          <p
-            className="mx-auto mt-6 max-w-2xl text-base md:text-lg"
-            style={{ color: "rgba(255,250,240,.82)" }}
-          >
-            {SHOP_OPEN
-              ? "For the weekends that start on the boat and do not make it home early. Beach, bikes, friends, and the night after."
-              : "Our first drop of tees, hoodies and hats is almost here. Join the Founding Crew to get in first."}
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            {SHOP_OPEN && (
-              <Link
-                href="/collections/apparel"
-                className="btn btn-primary w-full sm:w-auto"
-              >
-                Shop the drop
-              </Link>
-            )}
-            <Link
-              href="/founding-crew"
-              className={
-                SHOP_OPEN
-                  ? "btn w-full sm:w-auto"
-                  : "btn btn-primary w-full sm:w-auto"
-              }
-              style={
-                SHOP_OPEN
-                  ? { color: "#fff", border: "1px solid rgba(255,255,255,.35)" }
-                  : undefined
-              }
-            >
-              Join the Founding Crew
-            </Link>
-          </div>
-          {!SHOP_OPEN && (
-            <p
-              className="mt-6 text-sm"
-              style={{ color: "rgba(255,250,240,.55)" }}
-            >
-              Shop opening soon.
-            </p>
-          )}
-        </div>
-      </section>
-
-      <StoryBand
-        eyebrow="Who it's for"
-        title="Not a shirt company. A weekend."
-        body="Wet Kitty is Panama City Beach and the Gulf Coast around it. Boats, trucks, bikes, beach days, bars, and the people you stay out with. The gear is how you wear that, not the other way around."
-        image="/images/lifestyle/coastal-boat.jpg"
-        imageLeft
-      />
-
-      {SHOP_OPEN && <NewDrop />}
-
-      {SHOP_OPEN && (
-        <section className="border-t border-border/60">
-          <div className="grid md:grid-cols-2">
-            <ClubBand
-              href="/collections/men"
-              image="/images/lifestyle/mens-club.jpg"
-              kicker="Men's Club"
-              title="The night starts on the water."
-              body="Beach, boats and fishing, trucks and cars, bikes, then the bar. Guys' night, date night, a weekend that runs long."
-            />
-            <ClubBand
-              href="/collections/women"
-              image="/images/lifestyle/womens-club.jpg"
-              kicker="Women's Club"
-              title="Sun on the water. Lights after."
-              body="Beach, boats, and the water, then nightlife, girls' night, and date night. Confident, sexy, and independent. She looks like that because she wants to."
-            />
-          </div>
-        </section>
-      )}
-
-      {SHOP_OPEN && <Sections />}
-
-      <StoryBand
-        eyebrow="After dark"
-        title="The dock, then the lights."
-        body="Daytime is salt and highway. Night is the bonfire, the bar, and staying out because you want to. That is the whole brand."
-        image="/images/lifestyle/club-night.jpg"
-      />
-
-      <section className="container py-16 md:py-24">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 md:p-12 text-center">
-          <span className="eyebrow mb-3 block">Founding Crew</span>
-          <h2 className="text-3xl md:text-4xl mb-4">
-            Get in before everyone else
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Be one of the first members of the Wet Kitty crew. Founding members
-            get the first gear, crew perks and a spot on the wall.
-          </p>
-          <Link href="/founding-crew" className="btn btn-primary">
-            See the Founding Crew kit
-          </Link>
-          <p className="mt-8 text-sm text-muted-foreground">
-            Questions? Email{" "}
-            <a
-              href={`mailto:${SUPPORT_EMAIL}`}
-              className="font-semibold text-teal underline underline-offset-2"
-            >
-              {SUPPORT_EMAIL}
-            </a>
-          </p>
-        </div>
-      </section>
+    <div className="wk-home">
+      <Hero />
+      <Collections />
+      <Pillars />
+      {SHOP_OPEN && <BestSellers />}
+      <LifestyleBand />
+      <CrewCTA />
+      <style>{styles}</style>
     </div>
   );
 }
 
-function StoryBand({
-  eyebrow,
-  title,
-  body,
-  image,
-  imageLeft = false,
-}: {
-  eyebrow: string;
-  title: string;
-  body: string;
-  image: string;
-  imageLeft?: boolean;
-}) {
+function Hero() {
   return (
-    <section className="container py-12 md:py-16">
-      <div
-        className={`grid md:grid-cols-2 gap-6 md:gap-10 items-center ${imageLeft ? "" : ""}`}
-      >
-        <img
-          src={image}
-          alt=""
-          className={`h-64 md:h-80 w-full object-cover rounded-3xl ${imageLeft ? "md:order-1" : "md:order-2"}`}
-        />
-        <div className={imageLeft ? "md:order-2" : "md:order-1"}>
-          <span className="eyebrow mb-3 block">{eyebrow}</span>
-          <h2 className="text-3xl md:text-4xl mb-4">{title}</h2>
-          <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-            {body}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ClubBand({
-  href,
-  image,
-  kicker,
-  title,
-  body,
-}: {
-  href: string;
-  image: string;
-  kicker: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="relative block min-h-[320px] md:min-h-[420px] overflow-hidden group"
-    >
+    <section className="wk-hero">
+      <h1 className="sr-only">Ride the Tide. Own the Night.</h1>
       <img
-        src={image}
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="wk-hero-art"
+        src="/home-assets/slices/hero.webp"
+        alt="Ride the Tide. Own the Night. A beach bar, a motorcycle, and the Gulf at sunset."
       />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(5,12,16,0.1) 0%, rgba(5,12,16,0.78) 100%)",
-        }}
-      />
-      <div className="relative flex h-full min-h-[320px] md:min-h-[420px] items-end p-8 md:p-12">
-        <div className="max-w-md">
-          <span
-            className="block text-xs font-bold uppercase tracking-[0.22em] mb-3"
-            style={{ color: "var(--sea)" }}
-          >
-            {kicker}
-          </span>
-          <h2
-            className="text-3xl md:text-4xl text-white mb-3"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {title}
-          </h2>
-          <p
-            className="text-sm md:text-base"
-            style={{ color: "rgba(255,250,240,.8)" }}
-          >
-            {body}
-          </p>
-        </div>
+      {/* The approved art bakes in a broken eyebrow ("PREMIUMEN"). Cover it, same as 6b86bcf. */}
+      <div className="wk-eyebrow-fix" aria-hidden="true">
+        <span>PREMIUM</span>
+        <span>COASTAL • BIKER LIFESTYLE</span>
       </div>
-    </Link>
-  );
-}
-
-function NewDrop() {
-  const { data: products = [], isLoading } =
-    trpc.commerce.products.list.useQuery({ first: 100 });
-  const featured = products
-    .filter(product => product.images.length)
-    .slice(0, 8);
-  return (
-    <section className="container py-14 md:py-20">
-      <div className="flex items-end justify-between gap-4 mb-8">
-        <div>
-          <span className="eyebrow mb-2 block">The drop</span>
-          <h2 className="text-3xl md:text-4xl">Wear the weekend</h2>
-        </div>
+      {SHOP_OPEN ? (
         <Link
           href="/collections/apparel"
-          className="text-sm font-bold uppercase tracking-wider text-teal whitespace-nowrap"
-        >
-          Shop all &rarr;
-        </Link>
-      </div>
-      {featured.length ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {featured.map((product, index) => (
-            <PostcardProductCard
-              key={product.id}
-              handle={product.handle}
-              title={product.title}
-              price={Number.parseFloat(product.priceRange.min.amount).toFixed(
-                2
-              )}
-              imageUrls={cardImageUrls(product.images, index)}
-              eager
-            />
-          ))}
-        </div>
+          className="wk-hero-shop"
+          aria-label="Shop tees, tanks, and hoodies"
+        />
       ) : (
-        <p className="text-muted-foreground">
-          {isLoading ? "Loading the new drop…" : "New gear is on the way."}
-        </p>
+        <Link
+          href="/founding-crew"
+          className="wk-hero-shop"
+          aria-label="Join the Founding Crew. Shop opening soon."
+        />
       )}
-      <p className="mt-8 text-sm text-muted-foreground">{SHIPPING_SUMMARY}</p>
     </section>
   );
 }
 
-function Sections() {
+function Collections() {
   return (
-    <section className="border-t border-border/60 bg-card">
-      <div className="container py-14 md:py-20">
-        <h2 className="text-3xl md:text-4xl mb-3">
-          Shop by the life, not the aisle
-        </h2>
-        <p className="text-muted-foreground mb-8 max-w-2xl">
-          Men&apos;s Club and Women&apos;s Club share the unisex pieces. They do
-          not share the mood.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {CUSTOMER_NAV_SECTIONS.map(section => (
-            <Link
-              key={section.handle}
-              href={`/collections/${section.handle}`}
-              className="block rounded-2xl p-6 transition-transform hover:-translate-y-1"
-              style={{
-                background: "linear-gradient(160deg, #0f3a3d 0%, #071417 100%)",
-              }}
-            >
-              <span
-                className="block text-xs font-bold uppercase tracking-[0.2em] mb-2"
-                style={{ color: "var(--sea)" }}
-              >
-                {section.subtitle}
-              </span>
-              <span
-                className="block text-lg font-bold text-white mb-2"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {section.title}
-              </span>
-              <span
-                className="block text-sm"
-                style={{ color: "rgba(255,250,240,.65)" }}
-              >
-                {section.tagline}
-              </span>
-            </Link>
-          ))}
-        </div>
+    <section className="wk-section">
+      <div className="wk-heading">
+        <h2>Explore the Collections</h2>
+      </div>
+      <div className="wk-collection-grid">
+        {collectionCards.map(card => (
+          <Link key={card.title} href={card.href}>
+            <article className="wk-collection-card">
+              <img src={card.image} alt={`${card.title}. ${card.subtitle}`} />
+            </article>
+          </Link>
+        ))}
       </div>
     </section>
   );
 }
+
+function Pillars() {
+  const items = [
+    { icon: Waves, title: "Coastal Inspired", text: "Born on the Gulf Coast" },
+    { icon: Bike, title: "Built for Freedom", text: "Beach. Bikes. No limits." },
+    { icon: Star, title: "Premium Quality", text: "Soft feel. Built to last." },
+    { icon: Sparkles, title: "Live Salty", text: "Stay salty. Ride free." },
+  ];
+
+  return (
+    <section className="wk-pillars">
+      {items.map(({ icon: Icon, title, text }) => (
+        <div key={title}>
+          <Icon size={34} aria-hidden="true" />
+          <div>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function BestSellers() {
+  const { data: products = [], isLoading } = trpc.commerce.products.list.useQuery({
+    first: 12,
+  });
+  const shown = products.filter(product => product.images.length).slice(0, 6);
+
+  return (
+    <section className="wk-section">
+      <div className="wk-heading">
+        <h2>Best Sellers</h2>
+      </div>
+      {shown.length ? (
+        <div className="wk-product-grid">
+          {shown.map((product, index) => {
+            const image = cardImageUrls(product.images, index)[0];
+            const price = Number.parseFloat(product.priceRange.min.amount).toFixed(2);
+            return (
+              <Link key={product.id} href={`/products/${product.handle}`}>
+                <article className="wk-product-card">
+                  <div className="wk-product-image">
+                    {image ? <img src={image} alt={product.title} /> : null}
+                  </div>
+                  <h3>{product.title}</h3>
+                  <p>${price}</p>
+                </article>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="wk-empty">{isLoading ? "Loading the drop…" : "New gear is on the way."}</p>
+      )}
+    </section>
+  );
+}
+
+function LifestyleBand() {
+  return (
+    <section className="wk-lifestyle" aria-label="Wet Kitty lifestyle">
+      {lifestyle.map(panel => (
+        <img key={panel.src} src={panel.src} alt={panel.alt} />
+      ))}
+    </section>
+  );
+}
+
+function CrewCTA() {
+  const [email, setEmail] = useState("");
+  const subscribeMutation = trpc.features.newsletter.subscribe.useMutation({
+    onSuccess: () => {
+      toast.success("Welcome to the Crew!");
+      setEmail("");
+    },
+    onError: () => toast.error("Newsletter signup is not connected yet."),
+  });
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    subscribeMutation.mutate({ email, source: "homepage" });
+  };
+
+  return (
+    <section className="wk-crew">
+      <div>
+        <h2>Join the Crew</h2>
+        <p>Get first access to new drops, exclusive offers, and upcoming rallies & events.</p>
+      </div>
+      <form onSubmit={submit}>
+        <Mail size={18} aria-hidden="true" />
+        <input
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          type="email"
+          required
+          aria-label="Email address"
+        />
+        <button type="submit" disabled={subscribeMutation.isPending}>
+          {subscribeMutation.isPending ? "Sending…" : "Sign Me Up"}
+        </button>
+      </form>
+    </section>
+  );
+}
+
+const styles = `
+.wk-home {
+  --ink: #070d19;
+  --cream: #f6f0e5;
+  --teal: #35b8b2;
+  --muted: #6f6c66;
+  background: var(--cream);
+  color: var(--ink);
+}
+.wk-hero {
+  position: relative;
+  background: #12323a;
+  line-height: 0;
+}
+.wk-hero-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.wk-eyebrow-fix {
+  position: absolute;
+  z-index: 2;
+  left: 24%;
+  top: 9.1%;
+  width: 52%;
+  height: 6.4%;
+  display: flex;
+  gap: 0.65em;
+  align-items: center;
+  justify-content: center;
+  color: #f4efe6;
+  background: rgba(8, 22, 26, 0.94);
+  font: 700 clamp(8px, 1.25vw, 14px)/1 Arial, sans-serif;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+.wk-eyebrow-fix span:first-child {
+  color: #7fd8d4;
+}
+.wk-hero-shop {
+  position: absolute;
+  z-index: 2;
+  left: 39.5%;
+  top: 74%;
+  width: 21%;
+  height: 11%;
+  border-radius: 4px;
+}
+.wk-hero-shop:focus-visible {
+  outline: 2px solid #49d3cf;
+  outline-offset: 2px;
+}
+.wk-section {
+  padding: 3.25rem 1rem 2.5rem;
+}
+.wk-heading {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+.wk-heading h2,
+.wk-crew h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--ink);
+  margin: 0;
+}
+.wk-collection-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
+}
+.wk-collection-card {
+  display: block;
+  border-radius: 0.35rem;
+  overflow: hidden;
+  line-height: 0;
+}
+.wk-collection-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.wk-pillars {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.1rem 1.2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  background: #fbf7ee;
+  border-top: 1px solid #e5dccb;
+  border-bottom: 1px solid #e5dccb;
+}
+.wk-pillars > div {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0.75rem;
+  align-items: center;
+}
+.wk-pillars svg { color: var(--teal); }
+.wk-pillars h3 {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--ink);
+}
+.wk-pillars p {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.wk-product-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+.wk-product-card { color: var(--ink); line-height: 1.3; }
+.wk-product-image {
+  aspect-ratio: 4 / 5;
+  background: #e9dfcf;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+.wk-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.wk-product-card h3 {
+  margin: 0.8rem 0 0.25rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.wk-product-card p {
+  color: var(--muted);
+  margin: 0;
+}
+.wk-empty {
+  text-align: center;
+  color: var(--muted);
+}
+.wk-lifestyle {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+.wk-lifestyle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 194 / 177;
+}
+.wk-crew {
+  background: linear-gradient(90deg, #b7eee8, #dff7f2);
+  padding: 2.25rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 2rem;
+  align-items: center;
+}
+.wk-crew p { color: #334; max-width: 520px; margin: 0.6rem 0 0; }
+.wk-crew form {
+  display: flex;
+  align-items: center;
+  background: white;
+  max-width: 560px;
+  margin-left: auto;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+.wk-crew svg { margin-left: 1rem; color: var(--teal); }
+.wk-crew input {
+  flex: 1;
+  border: 0;
+  padding: 1rem;
+  outline: none;
+  min-width: 0;
+  background: white;
+  color: var(--ink);
+}
+.wk-crew button {
+  border: 0;
+  border-radius: 0;
+  background: var(--ink);
+  color: white;
+  padding: 1rem 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .wk-collection-grid,
+  .wk-product-grid { grid-template-columns: repeat(2, 1fr); }
+  .wk-collection-grid a:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; width: 100%; }
+  .wk-pillars { grid-template-columns: repeat(2, 1fr); }
+  .wk-lifestyle { grid-template-columns: 1fr 1fr; }
+  .wk-lifestyle img:nth-child(3) { grid-column: span 2; aspect-ratio: 2.2 / 1; }
+  .wk-crew { grid-template-columns: 1fr; }
+  .wk-crew form { margin-left: 0; }
+}
+@media (max-width: 560px) {
+  .wk-collection-grid { grid-template-columns: 1fr; }
+  .wk-collection-grid a:last-child { max-width: none; }
+  .wk-product-grid { grid-template-columns: repeat(2, 1fr); }
+  .wk-pillars { grid-template-columns: 1fr; }
+  .wk-eyebrow-fix { letter-spacing: 0.08em; font-size: 8px; }
+  .wk-crew form { flex-direction: column; align-items: stretch; }
+  .wk-crew svg { display: none; }
+  .wk-crew button { width: 100%; padding: 0.95rem; }
+}
+`;

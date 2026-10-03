@@ -139,7 +139,7 @@ export default function CollectionPage({
   return (
     <div className="min-h-screen">
       {/* ─── STORY HERO ─── Full-page intro that sets the mood */}
-      <section className="relative h-[300px] md:h-[380px] flex items-end overflow-hidden">
+      <section className="relative min-h-[320px] overflow-hidden md:min-h-[420px]">
         {heroImage ? (
           <img
             src={heroImage}
@@ -187,7 +187,7 @@ export default function CollectionPage({
           }}
         />
 
-        <div className="container relative z-10 pb-10 pt-16 md:pb-12">
+        <div className="container relative z-10 pb-12 pt-8 md:pb-16 md:pt-14">
           <div className="max-w-2xl">
             <span
               className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4 block"

@@ -38,27 +38,27 @@ export const SHOP_SECTIONS: ShopSection[] = [
     navLabel: "Men's Club",
     title: "The Night Starts on the Water.",
     subtitle: "Men's Club",
-    tagline: "Beach, boats, trucks, bikes, and the bar after.",
+    tagline: "Built for weekends that don't end when the sun goes down.",
     description:
-      "Guys' weekends on the Gulf. Beach, boats and fishing, trucks and cars, bikes, then the bar. Guys' night, date night, and a weekend you do not cut short. Unisex tees and hoodies, not a generic men's department.",
+      "From the Gulf to the garage and everywhere in between.",
   },
   {
     handle: "women",
     navLabel: "Women's Club",
     title: "Sun on the Water. Lights After.",
     subtitle: "Women's Club",
-    tagline: "Beach, boats, nightlife, and a night she chose.",
+    tagline: "Beach days, boat nights, and whatever comes next.",
     description:
-      "She dresses because she wants to. Beach, boats, and the water, then nightlife, girls' night, and date night. Confident, sexy, and independent. Not a pink boutique, and not a look built to catch a man. Her cuts first, then the same unisex tees.",
+      "Wet Kitty cuts for women who live the weekend instead of dressing for it.",
   },
   {
     handle: "club",
     navLabel: "Club",
     title: "Pick Your Club.",
     subtitle: "The Club Collection",
-    tagline: "Sky High, Race Club, Down Low, Yacht & Rod.",
+    tagline: "Pick a club and wear it loud.",
     description:
-      "The named Wet Kitty clubs. Wear one loud on the boat, in the garage, or out with the guys.",
+      "Sky High, Race Club, Down Low, Yacht and Rod. For the boat, the garage, or out with your people.",
     // "Club" by itself is vague next to Men's Club and Women's Club.
     customerNav: false,
   },
@@ -67,27 +67,26 @@ export const SHOP_SECTIONS: ShopSection[] = [
     navLabel: "Coastal & Ride",
     title: "Salt and the Open Road.",
     subtitle: "Coastal & Ride",
-    tagline: "Beach days, the open road, and bike nights.",
-    description:
-      "Salt, the highway, and a weekend that starts on the sand and keeps going after dark. Beach days, the open road, and bike nights. Coastal Highway, Wave Bike, and Salty Soul.",
+    tagline: "Salt air meets the open road.",
+    description: "Two sides of the same Wet Kitty weekend.",
   },
   {
     handle: "hoodies",
     navLabel: "Hoodies",
     title: "When the Sun Drops.",
     subtitle: "Hoodies & Zips",
-    tagline: "Bonfire, cool ride, night still going.",
+    tagline: "For the bonfire, the cool ride, and a night that's still going.",
     description:
-      "Pullover and zip hoodies for beach bonfires, cool rides, and late nights. Large graphic on the back, same design on the left chest.",
+      "Pullovers and zips for when the Gulf air drops and nobody is ready to head in.",
   },
   {
     handle: "accessories",
     navLabel: "Accessories",
     title: "Finish the Look.",
     subtitle: "Hats, Stickers & Accessories",
-    tagline: "Top it off. Stick it on. Keep it cold.",
+    tagline: "The small stuff that finishes the weekend.",
     description:
-      "Dad hats, caps, stickers, koozies, beach towels, and the small stuff that finishes a Gulf weekend.",
+      "Hats, stickers, koozies, and towels for the truck, the boat, and the bar.",
   },
 ];
 
