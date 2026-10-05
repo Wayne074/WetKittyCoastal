@@ -73,7 +73,7 @@ const KNOWN_ROUTES = [
   /^\/$/,
   /^\/collections\/[\w-]+\/?$/,
   /^\/products\/[\w-]+\/?$/,
-  /^\/(community|founding-crew|cart|returns|about|faq|shipping|contact|wishlist|events)\/?$/,
+  /^\/(community|founding-crew|cart|returns|about|faq|shipping|contact|privacy|terms|wishlist|events)\/?$/,
   /^\/checkout\/success\/?$/,
 ];
 
