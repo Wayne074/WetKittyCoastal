@@ -9,7 +9,6 @@ const NAV = [
   { label: "Home", href: "/" },
   { label: "Men", href: "/collections/men" },
   { label: "Women", href: "/collections/women" },
-  { label: "Beach", href: "/collections/coastal-ride" },
   { label: "Founding Crew", href: "/founding-crew" },
   { label: "Accessories", href: "/collections/accessories" },
   { label: "About", href: "/about" },
@@ -44,7 +43,10 @@ export default function Header() {
           role="status"
         >
           Shop Opening Soon — dialing in products &amp; graphics.{" "}
-          <Link href="/founding-crew" className="underline underline-offset-2 font-bold">
+          <Link
+            href="/founding-crew"
+            className="inline-flex items-center justify-center ml-1.5 px-3 py-1 rounded-full bg-[#061416] text-[#7fd8d4] text-xs font-extrabold uppercase tracking-wide no-underline hover:bg-black transition-colors"
+          >
             Founding Crew is live
           </Link>
         </div>
@@ -52,12 +54,12 @@ export default function Header() {
 
       <header className="border-b border-white/10">
         <div className="container">
-          <div className="flex items-center justify-between gap-3 h-[84px]">
+          <div className="flex items-center justify-between gap-3 h-[64px] md:h-[84px]">
             <Link href="/" className="flex items-center shrink-0" aria-label="Wet Kitty Coastal home">
               <img
                 src="/images/brand/wet-kitty-mark.png"
                 alt="Wet Kitty Coastal"
-                className="h-16 w-auto"
+                className="h-12 md:h-16 w-auto"
               />
             </Link>
 

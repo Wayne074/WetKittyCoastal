@@ -15,13 +15,6 @@ const HERO_SRC = "/images/lifestyle/hero-sunset.jpg";
 
 const collectionCards = [
   {
-    title: "High Tide",
-    subtitle: "Swimwear & Beach Gear",
-    href: "/collections/coastal-ride",
-    image: "/images/lifestyle/gulf-wave.jpg",
-    alt: "A Gulf wave in the sun",
-  },
-  {
     title: "Sunset Riders",
     subtitle: "Men's Collection",
     href: "/collections/men",
@@ -51,7 +44,7 @@ const collectionCards = [
   },
 ];
 
-const BEST_SELLER_IDS = [
+const FIRST_DROP_IDS = [
   "475065897",
   "475058494",
   "475066883",
@@ -95,7 +88,7 @@ export default function Home() {
       <Hero />
       <Collections />
       <Pillars />
-      <BestSellers />
+      <FirstDrop />
       <LifestyleBand />
       <CrewCTA />
       <style>{styles}</style>
@@ -122,9 +115,14 @@ function Hero() {
         <p className="wk-hero-lead">
           Premium Beach &amp; Biker Lifestyle Apparel for Men &amp; Women. Built for saltwater, chrome, sunsets, and the people who chase all four.
         </p>
-        <Link href="/collections/apparel" className="wk-hero-btn">
-          Shop Tees, Tanks &amp; Hoodies
-        </Link>
+        <div className="wk-hero-ctas">
+          <Link href="/collections/apparel" className="wk-hero-btn">
+            Shop Tees, Tanks &amp; Hoodies
+          </Link>
+          <Link href="/founding-crew" className="wk-hero-btn wk-hero-btn-crew">
+            Join the Founding Crew
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -185,17 +183,17 @@ function colorValues(product: Product) {
   return (option?.values ?? []).slice(0, 4);
 }
 
-function BestSellers() {
+function FirstDrop() {
   const { data: products = [], isLoading, isError } = trpc.commerce.products.list.useQuery({
     first: 80,
   });
   const byId = new Map(products.map(product => [product.id, product]));
-  const shown = BEST_SELLER_IDS.map(id => byId.get(id)).filter((product): product is Product => Boolean(product));
+  const shown = FIRST_DROP_IDS.map(id => byId.get(id)).filter((product): product is Product => Boolean(product));
 
   return (
     <section className="wk-section wk-section-tight">
       <div className="wk-heading">
-        <h2>Best Sellers</h2>
+        <h2>First Drop</h2>
       </div>
       {shown.length ? (
         <div className="wk-product-grid">
@@ -354,11 +352,17 @@ const styles = `
   line-height: 1.45;
   color: #10242c;
 }
+.wk-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: flex-end;
+  margin-top: 0.9rem;
+}
 .wk-hero-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 0.9rem;
   min-height: 44px;
   padding: 0.65rem 1.15rem;
   border-radius: 999px;
@@ -371,7 +375,13 @@ const styles = `
   text-transform: uppercase;
   text-decoration: none;
 }
+.wk-hero-btn-crew {
+  background: #0b3c42;
+  color: #f6f0e5;
+  box-shadow: 0 0 0 2px rgba(127, 216, 212, 0.85);
+}
 .wk-hero-btn:focus-visible { outline: 2px solid #071014; outline-offset: 3px; }
+.wk-hero-btn-crew:focus-visible { outline: 2px solid #7fd8d4; outline-offset: 3px; }
 .wk-section { padding: 2.75rem 1rem 1.5rem; }
 .wk-section-tight { padding-bottom: 2.25rem; }
 .wk-heading { text-align: center; margin-bottom: 1.35rem; }
@@ -389,7 +399,7 @@ const styles = `
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.85rem;
 }
 .wk-collection-card {
@@ -582,10 +592,10 @@ const styles = `
   cursor: pointer;
 }
 @media (max-width: 1100px) {
-  .wk-collection-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wk-collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .wk-product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .wk-pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .wk-hero-copy { width: min(380px, 46%); }
+  .wk-hero-copy { width: min(400px, 48%); }
 }
 @media (max-width: 800px) {
   .wk-lifestyle { grid-template-columns: 1fr 1fr; }
@@ -619,9 +629,54 @@ const styles = `
   .wk-hero-copy::before { display: none; }
   .wk-hero h1 { font-size: 1.85rem; }
   .wk-hero-lead { font-size: 0.95rem; max-width: 22rem; }
+  .wk-hero-ctas { justify-content: flex-start; }
   .wk-hero-btn { min-height: 46px; }
   .wk-crew form { flex-direction: column; align-items: stretch; }
   .wk-crew svg { display: none; }
   .wk-crew button { width: 100%; }
+}
+@media (max-width: 720px) {
+  .wk-hero { min-height: clamp(360px, 106vw, 430px); }
+  .wk-hero-art { object-position: 80% 58%; }
+  .wk-hero-copy { padding: 0.75rem 0.85rem 1.4rem; }
+  .wk-eyebrow { font-size: 0.6rem; letter-spacing: 0.14em; }
+  .wk-hero h1 { font-size: 1.45rem; margin-top: 0.25rem; }
+  .wk-hero-lead { font-size: 0.82rem; line-height: 1.4; margin-top: 0.45rem; max-width: 20rem; }
+  .wk-hero-ctas { margin-top: 0.65rem; gap: 0.45rem; flex-direction: column; align-items: stretch; }
+  .wk-hero-btn { min-height: 40px; margin-top: 0; padding: 0.5rem 0.95rem; font-size: 0.66rem; width: 100%; max-width: 20rem; }
+}
+/* Phones and small tablets (below Tailwind md, 768px). Desktop untouched. */
+@media (max-width: 767px) {
+  .wk-section { padding: 1.4rem 0.75rem 0.75rem; }
+  .wk-section-tight { padding-bottom: 1.25rem; }
+  .wk-heading { margin-bottom: 0.8rem; }
+  .wk-heading h2,
+  .wk-crew h2 { font-size: 1.05rem; letter-spacing: 0.12em; }
+  .wk-collection-grid { gap: 0.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wk-collection-card { min-height: 150px; }
+  .wk-card-copy { padding: 0.55rem 0.6rem 0.6rem; }
+  .wk-collection-card h3 { font-size: 1.05rem; }
+  .wk-collection-card p { margin: 0.15rem 0 0.3rem; font-size: 0.56rem; letter-spacing: 0.05em; }
+  .wk-collection-card span { font-size: 0.58rem; }
+  .wk-collection-card span svg { width: 12px; height: 12px; }
+  .wk-pillars { margin: 0.25rem 0.75rem 0; padding: 0.7rem 0.75rem; gap: 0.6rem 0.75rem; }
+  .wk-pillars > div { grid-template-columns: 24px minmax(0, 1fr); gap: 0.5rem; }
+  .wk-pillars svg { width: 22px; height: 22px; }
+  .wk-pillars h3 { font-size: 0.62rem; letter-spacing: 0.06em; }
+  .wk-pillars p { font-size: 0.7rem; margin-top: 0.1rem; }
+  .wk-product-grid { gap: 0.9rem 0.6rem; }
+  .wk-product-image { aspect-ratio: 1 / 1; }
+  .wk-product-card h3 { margin: 0.45rem 0 0.15rem; font-size: 0.76rem; line-height: 1.3; }
+  .wk-product-card p { font-size: 0.82rem; }
+  .wk-swatches { margin-top: 0.3rem; gap: 0.3rem; }
+  .wk-swatches span { width: 12px; height: 12px; }
+  .wk-lifestyle img { aspect-ratio: 16 / 10; }
+  .wk-life-center { min-height: 0; padding: 0.7rem 0.6rem; }
+  .wk-life-center p { font-size: 1.05rem; letter-spacing: 0.06em; line-height: 1.25; }
+  .wk-crew { padding: 1.1rem 0.85rem; gap: 0.7rem; }
+  .wk-crew p { font-size: 0.82rem; margin-top: 0.3rem; }
+  .wk-crew form { flex-direction: row; align-items: center; }
+  .wk-crew input { padding: 0.7rem 0.75rem; font-size: 16px; }
+  .wk-crew button { width: auto; padding: 0.78rem 0.85rem; font-size: 0.72rem; }
 }
 `;

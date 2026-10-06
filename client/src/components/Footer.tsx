@@ -7,7 +7,6 @@ const columns = [
       { label: "Men", href: "/collections/men" },
       { label: "Women", href: "/collections/women" },
       { label: "Collections", href: "/collections/apparel" },
-      { label: "Beach", href: "/collections/coastal-ride" },
       { label: "Accessories", href: "/collections/accessories" },
     ],
   },
