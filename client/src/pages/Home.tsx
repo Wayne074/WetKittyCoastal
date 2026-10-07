@@ -98,23 +98,27 @@ export default function Home() {
 
 function Hero() {
   return (
-    <section className="wk-hero" aria-label="Wet Kitty Coastal">
-      <img
-        className="wk-hero-art"
-        src={HERO_SRC}
-        width={1672}
-        height={941}
-        alt="A tiki beach bar at sunset, a cat surfboard, a turquoise chair, and a black motorcycle on the sand."
-      />
-      <div className="wk-hero-copy">
-        <p className="wk-eyebrow">Premium Coastal • Biker Lifestyle</p>
-        <h1>
-          <span>Ride the Tide.</span>
-          <span>Own the Night.</span>
-        </h1>
-        <p className="wk-hero-lead">
-          Premium Beach &amp; Biker Lifestyle Apparel for Men &amp; Women. Built for saltwater, chrome, sunsets, and the people who chase all four.
-        </p>
+    <>
+      <section className="wk-hero" aria-label="Wet Kitty Coastal">
+        <img
+          className="wk-hero-art"
+          src={HERO_SRC}
+          width={1672}
+          height={941}
+          alt="A tiki beach bar at sunset, a cat surfboard, a turquoise chair, and a black motorcycle on the sand."
+        />
+        <div className="wk-hero-copy">
+          <p className="wk-eyebrow">Premium Coastal • Biker Lifestyle</p>
+          <h1>
+            <span>Ride the Tide.</span>
+            <span>Own the Night.</span>
+          </h1>
+          <p className="wk-hero-lead">
+            Premium Beach &amp; Biker Lifestyle Apparel for Men &amp; Women. Built for saltwater, chrome, sunsets, and the people who chase all four.
+          </p>
+        </div>
+      </section>
+      <div className="wk-hero-cta-strip" aria-label="Shop and Founding Crew">
         <div className="wk-hero-ctas">
           <Link href="/collections/apparel" className="wk-hero-btn">
             Shop Tees, Tanks &amp; Hoodies
@@ -124,7 +128,7 @@ function Hero() {
           </Link>
         </div>
       </div>
-    </section>
+    </>
   );
 }
 
@@ -352,28 +356,38 @@ const styles = `
   line-height: 1.45;
   color: #10242c;
 }
+.wk-hero-cta-strip {
+  background: var(--cream);
+  border-bottom: 1px solid #e5dccb;
+  padding: 0.85rem 1rem 1rem;
+}
 .wk-hero-ctas {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  justify-content: flex-end;
-  margin-top: 0.9rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 720px;
+  margin: 0 auto;
 }
 .wk-hero-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 0.65rem 1.15rem;
+  min-height: 40px;
+  padding: 0.55rem 1.05rem;
   border-radius: 999px;
   background: #071014;
   color: #f6f0e5;
   font-family: Inter, system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
+  flex: 1 1 auto;
+  max-width: 280px;
+  text-align: center;
 }
 .wk-hero-btn-crew {
   background: #0b3c42;
@@ -608,14 +622,14 @@ const styles = `
   .wk-collection-card { min-height: 220px; }
 }
 @media (max-width: 720px) {
-  .wk-hero { min-height: 560px; }
+  .wk-hero { min-height: clamp(360px, 106vw, 430px); }
   .wk-hero-art {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 68% 48%;
+    object-position: 80% 58%;
   }
   .wk-hero-copy {
     position: relative;
@@ -623,30 +637,30 @@ const styles = `
     right: auto;
     width: auto;
     text-align: left;
-    padding: 0.9rem 1rem 1.15rem;
-    background: linear-gradient(180deg, rgba(255, 248, 236, 0.9) 0%, rgba(255, 248, 236, 0.62) 62%, rgba(255, 248, 236, 0) 100%);
+    padding: 0.7rem 0.85rem 0.85rem;
+    background: linear-gradient(180deg, rgba(255, 248, 236, 0.88) 0%, rgba(255, 248, 236, 0.45) 70%, rgba(255, 248, 236, 0) 100%);
   }
   .wk-hero-copy::before { display: none; }
-  .wk-hero h1 { font-size: 1.85rem; }
-  .wk-hero-lead { font-size: 0.95rem; max-width: 22rem; }
-  .wk-hero-ctas { justify-content: flex-start; }
-  .wk-hero-btn { min-height: 46px; }
+  .wk-eyebrow { font-size: 0.58rem; letter-spacing: 0.14em; }
+  .wk-hero h1 { font-size: 1.4rem; margin-top: 0.2rem; }
+  .wk-hero-lead { font-size: 0.78rem; line-height: 1.35; margin-top: 0.35rem; max-width: 18rem; }
+  .wk-hero-cta-strip { padding: 0.7rem 0.75rem 0.85rem; }
+  .wk-hero-ctas { gap: 0.45rem; flex-wrap: nowrap; }
+  .wk-hero-btn {
+    min-height: 38px;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    max-width: none;
+    flex: 1 1 0;
+  }
   .wk-crew form { flex-direction: column; align-items: stretch; }
   .wk-crew svg { display: none; }
   .wk-crew button { width: 100%; }
 }
-@media (max-width: 720px) {
-  .wk-hero { min-height: clamp(360px, 106vw, 430px); }
-  .wk-hero-art { object-position: 80% 58%; }
-  .wk-hero-copy { padding: 0.75rem 0.85rem 1.4rem; }
-  .wk-eyebrow { font-size: 0.6rem; letter-spacing: 0.14em; }
-  .wk-hero h1 { font-size: 1.45rem; margin-top: 0.25rem; }
-  .wk-hero-lead { font-size: 0.82rem; line-height: 1.4; margin-top: 0.45rem; max-width: 20rem; }
-  .wk-hero-ctas { margin-top: 0.65rem; gap: 0.45rem; flex-direction: column; align-items: stretch; }
-  .wk-hero-btn { min-height: 40px; margin-top: 0; padding: 0.5rem 0.95rem; font-size: 0.66rem; width: 100%; max-width: 20rem; }
-}
 /* Phones and small tablets (below Tailwind md, 768px). Desktop untouched. */
 @media (max-width: 767px) {
+  .wk-hero-cta-strip { padding: 0.65rem 0.75rem 0.8rem; }
   .wk-section { padding: 1.4rem 0.75rem 0.75rem; }
   .wk-section-tight { padding-bottom: 1.25rem; }
   .wk-heading { margin-bottom: 0.8rem; }
