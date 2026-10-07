@@ -25,6 +25,7 @@ export const FEATURED_ORDER: string[] = [
   "476295516", // Sky High Club tee — front
   "475057186", // Wave Bike dad hat
   "476301010", // Salty Soul tee — front
+  "478997139", // WKC Letterman Jacket
   "475069764", // Yacht & Rod Club zip hoodie
   "476310836", // Coastal Lifestyle women's tee — front
   "475058883", // Brand Mark sticker
@@ -72,6 +73,7 @@ export const MEN_ORDER: string[] = [
   "476301010", // Salty Soul — front
   "475066883", // Wave zip hoodie
   "475069764", // Yacht zip hoodie
+  "478997139", // WKC Letterman Jacket
   "475047637", // Brand Mark tee — front
   "475070138", // Yacht pullover
   "475067424", // Wave hoodie
@@ -180,14 +182,15 @@ type CardImage = { url: string; altText?: string | null };
 /** Alt text for a hoodie back shot. Cards skip it so the chest front leads. */
 export const HOODIE_BACK_ALT = "Back of the hoodie";
 
+/** Any garment-back shot ("Back of the hoodie", "Back of the jacket, …"). */
+const BACK_SHOT_ALT = /^back of the\b/i;
+
 export function cardImageUrls(images: CardImage[] | undefined, index: number) {
   const list = (images ?? []).filter(image => image.url);
   if (!list.length) return [];
   // A back shot has no color in the alt, so the old "skip black" rule was
   // choosing it (or a blank front thumbnail) over the printed chest.
-  const fronts = list.filter(
-    image => !new RegExp(HOODIE_BACK_ALT, "i").test(image.altText ?? "")
-  );
+  const fronts = list.filter(image => !BACK_SHOT_ALT.test(image.altText ?? ""));
   const poolSource = fronts.length ? fronts : list;
   const colored = poolSource.filter(
     image => !/\bblack\b/i.test(image.altText ?? "")

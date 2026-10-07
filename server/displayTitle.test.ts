@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { displayTitle, garmentBackUrl } from "./_core/printful";
+import {
+  colorBackAlt,
+  displayTitle,
+  garmentBackUrl,
+  withColorBacks,
+} from "./_core/printful";
 import { customerDescription } from "@shared/commerce/copy";
 import {
   FEATURED_ORDER,
@@ -120,5 +125,40 @@ describe("hoodie back gallery", () => {
     expect(
       garmentBackUrl("475067424", "https://files.example/back-print.png", raw)
     ).toBeNull();
+  });
+});
+
+describe("letterman jacket", () => {
+  it("puts each color's back right after its front, and cards lead with a front", () => {
+    const fronts = [
+      { url: "https://cdn.test/bw-front.png", altText: "WKC Letterman Jacket / Jet Black/Arctic White / S" },
+      { url: "https://cdn.test/navy-front.png", altText: "WKC Letterman Jacket / Oxford Navy/Heather Grey / S" },
+      { url: "https://cdn.test/br-front.png", altText: "WKC Letterman Jacket / Jet Black/Fire Red / S" },
+    ];
+    const gallery = withColorBacks("478997139", fronts);
+    expect(gallery.map(image => image.url)).toEqual([
+      "https://cdn.test/bw-front.png",
+      "/images/mockups/wkc-letterman-black-white-back.jpg",
+      "https://cdn.test/navy-front.png",
+      "/images/mockups/wkc-letterman-navy-back.jpg",
+      "https://cdn.test/br-front.png",
+      "/images/mockups/wkc-letterman-black-red-back.jpg",
+    ]);
+    expect(gallery[3].altText).toBe(colorBackAlt("Oxford Navy/Heather Grey"));
+    expect(withColorBacks("475066883", fronts)).toEqual(fronts);
+    for (let index = 0; index < 4; index++)
+      expect(cardImageUrls(gallery, index)[0]).toMatch(/front\.png$/);
+  });
+
+  it("describes the jacket in brand voice without supplier details", () => {
+    const copy = customerDescription({
+      title: "WKC Letterman Jacket",
+      backPrint: false,
+    });
+    expect(copy).toContain("varsity-style jacket");
+    expect(copy).toContain("WKC graphic across the back");
+    expect(copy).toContain("left chest");
+    for (const banned of ["printful", "gildan", "awdis", "30-day", "guarantee"])
+      expect(copy.toLowerCase()).not.toContain(banned);
   });
 });

@@ -12,6 +12,11 @@ function womensCut(title: string, flagged: boolean) {
 
 function lifeLine(title: string, hers: boolean) {
   const t = title.toLowerCase();
+  if (/letterman|varsity|jacket/.test(t)) {
+    return hers
+      ? "Gulf air turns cool, the bikes line up outside the bar, and she rides home in the jacket she isn't giving back."
+      : "Cool Gulf nights, chrome still warm from the coast road, and the long way home with the crew. Wear your colors.";
+  }
   if (/yacht|rod club/.test(t)) {
     return hers
       ? "Boats, dock lights, and a night she got ready for because she wanted to."
@@ -87,6 +92,8 @@ function lifeLine(title: string, hers: boolean) {
 
 function garmentFacts(title: string) {
   const t = title.toLowerCase();
+  if (/letterman|varsity|jacket/.test(t))
+    return "Heavyweight varsity-style jacket with contrast sleeves, a snap front, and striped rib trim.";
   if (/zip/.test(t) && /hoodie/.test(t))
     return "Heavyweight cotton-blend zip hoodie.";
   if (/hoodie|pullover/.test(t)) return "Heavyweight cotton-blend hoodie.";
@@ -107,6 +114,8 @@ function garmentFacts(title: string) {
 
 function placement(title: string, backPrint: boolean) {
   const t = title.toLowerCase();
+  if (/letterman|varsity|jacket/.test(t))
+    return "Big WKC graphic across the back, and the Wet Kitty Coastal badge on the left chest.";
   if (/hoodie|pullover/.test(t) || (/zip/.test(t) && /hoodie/.test(t))) {
     return "Large graphic on the back, and the same design on the left chest.";
   }

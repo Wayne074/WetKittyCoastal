@@ -387,6 +387,40 @@ const HOODIE_BACK_MOCKUP: Record<string, string> = {
   "475064976": "/images/mockups/brand-mark-zip-back.jpg",
 };
 
+/**
+ * Garment-back photos per color for products whose live variant previews
+ * are the fronts. Each back is placed right after its color's front in the
+ * gallery, so the color picker still lands on the front.
+ */
+const COLOR_BACK_MOCKUPS: Record<string, Record<string, string>> = {
+  // WKC Letterman Jacket: big WKC back graphic
+  "478997139": {
+    "Jet Black/Arctic White":
+      "/images/mockups/wkc-letterman-black-white-back.jpg",
+    "Oxford Navy/Heather Grey": "/images/mockups/wkc-letterman-navy-back.jpg",
+    "Jet Black/Fire Red": "/images/mockups/wkc-letterman-black-red-back.jpg",
+  },
+};
+
+/** Alt text for a per-color back shot. Cards skip it so the front leads. */
+export function colorBackAlt(color: string) {
+  return `Back of the jacket, ${color}`;
+}
+
+export function withColorBacks(productId: string, images: Image[]): Image[] {
+  const backs = COLOR_BACK_MOCKUPS[productId];
+  if (!backs) return images;
+  const result: Image[] = [];
+  for (const image of images) {
+    result.push(image);
+    const color = Object.keys(backs).find(name =>
+      (image.altText ?? "").includes(` / ${name} / `)
+    );
+    if (color) result.push({ url: backs[color], altText: colorBackAlt(color) });
+  }
+  return uniqueImages(result);
+}
+
 function isHoodieTitle(title: string) {
   return /\b(hoodie|pullover)\b/i.test(title);
 }
@@ -482,6 +516,7 @@ function normalizeProduct(detail: SyncProductDetail): Product {
   )
     .filter(image => !printUrls?.has(image.url))
     .map(image => ({ ...image, altText: image.altText || title }));
+  const gallery = withColorBacks(productId, images);
 
   const variants = synced.map(v => {
     const variant = normalizeVariant(
@@ -536,7 +571,7 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     productType: section,
     vendor: "Wet Kitty Coastal",
     tags: productSections(title),
-    images,
+    images: gallery,
     priceRange: {
       min: {
         amount: prices.length ? Math.min(...prices).toFixed(2) : "0.00",
