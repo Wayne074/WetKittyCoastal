@@ -73,6 +73,20 @@ describe("Printful draft safety", () => {
     });
   });
 
+  it("carries the customer's paid shipping, discount, and tax as retail costs", () => {
+    const retailCosts = {
+      currency: "USD",
+      subtotal: "34.00",
+      discount: "0.00",
+      shipping: "5.99",
+      tax: "0.00",
+    };
+    expect(buildPrintfulOrder({ ...order, retailCosts }).body.retail_costs).toEqual(
+      retailCosts
+    );
+    expect(buildPrintfulOrder(order).body).not.toHaveProperty("retail_costs");
+  });
+
   it("does not confirm when the live switch is off, even for a live session", () => {
     delete process.env.PRINTFUL_LIVE_FULFILLMENT;
     expect(buildPrintfulOrder({ ...order, stripeLivemode: true }).path).toBe(

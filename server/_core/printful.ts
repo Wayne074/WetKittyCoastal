@@ -958,6 +958,13 @@ export function buildPrintfulOrder(input: {
     zip: string;
   };
   items: Array<{ variantId: string; quantity: number; retailPrice?: string }>;
+  retailCosts?: {
+    currency: string;
+    subtotal: string;
+    discount: string;
+    shipping: string;
+    tax: string;
+  };
 }) {
   const confirm = printfulOrderConfirm(input.stripeLivemode);
   return {
@@ -981,6 +988,7 @@ export function buildPrintfulOrder(input: {
         quantity: item.quantity,
         retail_price: item.retailPrice,
       })),
+      ...(input.retailCosts ? { retail_costs: input.retailCosts } : {}),
     },
   };
 }
@@ -1000,6 +1008,13 @@ export async function createPrintfulOrder(input: {
     zip: string;
   };
   items: Array<{ variantId: string; quantity: number; retailPrice?: string }>;
+  retailCosts?: {
+    currency: string;
+    subtotal: string;
+    discount: string;
+    shipping: string;
+    tax: string;
+  };
 }) {
   // Stripe retries webhooks. Treat an existing Printful order with the same
   // external id as success so a retry can never create a duplicate shipment.

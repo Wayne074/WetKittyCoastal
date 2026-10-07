@@ -19,6 +19,15 @@ type StripeSession = {
   id: string;
   url?: string | null;
   livemode?: boolean;
+  currency?: string | null;
+  amount_subtotal?: number | null;
+  amount_total?: number | null;
+  shipping_cost?: { amount_total?: number | null } | null;
+  total_details?: {
+    amount_discount?: number | null;
+    amount_shipping?: number | null;
+    amount_tax?: number | null;
+  } | null;
   payment_status?: "paid" | "unpaid" | "no_payment_required";
   customer_details?: {
     email?: string | null;
@@ -327,9 +336,27 @@ async function fulfillPaidSession(sessionId: string) {
   if (!items.length)
     throw new Error(`Stripe session ${session.id} has no line items`);
 
+  // Pass what the customer actually paid so the draft's retail totals match
+  // Stripe (our shipping rule, discounts, tax) instead of Printful's defaults.
+  const money = (value?: number | null) => ((value ?? 0) / 100).toFixed(2);
+  const retailCosts =
+    typeof session.amount_subtotal === "number"
+      ? {
+          currency: (session.currency || "usd").toUpperCase(),
+          subtotal: money(session.amount_subtotal),
+          discount: money(session.total_details?.amount_discount),
+          shipping: money(
+            session.shipping_cost?.amount_total ??
+              session.total_details?.amount_shipping
+          ),
+          tax: money(session.total_details?.amount_tax),
+        }
+      : undefined;
+
   await createPrintfulOrder({
     stripeSessionId: session.id,
     stripeLivemode: session.livemode === true,
+    retailCosts,
     recipient: {
       name: shipping.name,
       email,
