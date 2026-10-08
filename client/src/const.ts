@@ -5,7 +5,7 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
  * Flip to `true` when products & graphics are ready — Printful data stays intact.
  * Founding Crew (`/founding-crew`) is independent and stays live either way.
  */
-const SHOP_PUBLIC = false;
+const SHOP_PUBLIC = true;
 
 // Private preview: visiting any page with ?preview=wkcrew26 unlocks the full shop
 // for that browser tab session (for QA while the public site shows Coming Soon).
