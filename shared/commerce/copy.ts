@@ -115,7 +115,7 @@ function garmentFacts(title: string) {
 function placement(title: string, backPrint: boolean) {
   const t = title.toLowerCase();
   if (/letterman|varsity|jacket/.test(t))
-    return "Big WKC graphic across the back, and the Wet Kitty Coastal badge on the left chest.";
+    return "Big WKC graphic across the back, and the Wet Kitty Coastal badge on the left chest. Print design, not embroidered.";
   if (/hoodie|pullover/.test(t) || (/zip/.test(t) && /hoodie/.test(t))) {
     return "Large graphic on the back, and the same design on the left chest.";
   }
