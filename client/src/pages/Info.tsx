@@ -178,14 +178,12 @@ export function PrivacyPage() {
           </Mark>
         </p>
       </Block>
-      <Block title="What we do not do">
+      <Block title="Site analytics">
         <p>
-          This site does not run its own ad pixels, analytics tags, or a mailing-list signup in the code that ships with the storefront today.
+          We use Google Analytics to see how many people visit, which pages they view, and how they found us (for example Instagram or TikTok). Google Analytics sets cookies and collects details like your device, browser, approximate location, and the pages you view. We use it only to understand and improve the shop.
         </p>
         <p>
-          <Mark who="WAYNE">
-            Say if a separate email tool, ad account, or analytics tool is already collecting visitor data outside this repo.
-          </Mark>
+          You can block it with your browser&apos;s privacy settings or Google&apos;s opt-out add-on at tools.google.com/dlpage/gaoptout. This site does not run ad pixels or a mailing-list signup, and we do not sell customer lists.
         </p>
       </Block>
       <Block title="Who else sees it">
