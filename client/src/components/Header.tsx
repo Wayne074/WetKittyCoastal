@@ -4,6 +4,7 @@ import { Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCart } from "@/contexts/CartContext";
 import { SHOP_OPEN } from "@/const";
+import { SALE_ACTIVE, SALE_BANNER } from "@shared/commerce/sale";
 
 const NAV = [
   { label: "Home", href: "/" },
@@ -49,6 +50,15 @@ export default function Header() {
           >
             Founding Crew is live
           </Link>
+        </div>
+      )}
+
+      {SHOP_OPEN && SALE_ACTIVE && (
+        <div
+          className="text-center px-4 py-1.5 text-xs md:text-sm font-semibold tracking-wide border-b border-white/10 text-[#7fd8d4]"
+          role="note"
+        >
+          {SALE_BANNER}
         </div>
       )}
 

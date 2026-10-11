@@ -5,6 +5,7 @@ import { setPageMeta } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { cardImageUrls } from "@shared/commerce/featured";
 import type { Product } from "@shared/commerce/types";
+import { compareAtForLowest } from "@shared/commerce/sale";
 import { toast } from "sonner";
 
 /**
@@ -204,6 +205,7 @@ function FirstDrop() {
           {shown.map((product, index) => {
             const image = cardImageUrls(product.images, index)[0];
             const price = Number.parseFloat(product.priceRange.min.amount).toFixed(2);
+            const was = compareAtForLowest(product.variants);
             const colors = colorValues(product);
             return (
               <Link key={product.id} href={`/products/${product.handle}`}>
@@ -212,7 +214,14 @@ function FirstDrop() {
                     {image ? <img src={image} alt={product.title} /> : null}
                   </div>
                   <h3>{product.title}</h3>
-                  <p>${price}</p>
+                  <p>
+                    ${price}
+                    {was ? (
+                      <s style={{ marginLeft: "0.5em", opacity: 0.6, fontWeight: 400 }}>
+                        ${was}
+                      </s>
+                    ) : null}
+                  </p>
                   {colors.length > 0 && (
                     <div className="wk-swatches" aria-label="Colors">
                       {colors.map(color => (

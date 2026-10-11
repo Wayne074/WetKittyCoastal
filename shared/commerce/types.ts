@@ -81,6 +81,8 @@ export type CartItem = {
   variantTitle: string;
   image: Image | null;
   unitPrice: Money;
+  /** Original unit price when the item is on sale. */
+  compareAtUnitPrice?: Money | null;
   quantity: number;
   lineTotal: Money;
 };

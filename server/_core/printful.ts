@@ -13,6 +13,7 @@ import {
   productSections,
 } from "@shared/commerce/sections";
 import { customerDescription } from "@shared/commerce/copy";
+import { isSaleTitle, salePriceAmount } from "@shared/commerce/sale";
 import {
   HOODIE_BACK_ALT,
   MEN_ORDER,
@@ -526,6 +527,17 @@ function normalizeProduct(detail: SyncProductDetail): Product {
     );
     return variant;
   });
+  // Grand Opening Sale: the server owns the price, so the cart and Stripe
+  // Checkout charge the sale price; the original is kept as compareAtPrice.
+  if (isSaleTitle(title)) {
+    for (const variant of variants) {
+      variant.compareAtPrice = { ...variant.price };
+      variant.price = {
+        ...variant.price,
+        amount: salePriceAmount(variant.price.amount),
+      };
+    }
+  }
   const backPrint =
     BACK_PRINT_PRODUCTS.has(productId) ||
     (!isAllOverPrint(title) &&
@@ -842,6 +854,7 @@ export async function resolveCart(cartId: string): Promise<Cart | null> {
       variantTitle: variant.title,
       image,
       unitPrice: variant.price,
+      compareAtUnitPrice: variant.compareAtPrice,
       quantity: line.quantity,
       lineTotal: {
         amount: (unit * line.quantity).toFixed(2),

@@ -55,7 +55,14 @@ export default function CartPage() {
                         <span className="min-w-10 text-center font-semibold">{item.quantity}</span>
                         <button type="button" onClick={() => updateQuantity(item.lineId, item.quantity + 1)} className="p-2.5 hover:bg-muted" aria-label="Increase quantity"><Plus className="h-4 w-4" /></button>
                       </div>
-                      <strong>{formatMoney(item.lineTotal)}</strong>
+                      <span className="text-right">
+                        {item.compareAtUnitPrice && (
+                          <span className="mr-2 text-sm text-muted-foreground line-through">
+                            {formatMoney((Number.parseFloat(item.compareAtUnitPrice.amount) * item.quantity).toFixed(2), item.compareAtUnitPrice.currencyCode)}
+                          </span>
+                        )}
+                        <strong>{formatMoney(item.lineTotal)}</strong>
+                      </span>
                     </div>
                   </div>
                 </article>

@@ -285,6 +285,16 @@ export default function ProductDetail() {
               >
                 ${variant?.price.amount}
               </span>
+              {variant?.compareAtPrice && (
+                <span className="text-base text-muted-foreground line-through">
+                  ${variant.compareAtPrice.amount}
+                </span>
+              )}
+              {variant?.compareAtPrice && (
+                <span className="text-xs font-semibold uppercase tracking-wide text-[var(--teal)]">
+                  Grand Opening Sale
+                </span>
+              )}
               <span className="text-xs text-muted-foreground uppercase">
                 {variant?.price.currencyCode}
               </span>

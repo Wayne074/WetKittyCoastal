@@ -383,7 +383,9 @@ export default function CollectionPage({
                   handle={product.handle}
                   title={product.title}
                   price={product.variants?.[0]?.price?.amount || "0"}
-                  compareAtPrice={product.variants?.[0]?.compareAtPrice?.amount}
+                  compareAtPrice={
+                    product.variants?.[0]?.compareAtPrice?.amount ?? undefined
+                  }
                   imageUrls={cardImageUrls(product.images, index)}
                   eager={index < 8}
                   tags={product.tags || []}

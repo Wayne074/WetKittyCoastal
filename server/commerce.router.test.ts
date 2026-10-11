@@ -82,7 +82,9 @@ describe("Printful commerce", () => {
     });
     expect(products[0].variants[0]).toMatchObject({
       id: "8801",
-      price: { amount: "32.00", currencyCode: "USD" },
+      // Grand Opening Sale: tees are 25% off, original kept as compare-at.
+      price: { amount: "24.00", currencyCode: "USD" },
+      compareAtPrice: { amount: "32.00", currencyCode: "USD" },
       selectedOptions: [
         { name: "color", value: "Black" },
         { name: "size", value: "L" },
@@ -103,7 +105,7 @@ describe("Printful commerce", () => {
       lines: [{ variantId: "8801", quantity: 2 }],
     });
     expect(created.itemCount).toBe(2);
-    expect(created.subtotal.amount).toBe("64.00");
+    expect(created.subtotal.amount).toBe("48.00");
     expect(created.items[0].productTitle).toBe("Ride the Tide Tee");
 
     const updated = await caller.commerce.cart.updateLines({
@@ -111,13 +113,42 @@ describe("Printful commerce", () => {
       lines: [{ lineId: "8801", quantity: 3 }],
     });
     expect(updated?.itemCount).toBe(3);
-    expect(updated?.subtotal.amount).toBe("96.00");
+    expect(updated?.subtotal.amount).toBe("72.00");
 
     const removed = await caller.commerce.cart.removeLines({
       cartId: updated!.id,
       lineIds: ["8801"],
     });
     expect(removed.itemCount).toBe(0);
+  });
+
+  it("charges the server-side sale price in Stripe Checkout", async () => {
+    mockCatalog();
+    process.env.STRIPE_SECRET_KEY = "sk_test_wetkitty";
+    const caller = appRouter.createCaller(makeCtx());
+    const created = await caller.commerce.cart.create({
+      lines: [{ variantId: "8801", quantity: 2 }],
+    });
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ id: "cs_test_1", url: "https://checkout.stripe.com/t" }),
+    } as Response);
+    await caller.commerce.cart.checkout({
+      cartId: created.id,
+      origin: "https://wetkittycoastal.com",
+    });
+    const call = fetchMock.mock.calls.find(([url]) =>
+      String(url).includes("/checkout/sessions")
+    )!;
+    const params = new URLSearchParams(String(call[1].body));
+    expect(params.get("line_items[0][price_data][unit_amount]")).toBe("2400");
+    expect(params.get("line_items[0][quantity]")).toBe("2");
+    // $48 subtotal is under the $100 threshold, so flat shipping applies.
+    expect(
+      params.get("shipping_options[0][shipping_rate_data][fixed_amount][amount]")
+    ).toBe("599");
+    delete process.env.STRIPE_SECRET_KEY;
   });
 
   it("rejects a modified cart token", async () => {
