@@ -1,4 +1,5 @@
 import { trpc } from "@/lib/trpc";
+import { trackCommerceEvent } from "@/lib/analytics";
 import type { Cart } from "@shared/commerce/types";
 import { toast } from "sonner";
 import {
@@ -99,10 +100,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     async (variantId: string, quantity: number = 1) => {
       setLoading(true);
       try {
+        let resultCart: Cart;
         if (!cartId || !cart) {
           const created = await utils.client.commerce.cart.create.mutate({
             lines: [{ variantId, quantity }],
           });
+          resultCart = created;
           setCart(created);
           setCartId(created.id);
           writeStoredCartId(created.id);
@@ -111,9 +114,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
             cartId,
             lines: [{ variantId, quantity }],
           });
+          resultCart = updated;
           setCart(updated);
           setCartId(updated.id);
           writeStoredCartId(updated.id);
+        }
+        const addedLine = resultCart.items.find(item => item.variantId === variantId);
+        if (addedLine) {
+          trackCommerceEvent("add_to_cart", [{
+            item_id: addedLine.variantId,
+            item_name: addedLine.productTitle,
+            item_variant: addedLine.variantTitle,
+            price: Number(addedLine.unitPrice.amount),
+            quantity,
+          }], Number(addedLine.unitPrice.amount) * quantity, addedLine.unitPrice.currencyCode);
         }
         setIsOpen(true);
       } finally {
@@ -177,6 +191,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         cartId: cart.id,
         origin: window.location.origin,
       });
+      trackCommerceEvent("begin_checkout", cart.items.map(item => ({
+        item_id: item.variantId,
+        item_name: item.productTitle,
+        item_variant: item.variantTitle,
+        price: Number(item.unitPrice.amount),
+        quantity: item.quantity,
+      })), Number(cart.total.amount), cart.total.currencyCode);
       window.location.assign(checkout.url);
     } catch (error) {
       toast.error(
