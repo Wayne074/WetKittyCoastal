@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { isSaleTitle, salePriceAmount } from "../shared/commerce/sale";
+import { isSaleTitle, SALE_ACTIVE, salePriceAmount } from "../shared/commerce/sale";
 
 describe("grand opening sale", () => {
-  it("includes tees and hoodies", () => {
+  it("includes tees and hoodies only while the sale is active", () => {
     for (const title of [
       "Race Club Tee",
       "Yacht & Rod Club Women’s Tee (Wet Kitty)",
@@ -10,7 +10,7 @@ describe("grand opening sale", () => {
       "Wet Kitty Wave Apparel Zip Hoodie",
       "Wet Kitty Brand Mark Hoodie",
     ])
-      expect(isSaleTitle(title), title).toBe(true);
+      expect(isSaleTitle(title), title).toBe(SALE_ACTIVE);
   });
   it("excludes everything else", () => {
     for (const title of [
@@ -27,7 +27,8 @@ describe("grand opening sale", () => {
     ])
       expect(isSaleTitle(title), title).toBe(false);
   });
-  it("takes 25% off, rounded to the cent", () => {
+  it("takes SALE_PERCENT off, rounded to the cent", () => {
+    // Pure math helper — independent of SALE_ACTIVE.
     expect(salePriceAmount("38.95")).toBe("29.21");
     expect(salePriceAmount("32.00")).toBe("24.00");
     expect(salePriceAmount("54.99")).toBe("41.24");

@@ -1,4 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  SALE_ACTIVE,
+  salePriceAmount,
+} from "../shared/commerce/sale";
 import type { TrpcContext } from "./_core/context";
 import { resetPrintfulCatalogCache } from "./_core/printful";
 import { appRouter } from "./routers";
@@ -12,6 +16,10 @@ function makeCtx(): TrpcContext {
 }
 
 const fetchMock = vi.fn();
+
+const RETAIL = "32.00";
+const UNIT = SALE_ACTIVE ? salePriceAmount(RETAIL) : RETAIL;
+const UNIT_CENTS = String(Math.round(Number.parseFloat(UNIT) * 100));
 
 const summary = {
   id: 77,
@@ -28,7 +36,7 @@ const detail = {
       id: 8801,
       name: "Ride the Tide Tee - Black / L",
       synced: true,
-      retail_price: "32.00",
+      retail_price: RETAIL,
       currency: "USD",
       product: { variant_name: "Black / L" },
       files: [{ type: "preview", preview_url: "https://example.com/tee.jpg" }],
@@ -82,9 +90,10 @@ describe("Printful commerce", () => {
     });
     expect(products[0].variants[0]).toMatchObject({
       id: "8801",
-      // Grand Opening Sale: tees are 25% off, original kept as compare-at.
-      price: { amount: "24.00", currencyCode: "USD" },
-      compareAtPrice: { amount: "32.00", currencyCode: "USD" },
+      price: { amount: UNIT, currencyCode: "USD" },
+      compareAtPrice: SALE_ACTIVE
+        ? { amount: RETAIL, currencyCode: "USD" }
+        : null,
       selectedOptions: [
         { name: "color", value: "Black" },
         { name: "size", value: "L" },
@@ -105,7 +114,9 @@ describe("Printful commerce", () => {
       lines: [{ variantId: "8801", quantity: 2 }],
     });
     expect(created.itemCount).toBe(2);
-    expect(created.subtotal.amount).toBe("48.00");
+    expect(created.subtotal.amount).toBe(
+      (Number.parseFloat(UNIT) * 2).toFixed(2)
+    );
     expect(created.items[0].productTitle).toBe("Ride the Tide Tee");
 
     const updated = await caller.commerce.cart.updateLines({
@@ -113,7 +124,9 @@ describe("Printful commerce", () => {
       lines: [{ lineId: "8801", quantity: 3 }],
     });
     expect(updated?.itemCount).toBe(3);
-    expect(updated?.subtotal.amount).toBe("72.00");
+    expect(updated?.subtotal.amount).toBe(
+      (Number.parseFloat(UNIT) * 3).toFixed(2)
+    );
 
     const removed = await caller.commerce.cart.removeLines({
       cartId: updated!.id,
@@ -142,9 +155,11 @@ describe("Printful commerce", () => {
       String(url).includes("/checkout/sessions")
     )!;
     const params = new URLSearchParams(String(call[1].body));
-    expect(params.get("line_items[0][price_data][unit_amount]")).toBe("2400");
+    expect(params.get("line_items[0][price_data][unit_amount]")).toBe(
+      UNIT_CENTS
+    );
     expect(params.get("line_items[0][quantity]")).toBe("2");
-    // $48 subtotal is under the $100 threshold, so flat shipping applies.
+    // Subtotal stays under the $100 threshold, so flat shipping applies.
     expect(
       params.get("shipping_options[0][shipping_rate_data][fixed_amount][amount]")
     ).toBe("599");
