@@ -6,7 +6,7 @@
  * To end the sale, set SALE_ACTIVE = false and deploy.
  */
 
-export const SALE_ACTIVE = true;
+export const SALE_ACTIVE = false;
 export const SALE_PERCENT = 25;
 export const SALE_BANNER = "Grand Opening Sale — 25% off tees & hoodies";
 
