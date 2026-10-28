@@ -20,7 +20,7 @@ const collectionCards = [
     subtitle: "Men's Collection",
     href: "/collections/men",
     image: "/images/lifestyle/sunset-riders.jpg",
-    alt: "A boat running on open water",
+    alt: "Three riders on a Gulf coast road at sunset",
   },
   {
     title: "Pier 7",
