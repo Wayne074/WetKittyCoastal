@@ -19,7 +19,7 @@ const collectionCards = [
     title: "Sunset Riders",
     subtitle: "Men's Collection",
     href: "/collections/men",
-    image: "/images/lifestyle/mens-club.jpg",
+    image: "/images/lifestyle/sunset-riders.jpg",
     alt: "A boat running on open water",
   },
   {
