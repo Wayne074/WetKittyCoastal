@@ -8,7 +8,7 @@ const GRADIENTS: Record<
   men: {
     gradient: "linear-gradient(160deg, #120c09 0%, #2a1a12 100%)",
     accent: "var(--sand)",
-    image: "/images/lifestyle/mens-club.jpg",
+    image: "/images/lifestyle/sunset-riders.jpg",
   },
   club: {
     gradient: "linear-gradient(160deg, #1a0a0a 0%, #2a1a15 100%)",

@@ -328,14 +328,15 @@ const styles = `
   right: 3.5%;
   width: min(440px, 40%);
   text-align: right;
-  color: #071014;
+  color: #fff8ec;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 18px rgba(0, 0, 0, 0.45);
 }
 .wk-hero-copy::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: -22% -14% -16% -30%;
-  background: radial-gradient(ellipse at 75% 30%, rgba(255, 244, 224, 0.72), rgba(255, 244, 224, 0.2) 58%, transparent 76%);
+  background: radial-gradient(ellipse at 70% 40%, rgba(4, 12, 16, 0.78), rgba(4, 12, 16, 0.5) 55%, transparent 80%);
   pointer-events: none;
 }
 .wk-eyebrow {
@@ -345,25 +346,26 @@ const styles = `
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #0b3c42;
+  color: #7fd8d4;
 }
 .wk-hero h1 {
   margin: 0.35rem 0 0;
   font-family: Cinzel, Georgia, serif;
-  font-weight: 700;
-  font-size: clamp(1.45rem, 2.7vw, 2.55rem);
+  font-weight: 900;
+  font-size: clamp(1.7rem, 3.2vw, 3rem);
   line-height: 0.98;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: #071014;
+  color: #fff8ec;
 }
 .wk-hero h1 span { display: block; }
 .wk-hero-lead {
   margin: 0.65rem 0 0;
   font-family: Inter, system-ui, sans-serif;
-  font-size: clamp(0.82rem, 1.2vw, 0.98rem);
+  font-size: clamp(0.9rem, 1.3vw, 1.08rem);
+  font-weight: 600;
   line-height: 1.45;
-  color: #10242c;
+  color: #fff8ec;
 }
 .wk-hero-cta-strip {
   background: var(--cream);
@@ -647,12 +649,12 @@ const styles = `
     width: auto;
     text-align: left;
     padding: 0.7rem 0.85rem 0.85rem;
-    background: linear-gradient(180deg, rgba(255, 248, 236, 0.88) 0%, rgba(255, 248, 236, 0.45) 70%, rgba(255, 248, 236, 0) 100%);
+    background: linear-gradient(180deg, rgba(4, 12, 16, 0.82) 0%, rgba(4, 12, 16, 0.6) 70%, rgba(4, 12, 16, 0) 100%);
   }
   .wk-hero-copy::before { display: none; }
-  .wk-eyebrow { font-size: 0.58rem; letter-spacing: 0.14em; }
-  .wk-hero h1 { font-size: 1.4rem; margin-top: 0.2rem; }
-  .wk-hero-lead { font-size: 0.78rem; line-height: 1.35; margin-top: 0.35rem; max-width: 18rem; }
+  .wk-eyebrow { font-size: 0.64rem; letter-spacing: 0.14em; }
+  .wk-hero h1 { font-size: 1.65rem; margin-top: 0.2rem; }
+  .wk-hero-lead { font-size: 0.86rem; line-height: 1.4; margin-top: 0.35rem; max-width: 20rem; }
   .wk-hero-cta-strip { padding: 0.7rem 0.75rem 0.85rem; }
   .wk-hero-ctas { gap: 0.45rem; flex-wrap: nowrap; }
   .wk-hero-btn {

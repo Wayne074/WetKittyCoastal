@@ -36,11 +36,11 @@ export const SHOP_SECTIONS: ShopSection[] = [
   {
     handle: "men",
     navLabel: "Men's Club",
-    title: "The Night Starts on the Water.",
+    title: "Sunset Riders.",
     subtitle: "Men's Club",
-    tagline: "Built for weekends that don't end when the sun goes down.",
+    tagline: "Kickstands up. The coast road is calling and the sun's going down.",
     description:
-      "From the Gulf to the garage and everywhere in between.",
+      "Chrome, salt air, and the crew riding three wide toward the Gulf. The Kitty rides too.",
   },
   {
     handle: "women",
