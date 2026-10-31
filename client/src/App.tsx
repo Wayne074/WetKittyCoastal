@@ -1,4 +1,5 @@
 import { useEffect, type ComponentType } from "react";
+import { trackPageView } from "./lib/analytics";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -82,6 +83,7 @@ function Router() {
   const [location] = useLocation();
   useEffect(() => {
     document.getElementById("app-scroll")?.scrollTo(0, 0);
+    trackPageView();
   }, [location]);
 
   return (
