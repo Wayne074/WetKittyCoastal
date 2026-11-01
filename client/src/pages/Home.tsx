@@ -119,13 +119,10 @@ function Hero() {
           </p>
         </div>
       </section>
-      <div className="wk-hero-cta-strip" aria-label="Shop and Founding Crew">
+      <div className="wk-hero-cta-strip" aria-label="Shop">
         <div className="wk-hero-ctas">
           <Link href="/collections/apparel" className="wk-hero-btn">
             Shop Tees, Tanks &amp; Hoodies
-          </Link>
-          <Link href="/founding-crew" className="wk-hero-btn wk-hero-btn-crew">
-            Join the Founding Crew
           </Link>
         </div>
       </div>

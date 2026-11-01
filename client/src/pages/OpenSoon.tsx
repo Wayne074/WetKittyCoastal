@@ -3,7 +3,7 @@ import { Waves } from "lucide-react";
 
 /**
  * Soft-close stand-in for catalog, PDP, and cart while SHOP_OPEN is false.
- * Keeps Founding Crew and home reachable.
+ * Keeps home reachable.
  */
 export default function OpenSoon() {
   return (
@@ -39,12 +39,8 @@ export default function OpenSoon() {
           </h2>
           <p className="mb-8 text-muted-foreground leading-relaxed">
             Catalog, product pages, and cart are parked while we finish the drop.
-            Founding Crew is still rolling — claim your spot if you&apos;re in.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/founding-crew" className="btn btn-primary">
-              Join Founding Crew
-            </Link>
             <Link href="/" className="btn btn-outline">
               Back to Home
             </Link>

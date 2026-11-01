@@ -10,7 +10,6 @@ const NAV = [
   { label: "Home", href: "/" },
   { label: "Men", href: "/collections/men" },
   { label: "Women", href: "/collections/women" },
-  { label: "Founding Crew", href: "/founding-crew" },
   { label: "Accessories", href: "/collections/accessories" },
   { label: "About", href: "/about" },
 ];
@@ -43,13 +42,7 @@ export default function Header() {
           }}
           role="status"
         >
-          Shop Opening Soon — dialing in products &amp; graphics.{" "}
-          <Link
-            href="/founding-crew"
-            className="inline-flex items-center justify-center ml-1.5 px-3 py-1 rounded-full bg-[#061416] text-[#7fd8d4] text-xs font-extrabold uppercase tracking-wide no-underline hover:bg-black transition-colors"
-          >
-            Founding Crew is live
-          </Link>
+          Shop Opening Soon — dialing in products &amp; graphics.
         </div>
       )}
 

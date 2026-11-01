@@ -16,7 +16,6 @@ import {
 } from "@shared/commerce/sections";
 import ProductDetail from "./pages/ProductDetail";
 import Community from "./pages/Community";
-import FoundingCrew from "./pages/FoundingCrew";
 import CartPage from "./pages/Cart";
 import ReturnsPage from "./pages/Returns";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -122,7 +121,7 @@ function Router() {
                     </Route>
                     <Route path={"/wishlist"} component={RedirectHome} />
                     <Route path={"/community"} component={Community} />
-                    <Route path={"/founding-crew"} component={FoundingCrew} />
+                    <Route path={"/founding-crew"} component={RedirectHome} />
                     <Route path={"/events"} component={RedirectHome} />
                     <Route path={"/cart"}>
                       {() => <ShopRoute open={CartPage} />}

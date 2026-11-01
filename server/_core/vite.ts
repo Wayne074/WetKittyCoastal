@@ -58,6 +58,9 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Founding Crew was retired; send old links home.
+  app.get(/^\/founding-crew\/?$/, (_req, res) => res.redirect(301, "/"));
+
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
@@ -73,7 +76,7 @@ const KNOWN_ROUTES = [
   /^\/$/,
   /^\/collections\/[\w-]+\/?$/,
   /^\/products\/[\w-]+\/?$/,
-  /^\/(community|founding-crew|cart|returns|about|faq|shipping|contact|privacy|terms|wishlist|events)\/?$/,
+  /^\/(community|cart|returns|about|faq|shipping|contact|privacy|terms|wishlist|events)\/?$/,
   /^\/checkout\/success\/?$/,
 ];
 

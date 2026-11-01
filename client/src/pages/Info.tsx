@@ -61,15 +61,6 @@ export function AboutPage() {
         <p>Years from now, if Wet Kitty is everywhere, we want the original crew to be able to say:</p>
         <p>“I was there before everybody knew the name.”</p>
       </Block>
-      <div>
-        <h2 className="mb-3 text-2xl">JOIN THE FOUNDING CREW</h2>
-        <div className="space-y-3 text-muted-foreground">
-          <p>Be part of Wet Kitty from the beginning. Get early drops, Founding Crew benefits, and your place in the story while we’re still writing it.</p>
-        </div>
-        <div className="mt-3">
-          <Link href="/founding-crew" className="btn btn-primary">JOIN THE FOUNDING CREW</Link>
-        </div>
-      </div>
     </InfoPage>
   );
 }
@@ -142,7 +133,7 @@ export function PrivacyPage() {
     <InfoPage
       eyebrow="Legal"
       title="Privacy Policy"
-      meta="How Wet Kitty Coastal handles order, membership, and contact information. Draft for the private preview, not a lawyer-approved policy."
+      meta="How Wet Kitty Coastal handles order and contact information. Draft for the private preview, not a lawyer-approved policy."
       intro="This page describes what this site actually does today. It is a draft for the private preview. It is not a finished legal policy."
     >
       <Block title="Who this is about">
@@ -158,24 +149,16 @@ export function PrivacyPage() {
       </Block>
       <Block title="What we collect">
         <p>
-          Apparel is made to order. Founding Crew is a separate one-time membership, not a product in the cart.
+          Apparel is made to order.
         </p>
         <p>
           Shop checkout is Stripe-hosted. PayPal is not offered. Stripe collects the payment details. This site does not store your full card number. Stripe also receives the name, email, and shipping address you enter so the order can be made and shipped.
-        </p>
-        <p>
-          Founding Crew checkout is a Stripe payment link for a $147 one-time membership. The same Stripe-hosted collection applies. PayPal is not part of that checkout either.
         </p>
         <p>
           If you email <EmailLink />, we keep that email and whatever you send, including an order number or photos, so we can answer you.
         </p>
         <p>
           The shopping bag keeps a cart id in your browser&apos;s local storage so the bag can be reopened on this device.
-        </p>
-        <p>
-          <Mark who="WAYNE">
-            Confirm whether any extra fields (shirt size, wall name, phone) are collected on the live Founding Crew payment link. This page does not list fields that were not confirmed.
-          </Mark>
         </p>
       </Block>
       <Block title="Site analytics">
@@ -204,17 +187,7 @@ export function PrivacyPage() {
       <Block title="How long we keep it">
         <p>
           <Mark who="COUNSEL">
-            Retention periods for orders, memberships, and support emails are not set.
-          </Mark>
-        </p>
-      </Block>
-      <Block title="Founding Crew count">
-        <p>
-          Founding Crew is capped at 1,500 memberships. The price is $147 once. The page counter is maintained by hand. The seeded figure in the site code is 58 sold (1,442 remaining). That seed is not a live count of Stripe charges, and this policy does not add any sales on top of it.
-        </p>
-        <p>
-          <Mark who="WAYNE">
-            Confirm that 58 is still the number you want shown before this page is treated as describing real memberships.
+            Retention periods for orders and support emails are not set.
           </Mark>
         </p>
       </Block>
@@ -227,7 +200,7 @@ export function TermsPage() {
     <InfoPage
       eyebrow="Legal"
       title="Terms of Service"
-      meta="Draft terms for Wet Kitty Coastal made-to-order apparel and the Founding Crew membership. Not lawyer-approved."
+      meta="Draft terms for Wet Kitty Coastal made-to-order apparel. Not lawyer-approved."
       intro="These terms are a draft so the private preview has a page to link. They are not a lawyer-approved contract."
     >
       <Block title="The seller">
@@ -267,25 +240,7 @@ export function TermsPage() {
           Shop checkout is hosted by Stripe. PayPal is not live and is not a way to pay. We do not store your full card number.
         </p>
         <p>
-          The public shop is not open yet. These product terms apply when an order can actually be placed. Founding Crew can be purchased while the apparel shop is still closed.
-        </p>
-      </Block>
-      <Block title="Founding Crew">
-        <p>
-          Founding Crew is a one-time $147 membership. It is not a subscription and it is not a monthly charge. Memberships are capped at 1,500. The on-site counter is manual. The seeded sold count in the code is 58, which the page turns into 1,442 remaining. This page does not claim any sales beyond that seed.
-        </p>
-        <p>
-          <Mark who="WAYNE">
-            Confirm the seeded 58 still matches the memberships you want counted, and list the kit and the permanent discount in numbers you will actually honor. The discount amount is not stated here because it was not provided.
-          </Mark>
-        </p>
-        <p>
-          Founding Crew payment runs through a Stripe-hosted payment link. PayPal is not offered.
-        </p>
-        <p>
-          <Mark who="COUNSEL">
-            Whether a Founding Crew membership is refundable, transferable, or numbered only after payment clears is not decided on this page.
-          </Mark>
+          The public shop is not open yet. These product terms apply when an order can actually be placed.
         </p>
       </Block>
       <Block title="Disputes">

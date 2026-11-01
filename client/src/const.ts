@@ -3,7 +3,6 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 /**
  * Soft-close merch shop / catalog / cart.
  * Flip to `true` when products & graphics are ready — Printful data stays intact.
- * Founding Crew (`/founding-crew`) is independent and stays live either way.
  */
 const SHOP_PUBLIC = true;
 
