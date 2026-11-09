@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /*?preview=
+Disallow: /*&preview=
+
+Sitemap: https://wetkittycoastal.com/sitemap.xml

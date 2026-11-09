@@ -7,6 +7,7 @@ import {
   PostcardProductCard,
 } from "@/components/brand";
 import { cardImageUrls } from "@shared/commerce/featured";
+import { setPageMeta } from "@/const";
 
 interface CollectionPageProps {
   handle?: string;
@@ -49,37 +50,14 @@ export default function CollectionPage({
     max: number;
   } | null>(null);
 
-  // SEO: Update document title and meta description
+  // SEO: title, description, canonical, Open Graph, Twitter
   useEffect(() => {
-    const pageTitle = seoTitle || `${title} | Wet Kitty Apparel`;
-    document.title = pageTitle;
-    const metaDesc = document.querySelector('meta[name="description"]');
+    const pageTitle = seoTitle || `${title} | Wet Kitty Coastal`;
     const descContent =
       seoDescription ||
       `${description} Shop the ${title} collection at Wet Kitty — premium coastal biker lifestyle apparel.`;
-    if (metaDesc) {
-      metaDesc.setAttribute("content", descContent);
-    } else {
-      const meta = document.createElement("meta");
-      meta.name = "description";
-      meta.content = descContent;
-      document.head.appendChild(meta);
-    }
-    // Open Graph
-    const setOg = (prop: string, content: string) => {
-      let el = document.querySelector(`meta[property="${prop}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute("property", prop);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-    setOg("og:title", pageTitle);
-    setOg("og:description", descContent);
-    setOg("og:type", "website");
-    setOg("og:url", window.location.href);
-  }, [title, description, seoTitle, seoDescription]);
+    setPageMeta(pageTitle, descContent, heroImage);
+  }, [title, description, seoTitle, seoDescription, heroImage]);
 
   const { data: products = [], isLoading } =
     trpc.commerce.products.list.useQuery({

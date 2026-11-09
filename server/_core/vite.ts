@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+import { injectHtmlSeo, sendIndexHtml } from "./seo";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -38,7 +39,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx"`,
         `src="/src/main.tsx?v=${nanoid()}"`
       );
-      const page = await vite.transformIndexHtml(url, template);
+      const page = await vite.transformIndexHtml(url, injectHtmlSeo(template));
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
@@ -61,14 +62,15 @@ export function serveStatic(app: Express) {
   // Founding Crew was retired; send old links home.
   app.get(/^\/founding-crew\/?$/, (_req, res) => res.redirect(301, "/"));
 
-  app.use(express.static(distPath));
+  // Do not auto-serve index.html for "/" — we inject SEO meta ourselves.
+  app.use(express.static(distPath, { index: false }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (req, res) => {
     // Unknown URLs still get the app (which renders its 404 page), but with a
     // real 404 status so search engines and monitors see it correctly.
     const known = isKnownRoute(req.originalUrl.split("?")[0]);
-    res.status(known ? 200 : 404).sendFile(path.resolve(distPath, "index.html"));
+    sendIndexHtml(res, path.resolve(distPath, "index.html"), known ? 200 : 404);
   });
 }
 

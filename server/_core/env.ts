@@ -11,4 +11,5 @@ export const ENV = {
   printfulStoreId: process.env.PRINTFUL_STORE_ID ?? "",
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  googleSiteVerification: process.env.GOOGLE_SITE_VERIFICATION ?? "",
 };

@@ -455,6 +455,7 @@ export default function ProductDetail() {
               "@type": "Product",
               name: product.title,
               description,
+              url: typeof window !== "undefined" ? window.location.href : undefined,
               image: images.map((img: any) => img.url),
               brand: { "@type": "Brand", name: "Wet Kitty" },
               offers: {
@@ -462,7 +463,7 @@ export default function ProductDetail() {
                 price: variant?.price.amount,
                 priceCurrency: variant?.price.currencyCode || "USD",
                 availability: "https://schema.org/InStock",
-                seller: { "@type": "Organization", name: "Wet Kitty Apparel" },
+                seller: { "@type": "Organization", name: "Wet Kitty Coastal" },
               },
             }),
           }}

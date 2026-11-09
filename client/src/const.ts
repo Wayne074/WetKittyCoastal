@@ -44,7 +44,24 @@ export const SUPPORT_EMAIL = "bigcat@wetkittycoastal.com";
 export const SHIPPING_SUMMARY =
   "$5.99 flat shipping, free on orders over $100. Made to order and delivered in about 5–12 business days.";
 
-/** Set the page title and meta description (client-side SEO). */
+const SITE_ORIGIN = "https://wetkittycoastal.com";
+
+function absoluteUrl(pathOrUrl?: string) {
+  if (!pathOrUrl) return SITE_ORIGIN + "/";
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  if (typeof window !== "undefined" && pathOrUrl.startsWith("/")) {
+    return SITE_ORIGIN + pathOrUrl;
+  }
+  return pathOrUrl;
+}
+
+function canonicalPath() {
+  if (typeof window === "undefined") return SITE_ORIGIN + "/";
+  const path = window.location.pathname || "/";
+  return SITE_ORIGIN + (path.endsWith("/") && path !== "/" ? path.slice(0, -1) : path);
+}
+
+/** Set the page title, description, canonical, Open Graph and Twitter tags. */
 export function setPageMeta(title: string, description?: string, image?: string) {
   if (typeof document === "undefined") return;
   document.title = title;
@@ -57,12 +74,31 @@ export function setPageMeta(title: string, description?: string, image?: string)
     }
     el.setAttribute("content", content);
   };
+  const url = canonicalPath();
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = url;
+
   if (description) {
     set('meta[name="description"]', "name", "description", description);
     set('meta[property="og:description"]', "property", "og:description", description);
+    set('meta[name="twitter:description"]', "name", "twitter:description", description);
   }
   set('meta[property="og:title"]', "property", "og:title", title);
-  if (image) set('meta[property="og:image"]', "property", "og:image", image);
+  set('meta[property="og:url"]', "property", "og:url", url);
+  set('meta[property="og:type"]', "property", "og:type", "website");
+  set('meta[property="og:site_name"]', "property", "og:site_name", "Wet Kitty Coastal");
+  set('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
+  set('meta[name="twitter:title"]', "name", "twitter:title", title);
+  if (image) {
+    const img = absoluteUrl(image);
+    set('meta[property="og:image"]', "property", "og:image", img);
+    set('meta[name="twitter:image"]', "name", "twitter:image", img);
+  }
 }
 
 /** Web-sized image (resized WebP via an image CDN); falls back to the original on error. */
